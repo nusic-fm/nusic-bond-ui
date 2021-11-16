@@ -1,4 +1,4 @@
-# Getting Started with Nusic
+# Getting Started with NUSIC
 
 ## Available Scripts
 

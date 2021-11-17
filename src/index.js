@@ -19,8 +19,12 @@ WebFont.load({
 
 let theme = createTheme({
   palette: {
+    mode: "dark",
     primary: {
       main: "#5B21D4",
+    },
+    success: {
+      main: "#4AAB1A",
     },
   },
   typography: {

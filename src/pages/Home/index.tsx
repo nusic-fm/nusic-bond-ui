@@ -3,12 +3,13 @@ import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { useHistory } from "react-router";
 import { Route, Switch, useLocation } from "react-router-dom";
 import BondInfoForm from "./BondInfoForm";
+import DepositCollateral from "./DepositCollateral";
 import MarketPlace from "./MarketPlace";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: "#17172F",
-    height: "calc(100vh - 65px)",
+    minHeight: "calc(100vh - 65px)",
   },
   section: {
     backgroundColor: "#EBF4FD",
@@ -28,17 +29,19 @@ const steps = [
   "Get Started",
   "Marketplace",
   "Bond Information",
-  "Summary",
+  "Deposit",
   "Issue Bond",
 ];
 
 const getActivePath = (pathname: string) => {
-  if (pathname === "home/mint") {
+  if (pathname === "/home/mint") {
     return 1;
   } else if (pathname.includes("bond-info")) {
     return 2;
-  } else if (pathname.includes("summary")) {
+  } else if (pathname.includes("deposit")) {
     return 3;
+  } else if (pathname.includes("issue-bond")) {
+    return 4;
   }
 };
 
@@ -140,6 +143,9 @@ const Home = () => {
         </Route>
         <Route exact path="/home/mint/opensea/bond-info">
           <BondInfoForm />
+        </Route>
+        <Route exact path="/home/mint/opensea/deposit">
+          <DepositCollateral />
         </Route>
       </Switch>
     </Box>

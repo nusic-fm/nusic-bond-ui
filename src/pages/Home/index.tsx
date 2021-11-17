@@ -1,12 +1,13 @@
-import { Box, makeStyles } from "@material-ui/core";
+import { Box } from "@mui/material";
 import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router";
 import { Route, Switch, useLocation } from "react-router-dom";
 import BondInfoForm from "./BondInfoForm";
 import DepositCollateral from "./DepositCollateral";
 import MarketPlace from "./MarketPlace";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
     backgroundColor: "#17172F",
     minHeight: "calc(100vh - 65px)",
@@ -24,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around",
     alignItems: "center",
   },
-}));
+});
 
 const steps = [
   "Get Started",

@@ -1,12 +1,19 @@
-import { AppBar, Box, makeStyles, Toolbar } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { Button, Chip, Tooltip, Typography } from "@mui/material";
+import {
+  Button,
+  Chip,
+  Tooltip,
+  Typography,
+  AppBar,
+  Box,
+  Toolbar,
+} from "@mui/material";
 import useAuth from "../../hooks/useAuth";
 import { useWeb3React } from "@web3-react/core";
+import { makeStyles } from "@mui/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
     backgroundColor: "black",
   },
   title: {
@@ -19,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 10px",
     cursor: "pointer",
   },
-}));
+});
 
 const Header = () => {
   const history = useHistory();

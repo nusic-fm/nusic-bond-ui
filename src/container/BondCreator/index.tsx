@@ -1,11 +1,5 @@
-import {
-  Box,
-  makeStyles,
-  Mark,
-  Slider,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Box, Mark, Slider, TextField, Typography } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import {
   AccumulationChartComponent,
   AccumulationSeriesCollectionDirective,
@@ -20,11 +14,11 @@ import {
 } from "@syncfusion/ej2-react-charts";
 import { useEffect, useState } from "react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   root: {
     width: "100%",
   },
-}));
+});
 
 export const BondCreator = () => {
   const classes = useStyles();

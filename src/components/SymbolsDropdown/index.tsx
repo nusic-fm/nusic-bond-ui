@@ -1,4 +1,4 @@
-import { MenuItem, Select } from "@material-ui/core";
+import { MenuItem, Select } from "@mui/material";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -28,7 +28,9 @@ const SymbolsDropDown = (props: SymbolsDropDownProps) => {
       onChange={(e) => onSelectChange(assetSymbols[e.target.value as number])}
     >
       {assetSymbols.map((assetSymbol, i) => (
-        <MenuItem key={i} value={i}>{assetSymbol}</MenuItem>
+        <MenuItem key={i} value={i}>
+          {assetSymbol}
+        </MenuItem>
       ))}
     </Select>
   );

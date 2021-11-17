@@ -1,34 +1,11 @@
 import "./App.css";
 import { Main } from "./routes";
-import { Box, Toolbar } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { useHistory } from "react-router-dom";
 import useEagerConnect from "./hooks/useEagerConnect";
 
 import Header from "./container/Header";
-import Home from "./pages/Intro";
+import { Box, Toolbar } from "@mui/material";
 
-const drawerWidth = 180;
-
-const useStyles = makeStyles((theme) => ({
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerContainer: {
-    overflow: "auto",
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
-}));
 function App() {
-  const classes = useStyles();
-  const history = useHistory();
   useEagerConnect();
 
   return (

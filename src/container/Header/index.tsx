@@ -1,6 +1,8 @@
 import { AppBar, Box, makeStyles, Toolbar } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { Button, Typography } from "@mui/material";
+import { Button, Chip, Tooltip, Typography } from "@mui/material";
+import useAuth from "../../hooks/useAuth";
+import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -22,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
 const Header = () => {
   const history = useHistory();
   const classes = useStyles();
+  const { login } = useAuth();
+  const { account } = useWeb3React();
+
+  const connect = async () => {
+    login();
+  };
 
   return (
     <AppBar className={classes.appBar}>
@@ -37,9 +45,21 @@ const Header = () => {
             NUSIC
           </Box>
         </Typography>
-        <Button variant="contained" color="primary">
-          Connect Wallet
-        </Button>
+        {account ? (
+          <Tooltip title={account}>
+            <Chip
+              clickable
+              label={`${account.slice(0, 6)}...${account.slice(
+                account.length - 4
+              )}`}
+              style={{ marginLeft: "auto" }}
+            />
+          </Tooltip>
+        ) : (
+          <Button variant="contained" color="primary" onClick={connect}>
+            Connect Wallet
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );

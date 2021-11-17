@@ -3,6 +3,7 @@ import { Main } from "./routes";
 import { Box, Toolbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import useEagerConnect from "./hooks/useEagerConnect";
 
 import Header from "./container/Header";
 import Home from "./pages/Intro";
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const history = useHistory();
+  useEagerConnect();
 
   return (
     <Box>

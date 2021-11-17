@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: "#17172F",
     minHeight: "calc(100vh - 65px)",
+    width: "100%",
   },
   section: {
     backgroundColor: "#EBF4FD",

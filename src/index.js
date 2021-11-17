@@ -11,6 +11,9 @@ import {
   responsiveFontSizes,
 } from "@mui/material/styles";
 
+import { getLibrary } from "./utils/web3React";
+import { Web3ReactProvider } from "@web3-react/core";
+
 WebFont.load({
   google: {
     families: ["Nunito"],
@@ -59,9 +62,11 @@ ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Router>
-        {/* <RecoilRoot> */}
-        <App />
-        {/* </RecoilRoot> */}
+        <Web3ReactProvider getLibrary={getLibrary}>
+          {/* <RecoilRoot> */}
+          <App />
+          {/* </RecoilRoot> */}
+        </Web3ReactProvider>
       </Router>
     </ThemeProvider>
   </React.StrictMode>,

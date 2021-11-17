@@ -1,7 +1,22 @@
 import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { useWeb3React } from "@web3-react/core";
+import { useHistory } from "react-router";
+import Footer from "../../../components/Footer";
+import useAuth from "../../../hooks/useAuth";
 
 const DepositCollateral = () => {
+  const { account } = useWeb3React();
+  const { login } = useAuth();
+  const history = useHistory();
+
+  const onDepositClick = () => {
+    if (account) {
+      history.push("/home/mint/opensea/issue-bond");
+    } else {
+      login();
+    }
+  };
   return (
     <Box pt={4}>
       <Typography variant="h4" fontWeight="600" align="center">
@@ -31,10 +46,25 @@ const DepositCollateral = () => {
         </Box>
       </Box>
       <Box mt={6} display="flex" justifyContent="center">
-        <Button variant="contained" color="primary">
-          Deposit collateral
+        <Button variant="contained" color="primary" onClick={onDepositClick}>
+          {account ? "Deposit collateral" : "Connect Wallet"}
         </Button>
       </Box>
+      {account && (
+        <Typography
+          mt={1}
+          align="center"
+          fontStyle="italic"
+          style={{ opacity: "0.8" }}
+        >
+          Wallet Connected
+        </Typography>
+      )}
+      <Footer>
+        <Button variant="contained" color="primary" onClick={onDepositClick}>
+          Continue to Summary
+        </Button>
+      </Footer>
     </Box>
   );
 };

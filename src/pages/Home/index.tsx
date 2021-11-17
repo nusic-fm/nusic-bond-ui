@@ -5,6 +5,7 @@ import { useHistory } from "react-router";
 import { Route, Switch, useLocation } from "react-router-dom";
 import BondInfoForm from "./BondInfoForm";
 import DepositCollateral from "./DepositCollateral";
+import IssueBond from "./IssueBond";
 import MarketPlace from "./MarketPlace";
 
 const useStyles = makeStyles({
@@ -148,6 +149,9 @@ const Home = () => {
         </Route>
         <Route exact path="/home/mint/opensea/deposit">
           <DepositCollateral />
+        </Route>
+        <Route exact path="/home/mint/opensea/issue-bond">
+          <IssueBond />
         </Route>
       </Switch>
     </Box>

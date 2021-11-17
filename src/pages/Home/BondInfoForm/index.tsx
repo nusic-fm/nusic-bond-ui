@@ -21,6 +21,7 @@ import {
 } from "@syncfusion/ej2-react-charts";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import Footer from "../../../components/Footer";
 
 const useStyles = makeStyles({
   root: {
@@ -232,63 +233,67 @@ const BondInfoForm = () => {
               </Box>
             </Box>
           </Box>
-          {pieData.length > 0 && (
-            <AccumulationChartComponent
-              id="pie-chart"
-              legendSettings={{ visible: false }}
-              enableSmartLabels={true}
-              enableAnimation={true}
-              center={{ x: "50%", y: "50%" }}
-              tooltip={{ enable: false }}
-              // highlightPattern="Bubble"
-              // highLightMode="Point"
-              background="#17172F"
-              width="300px"
-              height="300px"
-            >
-              <Inject
-                services={[
-                  AccumulationLegend,
-                  PieSeries,
-                  AccumulationTooltip,
-                  AccumulationDataLabel,
-                ]}
-              />
-              <AccumulationSeriesCollectionDirective>
-                <AccumulationSeriesDirective
-                  innerRadius="20%"
-                  dataSource={pieData}
-                  name="Browser"
-                  xName="label"
-                  yName="value"
-                  explode={true}
-                  explodeOffset="10%"
-                  explodeIndex={0}
-                  dataLabel={{
-                    visible: true,
-                    position: "Outside",
-                    name: "text",
-                    font: {
-                      fontWeight: "600",
-                    },
-                  }}
-                  // radius="r"
-                ></AccumulationSeriesDirective>
-              </AccumulationSeriesCollectionDirective>
-            </AccumulationChartComponent>
-          )}
-          <Box>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ float: "right" }}
-              onClick={onClickToDeposit}
-            >
-              Continue to Deposit Collateral
-            </Button>
+          <Box display="flex" justifyContent="center" style={{ width: "70%" }}>
+            {pieData.length > 0 && (
+              <AccumulationChartComponent
+                id="pie-chart"
+                legendSettings={{ visible: false }}
+                enableSmartLabels={true}
+                enableAnimation={true}
+                center={{ x: "50%", y: "50%" }}
+                tooltip={{ enable: false }}
+                // highlightPattern="Bubble"
+                // highLightMode="Point"
+                background="#17172F"
+                width="300px"
+                height="300px"
+              >
+                <Inject
+                  services={[
+                    AccumulationLegend,
+                    PieSeries,
+                    AccumulationTooltip,
+                    AccumulationDataLabel,
+                  ]}
+                />
+                <AccumulationSeriesCollectionDirective>
+                  <AccumulationSeriesDirective
+                    innerRadius="20%"
+                    dataSource={pieData}
+                    name="Browser"
+                    xName="label"
+                    yName="value"
+                    explode={true}
+                    explodeOffset="10%"
+                    explodeIndex={0}
+                    dataLabel={{
+                      visible: true,
+                      position: "Outside",
+                      name: "text",
+                      font: {
+                        fontWeight: "600",
+                      },
+                    }}
+                    // radius="r"
+                  ></AccumulationSeriesDirective>
+                </AccumulationSeriesCollectionDirective>
+              </AccumulationChartComponent>
+            )}
           </Box>
         </Box>
       </Box>
+      <Footer position="relative">
+        <Button>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{ float: "right" }}
+            onClick={onClickToDeposit}
+          >
+            Continue to Deposit Collateral
+          </Button>
+        </Button>
+      </Footer>
     </Box>
   );
 };

@@ -2,13 +2,18 @@ import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useWeb3React } from "@web3-react/core";
 import { useHistory } from "react-router";
+import { useRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
 import useAuth from "../../../hooks/useAuth";
+import { pendingAssetPoolInfo } from "../../../state";
+import { supportedCurrencies } from "../BondInfoForm";
 
 const DepositCollateral = () => {
   const { account } = useWeb3React();
   const { login } = useAuth();
   const history = useHistory();
+
+  const [_pendingAssetPoolInfo, setText] = useRecoilState(pendingAssetPoolInfo);
 
   const onDepositClick = () => {
     if (account) {
@@ -40,7 +45,10 @@ const DepositCollateral = () => {
           </Box>
           <Box>
             <Typography color="black" ml={10}>
-              5000 DAI
+              {_pendingAssetPoolInfo?.collateralAmount || "--"}
+              {" " +
+                supportedCurrencies[_pendingAssetPoolInfo?.currencyId || 0]
+                  .currency}
             </Typography>
           </Box>
         </Box>

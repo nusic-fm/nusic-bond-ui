@@ -22,7 +22,9 @@ import {
 } from "@syncfusion/ej2-react-charts";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
+import { useSetRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
+import { pendingAssetPoolInfo } from "../../../state";
 
 const useStyles = makeStyles({
   root: {
@@ -35,7 +37,7 @@ const useStyles = makeStyles({
   },
 });
 
-const supportedCurrencies = [
+export const supportedCurrencies = [
   { id: 0, currency: "DAI" },
   { id: 1, currency: "ETH" },
   { id: 2, currency: "UST" },
@@ -45,6 +47,11 @@ const supportedCurrencies = [
 const BondInfoForm = () => {
   const classes = useStyles();
   const history = useHistory();
+
+  const setPendingAssetPoolState = useSetRecoilState(pendingAssetPoolInfo);
+
+  const [spotifyId, setSpotifyId] = useState("");
+  const [youtubeUrl, setYoutubeUrl] = useState("");
   const [selectedTerm, setSelectedTerm] = useState(3);
   const [bondValue, setBondValue] = useState(15000);
   const [splitSliderData, setSplitSliderData] = useState<Mark[]>([]);
@@ -60,6 +67,19 @@ const BondInfoForm = () => {
   };
 
   const onClickToDeposit = () => {
+    setPendingAssetPoolState({
+      nftMarketPlace: "opeansea",
+      isCollateralDeposited: false,
+      spotifyId,
+      youtubeUrl,
+      collateralAmount: enteredCollateralAmount || 0,
+      termInYears: selectedTerm,
+      faceValue: bondValue,
+      currencyId: selectedCurrency,
+      individualBondValue: selectedSplitValue,
+      //TODO
+      artistName: "Blackpink",
+    });
     history.push("/home/mint/opensea/deposit");
   };
 
@@ -67,6 +87,7 @@ const BondInfoForm = () => {
     setSelectedCurrency(parseInt(e.target.value));
   };
   const onCollateralAmountChange = (e: any) => {
+    console.log(e.target.value);
     setEnteredCollateralAmount(parseFloat(e.target.value));
   };
 
@@ -134,6 +155,8 @@ const BondInfoForm = () => {
               variant="outlined"
               placeholder="Enter your Spotify Artist ID"
               className={classes.root}
+              value={spotifyId}
+              onChange={(e) => setSpotifyId(e.target.value)}
             />
           </Box>
           <Box mb={2}>
@@ -143,6 +166,8 @@ const BondInfoForm = () => {
               color="primary"
               placeholder="Enter your Youtube Channel URL"
               fullWidth
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
             />
           </Box>
           <Box mb={2}>

@@ -14,6 +14,8 @@ import {
 import { getLibrary } from "./utils/web3React";
 import { Web3ReactProvider } from "@web3-react/core";
 
+import { RecoilRoot } from "recoil";
+
 WebFont.load({
   google: {
     families: ["Nunito"],
@@ -63,9 +65,9 @@ ReactDOM.render(
     <ThemeProvider theme={theme}>
       <Router>
         <Web3ReactProvider getLibrary={getLibrary}>
-          {/* <RecoilRoot> */}
-          <App />
-          {/* </RecoilRoot> */}
+          <RecoilRoot>
+            <App />
+          </RecoilRoot>
         </Web3ReactProvider>
       </Router>
     </ThemeProvider>

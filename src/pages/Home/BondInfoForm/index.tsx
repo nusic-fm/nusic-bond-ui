@@ -7,6 +7,7 @@ import {
   Slider,
   Mark,
   Button,
+  InputAdornment,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
@@ -34,6 +35,13 @@ const useStyles = makeStyles({
   },
 });
 
+const supportedCurrencies = [
+  { id: 0, currency: "DAI" },
+  { id: 1, currency: "ETH" },
+  { id: 2, currency: "UST" },
+  { id: 3, currency: "BTC" },
+];
+
 const BondInfoForm = () => {
   const classes = useStyles();
   const history = useHistory();
@@ -42,6 +50,8 @@ const BondInfoForm = () => {
   const [splitSliderData, setSplitSliderData] = useState<Mark[]>([]);
   const [selectedSplitValue, setSelectedSplitValue] = useState(15000);
   const [pieData, setPieData] = useState<Mark[]>([]);
+  const [enteredCollateralAmount, setEnteredCollateralAmount] = useState(0);
+  const [selectedCurrency, setSelectedCurrency] = useState<number>(0);
 
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
@@ -50,6 +60,13 @@ const BondInfoForm = () => {
 
   const onClickToDeposit = () => {
     history.push("/home/mint/opensea/deposit");
+  };
+
+  const onCurrencyChange = (e: any) => {
+    setSelectedCurrency(parseInt(e.target.value));
+  };
+  const onCollateralAmountChange = (e: any) => {
+    setEnteredCollateralAmount(parseFloat(e.target.value));
   };
 
   useEffect(() => {
@@ -135,22 +152,29 @@ const BondInfoForm = () => {
                 color="primary"
                 placeholder="Enter collateral deposit amount"
                 type="number"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                }}
+                style={{ width: "50%" }}
+                value={enteredCollateralAmount}
+                onChange={onCollateralAmountChange}
               />
               <Box display="inline" ml={2}>
-                <Select
-                  value={0}
-                  // onChange={handleChange}
-                >
-                  <MenuItem value={0}>DAI</MenuItem>
-                  <MenuItem value={1}>ETH</MenuItem>
-                  <MenuItem value={2}>UST</MenuItem>
+                <Select value={selectedCurrency} onChange={onCurrencyChange}>
+                  {supportedCurrencies.map(({ id, currency }) => (
+                    <MenuItem key={id} value={id}>
+                      {currency}
+                    </MenuItem>
+                  ))}
                 </Select>
               </Box>
             </Box>
           </Box>
           <Box mb={2}>
             <Typography>Select Term</Typography>
-            <Box display="inline" pl={6} pr={6}>
+            <Box pl={6} pr={6} mt={4}>
               <Slider
                 min={1}
                 max={5}
@@ -159,7 +183,7 @@ const BondInfoForm = () => {
                 onChangeCommitted={(e, value) => {
                   setSelectedTerm(value as number);
                 }}
-                valueLabelDisplay="auto"
+                valueLabelDisplay="on"
                 valueLabelFormat={(val: number) => `${val} year(s)`}
               />
             </Box>
@@ -173,22 +197,29 @@ const BondInfoForm = () => {
               type="number"
               onChange={onBondValueChange}
               value={bondValue}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
             />
           </Box>
           <Box mb={2}>
             <Typography>Individual Bond Value</Typography>
-            <Slider
-              valueLabelDisplay="on"
-              min={1}
-              max={50}
-              step={1}
-              defaultValue={1}
-              onChangeCommitted={(e, val) => {
-                setSelectedSplitValue(
-                  splitSliderData[(val as number) - 1].label as number
-                );
-              }}
-            ></Slider>
+            <Box pl={6} pr={6} mt={4}>
+              <Slider
+                valueLabelDisplay="on"
+                min={1}
+                max={50}
+                step={1}
+                defaultValue={1}
+                onChangeCommitted={(e, val) => {
+                  setSelectedSplitValue(
+                    splitSliderData[(val as number) - 1].label as number
+                  );
+                }}
+              ></Slider>
+            </Box>
           </Box>
         </Box>
         <Box
@@ -205,7 +236,10 @@ const BondInfoForm = () => {
                 <Typography fontWeight="bold" color="black">
                   Collateral Deposit
                 </Typography>
-                <Typography color="black">4000 DAI</Typography>
+                <Typography color="black">
+                  {enteredCollateralAmount}
+                  {" " + supportedCurrencies[selectedCurrency].currency}
+                </Typography>
               </Box>
               <Box display="flex" justifyContent="space-between" p={1} pb={0}>
                 <Typography fontWeight="bold" color="black">

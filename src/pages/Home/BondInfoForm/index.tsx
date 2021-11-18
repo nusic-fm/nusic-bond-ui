@@ -50,7 +50,8 @@ const BondInfoForm = () => {
   const [splitSliderData, setSplitSliderData] = useState<Mark[]>([]);
   const [selectedSplitValue, setSelectedSplitValue] = useState(15000);
   const [pieData, setPieData] = useState<Mark[]>([]);
-  const [enteredCollateralAmount, setEnteredCollateralAmount] = useState(0);
+  const [enteredCollateralAmount, setEnteredCollateralAmount] =
+    useState<number>();
   const [selectedCurrency, setSelectedCurrency] = useState<number>(0);
 
   const onBondValueChange = (e: any) => {
@@ -152,11 +153,6 @@ const BondInfoForm = () => {
                 color="primary"
                 placeholder="Enter collateral deposit amount"
                 type="number"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">$</InputAdornment>
-                  ),
-                }}
                 style={{ width: "50%" }}
                 value={enteredCollateralAmount}
                 onChange={onCollateralAmountChange}
@@ -237,7 +233,7 @@ const BondInfoForm = () => {
                   Collateral Deposit
                 </Typography>
                 <Typography color="black">
-                  {enteredCollateralAmount}
+                  {enteredCollateralAmount || "--"}
                   {" " + supportedCurrencies[selectedCurrency].currency}
                 </Typography>
               </Box>

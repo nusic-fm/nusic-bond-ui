@@ -43,12 +43,14 @@ const Header = () => {
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
           <Box
-            display="inline-block"
+            display="flex"
+            alignItems="center"
             className={classes.titleText}
             onClick={() => {
               history.push("/");
             }}
           >
+            <img src="/nu-logo-white.png" alt="nusic" height="25px" />
             NUSIC
           </Box>
         </Typography>

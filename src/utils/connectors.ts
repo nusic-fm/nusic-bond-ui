@@ -7,7 +7,7 @@ export const injectedConnector = new InjectedConnector({
     4, // Rinkeby
     // 5, // Goerli
     42, // Kovan
-    // 137, // Polygon
+    137, // Polygon
     // parseInt(process.env.REACT_APP_MATIC_CHAIN_ID as string),
   ],
 });

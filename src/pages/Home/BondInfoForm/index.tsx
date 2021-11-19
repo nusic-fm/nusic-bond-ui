@@ -25,6 +25,7 @@ import { useHistory } from "react-router";
 import { useSetRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
 import { pendingAssetPoolInfo } from "../../../state";
+import usePrice from "../../../hooks/usePrice";
 
 const useStyles = makeStyles({
   root: {
@@ -48,6 +49,7 @@ const BondInfoForm = () => {
   const classes = useStyles();
   const history = useHistory();
 
+  const { getPrice } = usePrice();
   const setPendingAssetPoolState = useSetRecoilState(pendingAssetPoolInfo);
 
   const [spotifyId, setSpotifyId] = useState("");
@@ -60,6 +62,8 @@ const BondInfoForm = () => {
   const [enteredCollateralAmount, setEnteredCollateralAmount] =
     useState<number>();
   const [selectedCurrency, setSelectedCurrency] = useState<number>(0);
+  const [latestSelectedCurrencyPrice, setLatestSelectedCurrencyPrice] =
+    useState<number>();
 
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
@@ -83,8 +87,11 @@ const BondInfoForm = () => {
     history.push("/home/mint/opensea/deposit");
   };
 
-  const onCurrencyChange = (e: any) => {
-    setSelectedCurrency(parseInt(e.target.value));
+  const onCurrencyChange = async (e: any) => {
+    const currenyId = parseInt(e.target.value);
+    setSelectedCurrency(currenyId);
+    const price = await getPrice(supportedCurrencies[currenyId].currency);
+    setLatestSelectedCurrencyPrice(price);
   };
   const onCollateralAmountChange = (e: any) => {
     console.log(e.target.value);
@@ -190,6 +197,11 @@ const BondInfoForm = () => {
                     </MenuItem>
                   ))}
                 </Select>
+                {latestSelectedCurrencyPrice && (
+                  <Typography display="inline" fontStyle="italic">
+                    ({latestSelectedCurrencyPrice} USD)
+                  </Typography>
+                )}
               </Box>
             </Box>
           </Box>

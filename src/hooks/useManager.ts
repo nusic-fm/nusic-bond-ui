@@ -10,6 +10,20 @@ interface NftInfo {
   spotifyUrl: string;
 }
 
+export interface IssueBondParams {
+  _artistName: string;
+  _artistId: string;
+  _channelId: string;
+  _audiusArtistId: string;
+  _fundingAmount: number;
+  _numberOfYears: number;
+  _numberOfBonds: number;
+  _facevalue: number;
+  _bondName: string;
+  _bondSymbol: string;
+  _assetPoolAddress: string;
+}
+
 export const useApManager = () => {
   const { account } = useWeb3React();
   const managerContract = useBondNFTManagerContract(
@@ -38,6 +52,38 @@ export const useApManager = () => {
       return true;
     }
     // return userAssetPoolInfo.assetPoolAddress === apAddress;
+  };
+
+  const issueBond = async (
+    _artistName: string,
+    _artistId: string,
+    _channelId: string,
+    _audiusArtistId: string,
+    _fundingAmount: number,
+    _numberOfYears: number,
+    _numberOfBonds: number,
+    _facevalue: number,
+    _bondName: string,
+    _bondSymbol: string,
+    _assetPoolAddress: string
+  ) => {
+    const dep = await managerContract.deployed();
+    return await dep.issueBond(
+      _artistName,
+      _artistId,
+      _channelId,
+      _audiusArtistId,
+      _fundingAmount,
+      _numberOfYears,
+      _numberOfBonds,
+      _facevalue,
+      _bondName,
+      _bondSymbol,
+      _assetPoolAddress,
+      {
+        from: account,
+      }
+    );
   };
 
   const createNft = async (
@@ -100,6 +146,7 @@ export const useApManager = () => {
 
   return {
     createAssetPool,
+    issueBond,
     checkPendingAssetPool,
     createNft,
     getTotalNoOfAps,

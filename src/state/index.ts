@@ -1,6 +1,8 @@
 import { atom, selector } from "recoil";
 
 export interface AssetPoolInfo {
+  nftBondName: string;
+  nftBondSymbol: string;
   spotifyId: string;
   youtubeUrl: string;
   artistName: string;

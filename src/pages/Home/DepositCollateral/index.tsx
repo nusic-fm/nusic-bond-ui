@@ -16,7 +16,7 @@ import ApVerificationDialog from "../../../components/AssetPoolVerificationDialo
 import Footer from "../../../components/Footer";
 import useAuth from "../../../hooks/useAuth";
 import { useApManager } from "../../../hooks/useManager";
-import { pendingAssetPoolInfo } from "../../../state";
+import { AssetPoolInfo, pendingAssetPoolInfo } from "../../../state";
 import { supportedCurrencies } from "../BondInfoForm";
 
 const DepositCollateral = () => {
@@ -26,14 +26,15 @@ const DepositCollateral = () => {
   const { createAssetPool, checkPendingAssetPool } = useApManager();
   const { library } = useWeb3React();
 
-  const [_pendingAssetPoolInfo] = useRecoilState(pendingAssetPoolInfo);
+  const [_pendingAssetPoolInfo, setPoolInfo] =
+    useRecoilState(pendingAssetPoolInfo);
 
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isVerifyOpen, setIsVerifyOpen] = useState<boolean>(false);
   const [apAddress, setApAddress] = useState<string>();
 
   const onDepositClick = async () => {
-    if (account) {
+    if (account && apAddress && _pendingAssetPoolInfo) {
       // await ethers.ma
       const signer = library.getSigner();
       const tx = {
@@ -46,6 +47,12 @@ const DepositCollateral = () => {
         const ftx = await signer.sendTransaction(tx);
         const receipt = await ftx.wait();
         console.log({ transfer: receipt });
+        const poolInfo: AssetPoolInfo = {
+          ..._pendingAssetPoolInfo,
+          isCollateralDeposited: true,
+          apAddress,
+        };
+        setPoolInfo(poolInfo);
         history.push("/home/mint/opensea/issue-bond");
       } catch (error) {
         alert("failed to send!!");
@@ -73,6 +80,8 @@ const DepositCollateral = () => {
   };
   const onSkipClick = () => {
     setIsVerifyOpen(true);
+    // TODO remove
+    setActiveStep(1);
   };
   const onAssetAddressVerify = async (address: string) => {
     const isAvailable = await checkPendingAssetPool(address);
@@ -85,6 +94,11 @@ const DepositCollateral = () => {
   const onVerifyDialogClose = () => {
     setIsVerifyOpen(false);
   };
+
+  const onContinueToSummary = async () => {
+    history.push("/home/mint/opensea/issue-bond");
+  };
+
   return (
     <Box pt={4}>
       <Typography variant="h4" fontWeight="600" align="center">
@@ -176,7 +190,11 @@ const DepositCollateral = () => {
         </Stepper>
       </Box>
       <Footer>
-        <Button variant="contained" color="primary" onClick={onDepositClick}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={onContinueToSummary}
+        >
           Continue to Summary
         </Button>
       </Footer>

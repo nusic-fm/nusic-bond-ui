@@ -60,6 +60,7 @@ const BondInfoForm = () => {
   const [bondValue, setBondValue] = useState(15000);
   const [splitSliderData, setSplitSliderData] = useState<Mark[]>([]);
   const [selectedSplitValue, setSelectedSplitValue] = useState(15000);
+  const [noOfSplits, setNoOfSplits] = useState<number>(0);
   const [pieData, setPieData] = useState<Mark[]>([]);
   const [enteredCollateralAmount, setEnteredCollateralAmount] =
     useState<number>();
@@ -85,8 +86,11 @@ const BondInfoForm = () => {
       faceValue: bondValue,
       currencyId: selectedCurrency,
       individualBondValue: selectedSplitValue,
+      noOfBonds: noOfSplits,
       //TODO
       artistName: "Blackpink",
+      apAddress: "0x4a4f7ecf3da7c558093d3dffe219871842fa825f",
+      nftAddress: "",
     });
     history.push("/home/mint/opensea/deposit");
   };
@@ -150,7 +154,7 @@ const BondInfoForm = () => {
               <TextField
                 variant="outlined"
                 value={nftBondName}
-                onChange={(e) => setNftBondName(e.target.name)}
+                onChange={(e) => setNftBondName(e.target.value)}
               />
             </Box>
             <Box>
@@ -174,7 +178,7 @@ const BondInfoForm = () => {
             <TextField
               variant="outlined"
               value={nftBondSymbol}
-              onChange={(e) => setNftBondSymbol(e.target.name)}
+              onChange={(e) => setNftBondSymbol(e.target.value)}
             />
           </Box>
         </Box>
@@ -287,6 +291,7 @@ const BondInfoForm = () => {
                     step={1}
                     defaultValue={1}
                     onChangeCommitted={(e, val) => {
+                      setNoOfSplits(val as number);
                       setSelectedSplitValue(
                         splitSliderData[(val as number) - 1].label as number
                       );

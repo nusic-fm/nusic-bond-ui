@@ -3,6 +3,7 @@ import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import { useRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
+import { useApManager } from "../../../hooks/useManager";
 import { pendingAssetPoolInfo } from "../../../state";
 
 const useStyles = makeStyles({
@@ -14,7 +15,32 @@ const useStyles = makeStyles({
 
 const IssueBond = () => {
   const classes = useStyles();
-  const [_pendingAssetPoolInfo, setText] = useRecoilState(pendingAssetPoolInfo);
+  const [_pendingAssetPoolInfo] = useRecoilState(pendingAssetPoolInfo);
+  const { issueBond } = useApManager();
+
+  const onIssueBondClick = async () => {
+    if (_pendingAssetPoolInfo) {
+      try {
+        const tx = await issueBond(
+          _pendingAssetPoolInfo.artistName,
+          _pendingAssetPoolInfo.spotifyId,
+          _pendingAssetPoolInfo.youtubeUrl,
+          "test-audius-id",
+          _pendingAssetPoolInfo.collateralAmount,
+          _pendingAssetPoolInfo.termInYears,
+          _pendingAssetPoolInfo.individualBondValue,
+          _pendingAssetPoolInfo.faceValue,
+          _pendingAssetPoolInfo.nftBondName,
+          _pendingAssetPoolInfo.nftBondSymbol,
+          _pendingAssetPoolInfo.apAddress
+        );
+        const receipt = await tx.wait();
+        console.log({ receipt });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
 
   return (
     <Box mt={4}>
@@ -111,7 +137,7 @@ const IssueBond = () => {
         </Box>
       </Box>
       <Footer>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={onIssueBondClick}>
           Mint NFT Bond
         </Button>
       </Footer>

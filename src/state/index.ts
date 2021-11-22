@@ -13,6 +13,9 @@ export interface AssetPoolInfo {
   faceValue: number;
   individualBondValue: number;
   isCollateralDeposited: boolean;
+  apAddress: string;
+  nftAddress: string;
+  noOfBonds: number;
 }
 
 export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({

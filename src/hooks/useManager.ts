@@ -82,6 +82,8 @@ export const useApManager = () => {
       _assetPoolAddress,
       {
         from: account,
+        gasLimit: 12500000,
+        gasPrice: 1000000000,
       }
     );
   };

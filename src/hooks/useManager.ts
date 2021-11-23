@@ -119,6 +119,11 @@ export const useApManager = () => {
     return tx;
   };
 
+  const getBondConfigs = async () => {
+    const dep = await managerContract.deployed();
+    return await dep.userBondConfigs(account, 0);
+  };
+
   const createNft = async (
     name: string,
     symbol: string,
@@ -181,6 +186,7 @@ export const useApManager = () => {
     createAssetPool,
     issueBond,
     mintNftBonds,
+    getBondConfigs,
     checkPendingAssetPool,
     createNft,
     getTotalNoOfAps,

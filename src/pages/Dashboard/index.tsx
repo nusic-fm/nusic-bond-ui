@@ -187,10 +187,11 @@ const Dashboard = () => {
           m={2}
           mt={4}
           style={{
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
             borderRadius: "6px",
           }}
           display="flex"
+          p={1}
         >
           <Table>
             <TableRow>

@@ -28,7 +28,7 @@ const IssueBond = () => {
   const [_pendingAssetPoolInfo, setPendingAssetPoolInfo] =
     useRecoilState(pendingAssetPoolInfo);
   const { issueBond, mintNftBonds } = useApManager();
-  const [processMode, setProcessMode] = useState(2);
+  const [processMode, setProcessMode] = useState(0);
 
   const onIssueBondClick = async () => {
     if (_pendingAssetPoolInfo) {

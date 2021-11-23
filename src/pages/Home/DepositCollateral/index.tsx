@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   CircularProgress,
   Step,
   StepContent,
@@ -33,6 +34,7 @@ const DepositCollateral = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [isVerifyOpen, setIsVerifyOpen] = useState<boolean>(false);
   const [apAddress, setApAddress] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onDepositClick = async () => {
     if (account && apAddress && _pendingAssetPoolInfo) {
@@ -46,6 +48,7 @@ const DepositCollateral = () => {
       console.dir(tx);
       try {
         const ftx = await signer.sendTransaction(tx);
+        setIsLoading(true);
         const receipt = await ftx.wait();
         console.log({ transfer: receipt });
         const poolInfo: AssetPoolInfo = {
@@ -54,6 +57,7 @@ const DepositCollateral = () => {
           apAddress,
         };
         setPoolInfo(poolInfo);
+        setIsLoading(false);
         history.push("/home/mint/opensea/issue-bond");
       } catch (error) {
         alert("failed to send!!");
@@ -68,6 +72,7 @@ const DepositCollateral = () => {
         const tx = await createAssetPool(
           (_pendingAssetPoolInfo?.faceValue * 10) ^ 18
         );
+        setIsLoading(true);
         const receipt = await tx.wait();
         console.log({ receipt });
         let apAddressFromTx = receipt.events.filter(
@@ -80,6 +85,7 @@ const DepositCollateral = () => {
         setPoolInfo(poolInfo);
         setApAddress(apAddressFromTx);
         setActiveStep(1);
+        setIsLoading(false);
         // TODO
       } catch (e) {
         console.log({ e });
@@ -109,7 +115,6 @@ const DepositCollateral = () => {
 
   return (
     <Box pt={4}>
-      {/* <CircularProgress /> */}
       <Typography variant="h4" fontWeight="600" align="center">
         Create Assetpool &#38; Deposit Collateral
       </Typography>
@@ -117,31 +122,42 @@ const DepositCollateral = () => {
       <Box display="flex" justifyContent="center" mt={4}>
         <Stepper activeStep={activeStep} orientation="vertical">
           <Step>
-            <StepLabel>Create Assetpool</StepLabel>
+            <StepLabel>
+              Create Assetpool{" "}
+              {apAddress && (
+                <Chip color="success" variant="outlined" label={apAddress} />
+              )}{" "}
+            </StepLabel>
             <StepContent>
               <Box sx={{ mb: 2 }}>
                 <Box>
-                  <Button
-                    variant="contained"
-                    onClick={onCreateButtonClick}
-                    sx={{ mt: 1, mr: 1 }}
-                  >
-                    Create
-                  </Button>
-                  <ApVerificationDialog
-                    open={isVerifyOpen}
-                    onClose={onVerifyDialogClose}
-                    verifyAddress={onAssetAddressVerify}
-                  />
-                  <Button
-                    size="small"
-                    variant="contained"
-                    color="info"
-                    onClick={onSkipClick}
-                    sx={{ mt: 1, mr: 1 }}
-                  >
-                    Skip
-                  </Button>
+                  {isLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <>
+                      <Button
+                        variant="contained"
+                        onClick={onCreateButtonClick}
+                        sx={{ mt: 1, mr: 1 }}
+                      >
+                        Create
+                      </Button>
+                      <ApVerificationDialog
+                        open={isVerifyOpen}
+                        onClose={onVerifyDialogClose}
+                        verifyAddress={onAssetAddressVerify}
+                      />
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="info"
+                        onClick={onSkipClick}
+                        sx={{ mt: 1, mr: 1 }}
+                      >
+                        Skip
+                      </Button>
+                    </>
+                  )}
                 </Box>
               </Box>
             </StepContent>
@@ -203,6 +219,7 @@ const DepositCollateral = () => {
           variant="contained"
           color="primary"
           onClick={onContinueToSummary}
+          disabled={isLoading}
         >
           Continue to Summary
         </Button>

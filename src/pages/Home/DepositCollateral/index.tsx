@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   Step,
   StepContent,
   StepLabel,
@@ -69,7 +70,14 @@ const DepositCollateral = () => {
         );
         const receipt = await tx.wait();
         console.log({ receipt });
-        const apAddressFromTx = receipt.args.assetPool;
+        let apAddressFromTx = receipt.events.filter(
+          (args: any) => args.event === "AssetPoolCreated"
+        )[0].args.assetPool;
+        const poolInfo: AssetPoolInfo = {
+          ..._pendingAssetPoolInfo,
+          apAddress: apAddressFromTx,
+        };
+        setPoolInfo(poolInfo);
         setApAddress(apAddressFromTx);
         setActiveStep(1);
         // TODO
@@ -101,6 +109,7 @@ const DepositCollateral = () => {
 
   return (
     <Box pt={4}>
+      {/* <CircularProgress /> */}
       <Typography variant="h4" fontWeight="600" align="center">
         Create Assetpool &#38; Deposit Collateral
       </Typography>

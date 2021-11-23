@@ -1,6 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import contractAddresses from "../constants/contracts";
 import { useBondNFTManagerContract } from "./useContract";
+import { BigNumber } from "@ethersproject/bignumber";
 
 interface NftInfo {
   nftAddress: string;
@@ -68,15 +69,34 @@ export const useApManager = () => {
     _assetPoolAddress: string
   ) => {
     const dep = await managerContract.deployed();
-    return await dep.issueBond(
+
+    // const tx = await dep.estimateGas.issueBond(
+    //   _artistName,
+    //   _artistId,
+    //   _channelId,
+    //   _audiusArtistId,
+    //   _fundingAmount,
+    //   _numberOfYears,
+    //   _numberOfBonds,
+    //   _facevalue,
+    //   _bondName,
+    //   _bondSymbol,
+    //   _assetPoolAddress,
+    //   {
+    //     from: account,
+    //     gasLimit: 12500000,
+    //     gasPrice: 1000000000,
+    //   }
+    // );
+    const tx = await dep.issueBond(
       _artistName,
       _artistId,
       _channelId,
       _audiusArtistId,
-      _fundingAmount,
-      _numberOfYears,
-      _numberOfBonds,
-      _facevalue,
+      BigNumber.from(_fundingAmount.toString()),
+      BigNumber.from(_numberOfYears.toString()),
+      BigNumber.from(_numberOfBonds.toString()),
+      BigNumber.from(_facevalue.toString()),
       _bondName,
       _bondSymbol,
       _assetPoolAddress,
@@ -86,6 +106,17 @@ export const useApManager = () => {
         gasPrice: 1000000000,
       }
     );
+    return tx;
+  };
+
+  const mintNftBonds = async (nftAddress: string) => {
+    const dep = await managerContract.deployed();
+    const tx = await dep.mintNFTBond(nftAddress, {
+      from: account,
+      gasLimit: 12500000,
+      gasPrice: 1000000000,
+    });
+    return tx;
   };
 
   const createNft = async (
@@ -149,6 +180,7 @@ export const useApManager = () => {
   return {
     createAssetPool,
     issueBond,
+    mintNftBonds,
     checkPendingAssetPool,
     createNft,
     getTotalNoOfAps,

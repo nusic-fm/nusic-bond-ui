@@ -1,10 +1,19 @@
-import { Button, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
+import { useState } from "react";
+import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
 import { useApManager } from "../../../hooks/useManager";
-import { pendingAssetPoolInfo } from "../../../state";
+import { AssetPoolInfo, pendingAssetPoolInfo } from "../../../state";
 
 const useStyles = makeStyles({
   box: {
@@ -15,12 +24,16 @@ const useStyles = makeStyles({
 
 const IssueBond = () => {
   const classes = useStyles();
-  const [_pendingAssetPoolInfo] = useRecoilState(pendingAssetPoolInfo);
-  const { issueBond } = useApManager();
+  const history = useHistory();
+  const [_pendingAssetPoolInfo, setPendingAssetPoolInfo] =
+    useRecoilState(pendingAssetPoolInfo);
+  const { issueBond, mintNftBonds } = useApManager();
+  const [processMode, setProcessMode] = useState(2);
 
   const onIssueBondClick = async () => {
     if (_pendingAssetPoolInfo) {
       try {
+        setProcessMode(1);
         const tx = await issueBond(
           _pendingAssetPoolInfo.artistName,
           _pendingAssetPoolInfo.spotifyId,
@@ -28,7 +41,7 @@ const IssueBond = () => {
           "test-audius-id",
           _pendingAssetPoolInfo.collateralAmount,
           _pendingAssetPoolInfo.termInYears,
-          _pendingAssetPoolInfo.individualBondValue,
+          _pendingAssetPoolInfo.noOfBonds,
           _pendingAssetPoolInfo.faceValue,
           _pendingAssetPoolInfo.nftBondName,
           _pendingAssetPoolInfo.nftBondSymbol,
@@ -36,12 +49,57 @@ const IssueBond = () => {
         );
         const receipt = await tx.wait();
         console.log({ receipt });
+        let nftAddress = receipt.events[0].address;
+        const poolInfo: AssetPoolInfo = {
+          ..._pendingAssetPoolInfo,
+          nftAddress,
+        };
+        setPendingAssetPoolInfo(poolInfo);
+        setProcessMode(2);
+        const nftTx = await mintNftBonds(nftAddress);
+        const nftReceipt = await nftTx.wait();
+        console.log({ nftReceipt });
+        const _poolInfo = {
+          ..._pendingAssetPoolInfo,
+          nftAddress,
+        };
+        setPendingAssetPoolInfo(_poolInfo);
+        history.push("/dashboard");
       } catch (e) {
         console.error(e);
       }
     }
   };
-
+  if (processMode) {
+    return (
+      <Box mt={8} display="flex" justifyContent="center">
+        <Stepper activeStep={processMode - 1} orientation="vertical">
+          <Step>
+            <StepLabel>
+              <Box display="flex" alignItems="center" fontSize="24px">
+                Issueing NFT Bond
+                <Box ml={3}>
+                  {processMode === 1 && (
+                    <CircularProgress color="info" size={20} />
+                  )}
+                </Box>
+              </Box>
+            </StepLabel>
+          </Step>
+          <Step>
+            <StepLabel>
+              <Box display="flex" alignItems="center" fontSize="24px">
+                Minting your NFT music Bond
+                <Box ml={3}>
+                  <CircularProgress color="info" size={20} />
+                </Box>
+              </Box>
+            </StepLabel>
+          </Step>
+        </Stepper>
+      </Box>
+    );
+  }
   return (
     <Box mt={4}>
       <Typography variant="h4" align="center" mb={4}>

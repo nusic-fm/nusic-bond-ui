@@ -89,7 +89,7 @@ const BondInfoForm = () => {
       noOfBonds: noOfSplits,
       //TODO
       artistName: "Blackpink",
-      apAddress: "0x4a4f7ecf3da7c558093d3dffe219871842fa825f",
+      apAddress: "",
       nftAddress: "",
     });
     history.push("/home/mint/opensea/deposit");

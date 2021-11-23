@@ -1,15 +1,18 @@
 const contractAddresses = {
   BondNFTManager: {
-    42: "0xA49d62E390b7CA61923EF0E8b456Eb5ed6b35B70",
+    42: "0xd0bF81468bE0c2a8e247d101b6b71F7E18E24907",
   },
   BondNftGenerator: {
-    42: "0xddF5Cc8C0839481406CF4EBf99c7f6a10B3d86f2",
+    42: "0x917555471C809720E8bbd31352676662d7c8b088",
   },
   ChainLinkOraclInfo: {
-    42: "0x62B63Dc6ACdE0d0C974468beC8B6d08182Ba7Ae5",
+    42: "0xBE830E4fd86f81Ce0D8A1aC1091FfE802122C05C",
   },
   RatingEngine: {
-    42: "0xaB238Ad7cD3Ef04A51cdb1b33F6F28bf953f0188",
+    42: "0x3EA4b78bc6bcbC9F2476288c32cf3E1396D48fb6",
+  },
+  ChainlinkMetadataRequest: {
+    42: "0x84F1B27A0F47Bab3840d736E4bb49072c2fC1675",
   },
   AuditoryAssetPool: {
     137: "",

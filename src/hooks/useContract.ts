@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import useWeb3Provider from "../hooks/useWeb3Provider";
 import {
+  getBondNFTContract,
   getBondNFTManagerContract,
   // getAuditoryAssetPoolContract,
   // getAuditoryRouterContract,
@@ -20,6 +21,17 @@ export const useBondNFTManagerContract = (address: string) => {
   );
 };
 
+/**
+ * Helper hooks to get specific contracts (by ABI)
+ */
+
+export const useBondNFTContract = (address: string) => {
+  const provider = useWeb3Provider();
+  return useMemo(
+    () => getBondNFTContract(address, provider.getSigner()),
+    [address, provider]
+  );
+};
 // export const useAuditoryAssetPoolContract = (address: string) => {
 //   const provider = useWeb3Provider();
 //   return useMemo(

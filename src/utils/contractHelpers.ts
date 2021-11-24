@@ -4,7 +4,9 @@ import { simpleRpcProvider } from "./providers";
 // ABI
 // import { abi as AuditoryAssetPoolAbi } from "../abis/AuditoryAssetPool.json";
 // import { abi as AuditoryRouterAbi } from "../abis/AuditoryRouter.json";
-import { abi as BondNFTManager } from "../abis/BondNFTManager.json";
+import { abi as BondNFTManagerAbi } from "../abis/BondNFTManager.json";
+import { abi as BondNFTAbi } from "../abis/BondNFT.json";
+import { abi as ApAbi } from "../abis/AssetPool.json";
 // import { abi as AuditoryNftApi } from "../abis/AuditoryNft.json";
 
 // import ERC20Abi from "../abis/ERC20-custom.json";
@@ -22,8 +24,23 @@ export const getBondNFTManagerContract = (
   address: string,
   signer?: ethers.Signer | ethers.providers.Provider
 ) => {
-  return getContract(BondNFTManager, address, signer);
+  return getContract(BondNFTManagerAbi, address, signer);
 };
+
+export const getBondNFTContract = (
+  address: string,
+  signer?: ethers.Signer | ethers.providers.Provider
+) => {
+  return getContract(BondNFTAbi, address, signer);
+};
+
+export const getApContract = (
+  address: string,
+  signer?: ethers.Signer | ethers.providers.Provider
+) => {
+  return getContract(ApAbi, address, signer);
+};
+
 // export const getAuditoryAssetPoolContract = (
 //   address: string,
 //   signer?: ethers.Signer | ethers.providers.Provider

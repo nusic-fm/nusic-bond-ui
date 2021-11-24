@@ -27,6 +27,7 @@ export interface IssueBondParams {
 
 export const useApManager = () => {
   const { account } = useWeb3React();
+  const { library } = useWeb3React();
   const managerContract = useBondNFTManagerContract(
     contractAddresses.BondNFTManager[42]
   );
@@ -120,8 +121,17 @@ export const useApManager = () => {
   };
 
   const getBondConfigs = async () => {
+    await library.ready;
     const dep = await managerContract.deployed();
-    return await dep.userBondConfigs(account, 0);
+    const bondsLength = await managerContract.nftBondLengthForUser(account);
+    const bondConfigPromises = [];
+    for (let i = 0; i < bondsLength; i++) {
+      bondConfigPromises.push(dep.userBondConfigs(account, i));
+    }
+    if (bondConfigPromises) {
+      return await Promise.all(bondConfigPromises);
+    }
+    return [];
   };
 
   const createNft = async (

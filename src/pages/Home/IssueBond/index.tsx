@@ -91,7 +91,9 @@ const IssueBond = () => {
               <Box display="flex" alignItems="center" fontSize="24px">
                 Minting your NFT music Bond
                 <Box ml={3}>
-                  <CircularProgress color="info" size={20} />
+                  {processMode === 2 && (
+                    <CircularProgress color="info" size={20} />
+                  )}
                 </Box>
               </Box>
             </StepLabel>

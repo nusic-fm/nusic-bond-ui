@@ -1,7 +1,11 @@
 import { Button, Table, TableCell, TableRow, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import useAssetPool from "../../hooks/useAssetPool";
+import useAuth from "../../hooks/useAuth";
+import { useApManager } from "../../hooks/useManager";
 import useNftBond from "../../hooks/useNftBond";
 import { AssetPoolInfo } from "../../state";
 
@@ -11,12 +15,20 @@ export interface NFTData {
   tokenUri: string;
 }
 
-const DashboardRow = (props: { bond: Partial<AssetPoolInfo> }) => {
-  const { bond } = props;
+const DashboardRow = (props: {
+  bond: Partial<AssetPoolInfo>;
+  index: number;
+}) => {
+  const { bond, index } = props;
+  const { account, library } = useWeb3React();
+  const { login } = useAuth();
   const { getNFTData } = useNftBond();
   const { getApBalance } = useAssetPool();
+  const { getAssetpoolsOfUserByIndex } = useApManager();
   const [nftBond, setNftBond] = useState<NFTData>();
+  const [apAddress, setApAddress] = useState<string>();
   const [assetPoolBalance, setAssetPoolBalance] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (bond) {
@@ -31,10 +43,37 @@ const DashboardRow = (props: { bond: Partial<AssetPoolInfo> }) => {
       if (data) {
         setNftBond(data);
       }
-      const balance = await getApBalance(bond.apAddress as string);
-      if (balance) {
-        setAssetPoolBalance(balance);
+      const _apAddress = await getAssetpoolsOfUserByIndex(index);
+      if (_apAddress) {
+        setApAddress(_apAddress);
+        const balance = await getApBalance(_apAddress);
+        if (balance) {
+          setAssetPoolBalance(balance);
+        }
       }
+    }
+  };
+
+  const onDepositClick = async () => {
+    if (account && apAddress && bond.collateralAmount) {
+      const signer = library.getSigner();
+      const tx = {
+        from: account,
+        to: apAddress,
+        value: ethers.utils.parseEther(bond.collateralAmount.toString()),
+      };
+      console.dir(tx);
+      try {
+        const ftx = await signer.sendTransaction(tx);
+        setIsLoading(true);
+        const receipt = await ftx.wait();
+        setIsLoading(false);
+        console.log({ transfer: receipt });
+      } catch (error) {
+        alert("failed to send!!");
+      }
+    } else {
+      login();
     }
   };
 
@@ -79,7 +118,7 @@ const DashboardRow = (props: { bond: Partial<AssetPoolInfo> }) => {
                   <Typography fontWeight="600" pb={1}>
                     Average Quarter
                   </Typography>
-                  <Typography>{bond?.individualBondValue || "-"}</Typography>
+                  <Typography>{bond?.collateralAmount || "-"}</Typography>
                 </Box>
               </TableCell>
               <TableCell>
@@ -177,7 +216,9 @@ const DashboardRow = (props: { bond: Partial<AssetPoolInfo> }) => {
             <TableCell>
               <Box>
                 <Typography>Next Deposit Amount</Typography>
-                <Typography fontWeight="600">ETH -</Typography>
+                <Typography fontWeight="600">
+                  ETH {bond?.collateralAmount || "-"}
+                </Typography>
               </Box>
             </TableCell>
             <TableCell>
@@ -194,7 +235,12 @@ const DashboardRow = (props: { bond: Partial<AssetPoolInfo> }) => {
             </TableCell>
             <TableCell>
               <Box>
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={isLoading}
+                  onClick={onDepositClick}
+                >
                   Deposit Now
                 </Button>
               </Box>

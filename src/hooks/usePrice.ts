@@ -3,10 +3,15 @@ import { ethers } from "ethers";
 
 // Data feeds on polygon
 export const dataFeedsForUsd: { [key: string]: string } = {
-  ETH: "0x4dD6655Ad5ed7C06c882f496E3f42acE5766cb89",
-  UST: "0x9b2cC933A82C36f8907AF960734C642f491f7ded",
-  BTC: "0x9b489F7Fffa89EA450E3121603e79d9093a9396E",
-  DAI: "0x62439095489Eb5dE4572de632248682c09a05Ad4",
+  // Polygon mainnet
+  // ETH: "0x4dD6655Ad5ed7C06c882f496E3f42acE5766cb89",
+  // UST: "0x9b2cC933A82C36f8907AF960734C642f491f7ded",
+  // BTC: "0x9b489F7Fffa89EA450E3121603e79d9093a9396E",
+  // DAI: "0x62439095489Eb5dE4572de632248682c09a05Ad4",
+  ETH: "0x10b3c106c4ed7D22B0e7Abe5Dc43BdFA970a153c",
+  BTC: "0xcfC478F46c12a72dc2c249df3d74E520e0893a4C",
+  DAI: "0xD4dE4aA254c1bD4C969F355331D99FB4ABDf6B8E",
+  LINK: "0xe1c4120ea7b1D3B8378AF07a1AF4A19701f8d1e3",
 };
 
 const abi = ["function latestAnswer() view returns (uint)"];

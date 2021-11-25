@@ -43,6 +43,19 @@ export const useApManager = () => {
     });
   };
 
+  const getAssetpoolsOfUserByIndex = async (
+    index: number
+  ): Promise<null | string> => {
+    const dep = await managerContract.deployed();
+    try {
+      const userAssetPoolInfo = await dep.userAssetPools(account, index);
+      return userAssetPoolInfo.assetPoolAddress;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
+
   const checkPendingAssetPool = async (apAddress: string): Promise<boolean> => {
     const dep = await managerContract.deployed();
     // TODO remove 0
@@ -197,6 +210,7 @@ export const useApManager = () => {
     issueBond,
     mintNftBonds,
     getBondConfigs,
+    getAssetpoolsOfUserByIndex,
     checkPendingAssetPool,
     createNft,
     getTotalNoOfAps,

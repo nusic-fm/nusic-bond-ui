@@ -22,11 +22,10 @@ import { AssetPoolInfo, pendingAssetPoolInfo } from "../../../state";
 import { supportedCurrencies } from "../BondInfoForm";
 
 const DepositCollateral = () => {
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
   const { login } = useAuth();
   const history = useHistory();
   const { createAssetPool, checkPendingAssetPool } = useApManager();
-  const { library } = useWeb3React();
 
   const [_pendingAssetPoolInfo, setPoolInfo] =
     useRecoilState(pendingAssetPoolInfo);
@@ -43,7 +42,9 @@ const DepositCollateral = () => {
       const tx = {
         from: account,
         to: apAddress,
-        value: ethers.utils.parseEther("0.0001"),
+        value: ethers.utils.parseEther(
+          _pendingAssetPoolInfo.collateralAmount.toString()
+        ),
       };
       console.dir(tx);
       try {

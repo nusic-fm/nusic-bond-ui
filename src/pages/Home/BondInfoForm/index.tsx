@@ -41,7 +41,7 @@ const useStyles = makeStyles({
 export const supportedCurrencies = [
   { id: 0, currency: "DAI" },
   { id: 1, currency: "ETH" },
-  { id: 2, currency: "UST" },
+  { id: 2, currency: "LINK" },
   { id: 3, currency: "BTC" },
 ];
 
@@ -64,7 +64,7 @@ const BondInfoForm = () => {
   const [pieData, setPieData] = useState<Mark[]>([]);
   const [enteredCollateralAmount, setEnteredCollateralAmount] =
     useState<number>();
-  const [selectedCurrency, setSelectedCurrency] = useState<number>(0);
+  const [selectedCurrency, setSelectedCurrency] = useState<number>(1);
   const [latestSelectedCurrencyPrice, setLatestSelectedCurrencyPrice] =
     useState<number>();
 
@@ -88,7 +88,7 @@ const BondInfoForm = () => {
       individualBondValue: selectedSplitValue,
       noOfBonds: noOfSplits,
       //TODO
-      artistName: "Blackpink",
+      artistName: "---",
       apAddress: "",
       nftAddress: "",
     });
@@ -102,9 +102,16 @@ const BondInfoForm = () => {
     setLatestSelectedCurrencyPrice(price);
   };
   const onCollateralAmountChange = (e: any) => {
-    console.log(e.target.value);
-    setEnteredCollateralAmount(parseFloat(e.target.value));
+    const collateral = parseFloat(e.target.value);
+    setEnteredCollateralAmount(collateral);
   };
+
+  useEffect(() => {
+    if (selectedTerm && enteredCollateralAmount) {
+      const calculatedFaceValue = enteredCollateralAmount * selectedTerm * 4;
+      setBondValue(calculatedFaceValue);
+    }
+  }, [selectedTerm, enteredCollateralAmount]);
 
   useEffect(() => {
     const marks = new Array(50).fill("-").map((val, i) => ({

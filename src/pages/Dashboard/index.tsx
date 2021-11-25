@@ -32,7 +32,7 @@ const Dashboard = () => {
           artistName: config.artistName,
           spotifyId: config.artistId,
           faceValue: config.faceValue.toString(),
-          individualBondValue: config.fundingAmount.toString(),
+          collateralAmount: config.fundingAmount.toString(),
           termInYears: config.numberOfYears.toString(),
           nftAddress: config.nftAddress.toString(),
         }));
@@ -43,11 +43,11 @@ const Dashboard = () => {
     }
   };
   return (
-    <Box className={classes.root} p={4} pl={20} pr={20}>
-      <Typography variant="h5" fontWeight={400}>
+    <Box className={classes.root} p={2} pl={20} pr={20}>
+      <Typography variant="h5" fontWeight={400} m={2}>
         Dashboard
       </Typography>
-      <Box pt={4}>
+      <Box pt={2}>
         <Box
           m={2}
           display="flex"
@@ -59,8 +59,8 @@ const Dashboard = () => {
             Available Reward <Chip variant="outlined" label="8.63419 Claim" />
           </Typography>
         </Box>
-        {bonds?.map((bond) => {
-          return <DashboardRow key={bond.spotifyId} bond={bond} />;
+        {bonds?.map((bond, i) => {
+          return <DashboardRow key={bond.spotifyId} index={i} bond={bond} />;
         })}
       </Box>
     </Box>

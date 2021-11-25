@@ -54,6 +54,17 @@ const Header = () => {
             NUSIC
           </Box>
         </Typography>
+        <Button
+          size="small"
+          variant="outlined"
+          color="success"
+          onClick={() => {
+            history.push("/dashboard");
+          }}
+          style={{ marginRight: "12px" }}
+        >
+          My Dashboard
+        </Button>
         {account ? (
           <Tooltip title={account}>
             <Chip

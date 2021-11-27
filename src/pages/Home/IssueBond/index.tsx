@@ -1,3 +1,4 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import {
   Button,
   CircularProgress,
@@ -38,14 +39,21 @@ const IssueBond = () => {
           _pendingAssetPoolInfo.artistName,
           _pendingAssetPoolInfo.spotifyId,
           _pendingAssetPoolInfo.youtubeUrl,
-          "test-audius-id",
           _pendingAssetPoolInfo.collateralAmount,
           _pendingAssetPoolInfo.termInYears,
           _pendingAssetPoolInfo.noOfBonds,
           _pendingAssetPoolInfo.faceValue,
           _pendingAssetPoolInfo.nftBondName,
           _pendingAssetPoolInfo.nftBondSymbol,
-          _pendingAssetPoolInfo.apAddress
+          {
+            spotifyListeners: BigNumber.from(
+              _pendingAssetPoolInfo.spotifyListeners
+            ),
+            youtubeSubscribers: BigNumber.from(
+              _pendingAssetPoolInfo.youtubeSubscribers
+            ),
+            assetPoolAddress: _pendingAssetPoolInfo.apAddress,
+          }
         );
         const receipt = await tx.wait();
         console.log({ receipt });

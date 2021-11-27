@@ -10,7 +10,11 @@ interface NftInfo {
   bio: string;
   spotifyUrl: string;
 }
-
+export interface ListenersDetails {
+  spotifyListeners: BigNumber;
+  youtubeSubscribers: BigNumber;
+  assetPoolAddress: string;
+}
 export interface IssueBondParams {
   _artistName: string;
   _artistId: string;
@@ -73,14 +77,13 @@ export const useApManager = () => {
     _artistName: string,
     _artistId: string,
     _channelId: string,
-    _audiusArtistId: string,
     _fundingAmount: number,
     _numberOfYears: number,
     _numberOfBonds: number,
     _facevalue: number,
     _bondName: string,
     _bondSymbol: string,
-    _assetPoolAddress: string
+    listenersData: ListenersDetails
   ) => {
     const dep = await managerContract.deployed();
 
@@ -106,14 +109,13 @@ export const useApManager = () => {
       _artistName,
       _artistId,
       _channelId,
-      _audiusArtistId,
       BigNumber.from(_fundingAmount.toString()),
       BigNumber.from(_numberOfYears.toString()),
       BigNumber.from(_numberOfBonds.toString()),
       BigNumber.from(_facevalue.toString()),
       _bondName,
       _bondSymbol,
-      _assetPoolAddress,
+      listenersData,
       {
         from: account,
         gasLimit: 12500000,

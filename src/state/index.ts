@@ -16,6 +16,8 @@ export interface AssetPoolInfo {
   apAddress: string;
   nftAddress: string;
   noOfBonds: number;
+  youtubeSubscribers: number;
+  spotifyListeners: number;
 }
 
 export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({

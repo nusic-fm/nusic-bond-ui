@@ -26,6 +26,12 @@ import { useSetRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
 import { pendingAssetPoolInfo } from "../../../state";
 import usePrice from "../../../hooks/usePrice";
+import axios from "axios";
+import {
+  SPOTIFY_IDS_URL,
+  SPOTIFY_LISTENERS_URL,
+  YOUTUBE_SUBSCRIBERS_URL,
+} from "../../../constants";
 
 const useStyles = makeStyles({
   root: {
@@ -67,6 +73,11 @@ const BondInfoForm = () => {
   const [selectedCurrency, setSelectedCurrency] = useState<number>(1);
   const [latestSelectedCurrencyPrice, setLatestSelectedCurrencyPrice] =
     useState<number>();
+  const [isSpotifyError, setIsSpotifyError] = useState<boolean>(false);
+  const [isYoutubeError, setIsYoutubeError] = useState<boolean>(false);
+  const [spotifyListeners, setSpotifyListeners] = useState<number>();
+  const [youtubeSubscribers, setYoutubeSubscribers] = useState<number>();
+  const [artistName, setArtistName] = useState<string>("");
 
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
@@ -74,25 +85,31 @@ const BondInfoForm = () => {
   };
 
   const onClickToDeposit = () => {
-    setPendingAssetPoolState({
-      nftBondName,
-      nftBondSymbol,
-      nftMarketPlace: "opeansea",
-      isCollateralDeposited: false,
-      spotifyId,
-      youtubeUrl,
-      collateralAmount: enteredCollateralAmount || 0,
-      termInYears: selectedTerm,
-      faceValue: bondValue,
-      currencyId: selectedCurrency,
-      individualBondValue: selectedSplitValue,
-      noOfBonds: noOfSplits,
-      //TODO
-      artistName: "---",
-      apAddress: "",
-      nftAddress: "",
-    });
-    history.push("/home/mint/opensea/deposit");
+    if (spotifyListeners && youtubeSubscribers && enteredCollateralAmount) {
+      setPendingAssetPoolState({
+        nftBondName,
+        nftBondSymbol,
+        nftMarketPlace: "opeansea",
+        isCollateralDeposited: false,
+        spotifyId,
+        youtubeUrl,
+        collateralAmount: enteredCollateralAmount,
+        termInYears: selectedTerm,
+        faceValue: bondValue,
+        currencyId: selectedCurrency,
+        individualBondValue: selectedSplitValue,
+        noOfBonds: noOfSplits,
+        spotifyListeners,
+        youtubeSubscribers,
+        artistName,
+        //TODO
+        apAddress: "",
+        nftAddress: "",
+      });
+      history.push("/home/mint/opensea/deposit");
+    } else {
+      alert("Kindly fill all the fields.");
+    }
   };
 
   const onCurrencyChange = async (e: any) => {
@@ -104,6 +121,48 @@ const BondInfoForm = () => {
   const onCollateralAmountChange = (e: any) => {
     const collateral = parseFloat(e.target.value);
     setEnteredCollateralAmount(collateral);
+  };
+
+  const setSpotifyListenersData = async (_spotifyId: string): Promise<void> => {
+    try {
+      const data = await axios.post(SPOTIFY_LISTENERS_URL, {
+        id: _spotifyId,
+      });
+      console.log({ data });
+      if (data.data.result) {
+        setSpotifyListeners(data.data.result);
+        setIsSpotifyError(false);
+        const ids = await axios.post(SPOTIFY_IDS_URL, {
+          id: _spotifyId,
+        });
+        if (ids.data.length) {
+          setArtistName(ids.data[0].artist_name);
+        }
+      } else {
+        setIsSpotifyError(true);
+      }
+    } catch (e) {
+      setIsSpotifyError(true);
+    }
+  };
+
+  const setYoutubeSubscribersData = async (
+    _channelUrl: string
+  ): Promise<void> => {
+    try {
+      const data = await axios.post(YOUTUBE_SUBSCRIBERS_URL, {
+        id: _channelUrl,
+      });
+      console.log({ data });
+      if (data.data.result) {
+        setYoutubeSubscribers(data.data.result);
+        setIsYoutubeError(false);
+      } else {
+        setIsYoutubeError(true);
+      }
+    } catch (e) {
+      setIsYoutubeError(true);
+    }
   };
 
   useEffect(() => {
@@ -138,6 +197,17 @@ const BondInfoForm = () => {
       );
     }
   }, [selectedSplitValue, splitSliderData]);
+
+  useEffect(() => {
+    if (spotifyId) {
+      setSpotifyListenersData(spotifyId);
+    }
+  }, [spotifyId]);
+  useEffect(() => {
+    if (youtubeUrl) {
+      setYoutubeSubscribersData(youtubeUrl);
+    }
+  }, [youtubeUrl]);
 
   return (
     <Box pt={4}>
@@ -203,7 +273,19 @@ const BondInfoForm = () => {
               className={classes.root}
               value={spotifyId}
               onChange={(e) => setSpotifyId(e.target.value)}
+              error={isSpotifyError}
+              helperText={isSpotifyError && "Invalid Spotify Artist Id"}
             />
+            {spotifyListeners && (
+              <Typography
+                // fontSize="12px"
+                display="inline"
+                fontStyle="italic"
+                color="primary"
+              >
+                ({spotifyListeners} monthly spotify listeners)
+              </Typography>
+            )}
           </Box>
           <Box mb={2}>
             <Typography>Youtube Channel URL</Typography>
@@ -214,7 +296,19 @@ const BondInfoForm = () => {
               style={{ width: "40%" }}
               value={youtubeUrl}
               onChange={(e) => setYoutubeUrl(e.target.value)}
+              error={isYoutubeError}
+              helperText={isYoutubeError && "Invalid Youtube Channel Url"}
             />
+            {youtubeSubscribers && (
+              <Typography
+                color="primary"
+                // fontSize="12px"
+                display="inline"
+                fontStyle="italic"
+              >
+                ({youtubeSubscribers} subscribers)
+              </Typography>
+            )}
           </Box>
         </Box>
         <Box mt={2}>
@@ -233,7 +327,7 @@ const BondInfoForm = () => {
                     color="primary"
                     placeholder="Enter collateral deposit amount"
                     type="number"
-                    style={{ width: "25%" }}
+                    style={{ width: "45%" }}
                     value={enteredCollateralAmount}
                     onChange={onCollateralAmountChange}
                   />
@@ -258,7 +352,7 @@ const BondInfoForm = () => {
               </Box>
               <Box mb={2} style={{ width: "80%" }}>
                 <Typography>Select Term</Typography>
-                <Box mt={4}>
+                <Box mt={6}>
                   <Slider
                     min={1}
                     max={5}
@@ -290,7 +384,7 @@ const BondInfoForm = () => {
               </Box>
               <Box mb={2} style={{ width: "80%" }}>
                 <Typography>Individual Bond Value</Typography>
-                <Box mt={4}>
+                <Box mt={6}>
                   <Slider
                     valueLabelDisplay="on"
                     min={1}

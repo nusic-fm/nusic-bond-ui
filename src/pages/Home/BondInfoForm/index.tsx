@@ -183,7 +183,7 @@ const BondInfoForm = () => {
   useEffect(() => {
     const marks = new Array(50).fill("-").map((val, i) => ({
       value: i + 1,
-      label: `${Math.floor(bondValue / (i + 1))}`,
+      label: `${bondValue / (i + 1)}`,
       noOfSlice: i + 1,
     }));
     setSplitSliderData(marks);

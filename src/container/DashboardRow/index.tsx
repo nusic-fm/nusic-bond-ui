@@ -225,7 +225,11 @@ const DashboardRow = (props: {
                   <Typography fontWeight="600" pb={1}>
                     Next Deposit
                   </Typography>
-                  <Typography>{bond?.collateralAmount || "-"}</Typography>
+                  <Typography>
+                    {bond?.collateralAmount
+                      ? ethers.utils.formatEther(bond.collateralAmount)
+                      : "-"}
+                  </Typography>
                 </Box>
               </TableCell>
             </TableRow>
@@ -263,7 +267,7 @@ const DashboardRow = (props: {
             <TableCell>
               <Box>
                 <Typography>Coupon Rate</Typography>
-                <Typography fontWeight="600">%</Typography>
+                <Typography fontWeight="600">6.25%</Typography>
               </Box>
             </TableCell>
             <TableCell>

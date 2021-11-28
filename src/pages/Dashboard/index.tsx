@@ -56,7 +56,8 @@ const Dashboard = () => {
         >
           <Typography>My NFT Music Bonds</Typography>
           <Typography>
-            Available Reward <Chip variant="outlined" label="8.63419 Claim" />
+            Available Reward{" "}
+            <Chip clickable variant="outlined" label="8.6341 Claim" />
           </Typography>
         </Box>
         {bonds?.map((bond, i) => {

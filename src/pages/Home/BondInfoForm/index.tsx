@@ -170,7 +170,7 @@ const BondInfoForm = () => {
   };
   const calculateBondValueWithPrice = async () => {
     if (enteredCollateralAmount && selectedTerm) {
-      const price = latestSelectedCurrencyPrice || (await getPrice("ETH"));
+      const price = latestSelectedCurrencyPrice;
       setLatestSelectedCurrencyPrice(price);
       const calculatedFaceValue = enteredCollateralAmount * selectedTerm * 4;
       setBondValue(calculatedFaceValue);
@@ -216,6 +216,14 @@ const BondInfoForm = () => {
       setYoutubeSubscribersData(youtubeUrl);
     }
   }, [youtubeUrl]);
+  useEffect(() => {
+    if (!latestSelectedCurrencyPrice) {
+      (async () => {
+        const price = await getPrice("ETH");
+        setLatestSelectedCurrencyPrice(price);
+      })();
+    }
+  }, []);
 
   return (
     <Box pt={4}>

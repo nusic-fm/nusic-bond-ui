@@ -126,17 +126,21 @@ const BondInfoForm = () => {
   const setSpotifyListenersData = async (_spotifyId: string): Promise<void> => {
     try {
       const data = await axios.post(SPOTIFY_LISTENERS_URL, {
-        id: _spotifyId,
+        data: { id: _spotifyId },
       });
       console.log({ data });
       if (data.data.result) {
         setSpotifyListeners(data.data.result);
         setIsSpotifyError(false);
-        const ids = await axios.post(SPOTIFY_IDS_URL, {
-          id: _spotifyId,
-        });
-        if (ids.data.length) {
-          setArtistName(ids.data[0].artist_name);
+        try {
+          const ids = await axios.post(SPOTIFY_IDS_URL, {
+            id: _spotifyId,
+          });
+          if (ids.data.length) {
+            setArtistName(ids.data[0].artist_name);
+          }
+        } catch (e) {
+          console.log(e);
         }
       } else {
         setIsSpotifyError(true);
@@ -151,7 +155,7 @@ const BondInfoForm = () => {
   ): Promise<void> => {
     try {
       const data = await axios.post(YOUTUBE_SUBSCRIBERS_URL, {
-        id: _channelUrl,
+        data: { id: _channelUrl },
       });
       console.log({ data });
       if (data.data.result) {

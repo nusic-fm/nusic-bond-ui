@@ -428,7 +428,9 @@ const BondInfoForm = () => {
                     onChangeCommitted={(e, val) => {
                       setNoOfSplits(val as number);
                       setSelectedSplitValue(
-                        splitSliderData[(val as number) - 1].label as number
+                        parseFloat(
+                          splitSliderData[(val as number) - 1].label as string
+                        )
                       );
                     }}
                   ></Slider>

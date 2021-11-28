@@ -2,6 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import contractAddresses from "../constants/contracts";
 import { useBondNFTManagerContract } from "./useContract";
 import { BigNumber } from "@ethersproject/bignumber";
+import { ethers } from "ethers";
 
 interface NftInfo {
   nftAddress: string;
@@ -42,9 +43,12 @@ export const useApManager = () => {
       return;
     }
     const dep = await managerContract.deployed();
-    return await dep.createAssetPool(bondValue, {
-      from: account,
-    });
+    return await dep.createAssetPool(
+      ethers.utils.parseEther(bondValue.toString()),
+      {
+        from: account,
+      }
+    );
   };
 
   const getAssetpoolsOfUserByIndex = async (
@@ -109,10 +113,10 @@ export const useApManager = () => {
       _artistName,
       _artistId,
       _channelId,
-      BigNumber.from(_fundingAmount.toString()),
+      ethers.utils.parseEther(_fundingAmount.toString()),
       BigNumber.from(_numberOfYears.toString()),
       BigNumber.from(_numberOfBonds.toString()),
-      BigNumber.from(_facevalue.toString()),
+      ethers.utils.parseEther(_facevalue.toString()),
       _bondName,
       _bondSymbol,
       listenersData,

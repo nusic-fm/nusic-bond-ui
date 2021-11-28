@@ -45,10 +45,10 @@ const useStyles = makeStyles({
 });
 
 export const supportedCurrencies = [
-  { id: 0, currency: "DAI" },
-  { id: 1, currency: "ETH" },
-  { id: 2, currency: "LINK" },
-  { id: 3, currency: "BTC" },
+  // { id: 0, currency: "DAI" },
+  { id: 0, currency: "ETH" },
+  // { id: 2, currency: "LINK" },
+  // { id: 3, currency: "BTC" },
 ];
 
 const BondInfoForm = () => {
@@ -63,14 +63,14 @@ const BondInfoForm = () => {
   const [spotifyId, setSpotifyId] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [selectedTerm, setSelectedTerm] = useState(3);
-  const [bondValue, setBondValue] = useState(15000);
+  const [bondValue, setBondValue] = useState(1);
   const [splitSliderData, setSplitSliderData] = useState<Mark[]>([]);
   const [selectedSplitValue, setSelectedSplitValue] = useState(15000);
   const [noOfSplits, setNoOfSplits] = useState<number>(0);
   const [pieData, setPieData] = useState<Mark[]>([]);
   const [enteredCollateralAmount, setEnteredCollateralAmount] =
     useState<number>();
-  const [selectedCurrency, setSelectedCurrency] = useState<number>(1);
+  const [selectedCurrency, setSelectedCurrency] = useState<number>(0);
   const [latestSelectedCurrencyPrice, setLatestSelectedCurrencyPrice] =
     useState<number>();
   const [isSpotifyError, setIsSpotifyError] = useState<boolean>(false);
@@ -168,12 +168,16 @@ const BondInfoForm = () => {
       setIsYoutubeError(true);
     }
   };
-
-  useEffect(() => {
-    if (selectedTerm && enteredCollateralAmount) {
+  const calculateBondValueWithPrice = async () => {
+    if (enteredCollateralAmount && selectedTerm) {
+      const price = latestSelectedCurrencyPrice || (await getPrice("ETH"));
+      setLatestSelectedCurrencyPrice(price);
       const calculatedFaceValue = enteredCollateralAmount * selectedTerm * 4;
       setBondValue(calculatedFaceValue);
     }
+  };
+  useEffect(() => {
+    calculateBondValueWithPrice();
   }, [selectedTerm, enteredCollateralAmount]);
 
   useEffect(() => {
@@ -334,6 +338,11 @@ const BondInfoForm = () => {
                     style={{ width: "45%" }}
                     value={enteredCollateralAmount}
                     onChange={onCollateralAmountChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">ETH</InputAdornment>
+                      ),
+                    }}
                   />
                   <Box display="inline" ml={2}>
                     <Select
@@ -348,7 +357,12 @@ const BondInfoForm = () => {
                     </Select>
                     {latestSelectedCurrencyPrice && (
                       <Typography display="inline" fontStyle="italic">
-                        ({latestSelectedCurrencyPrice} USD)
+                        (
+                        {(
+                          latestSelectedCurrencyPrice *
+                          (enteredCollateralAmount || 0)
+                        ).toFixed(2)}{" "}
+                        USD )
                       </Typography>
                     )}
                   </Box>
@@ -372,19 +386,27 @@ const BondInfoForm = () => {
               </Box>
               <Box mb={2}>
                 <Typography>Face Value</Typography>
-                <TextField
-                  variant="outlined"
-                  color="primary"
-                  placeholder="Enter USD face value of bond"
-                  type="number"
-                  onChange={onBondValueChange}
-                  value={bondValue}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">$</InputAdornment>
-                    ),
-                  }}
-                />
+                <Box display="flex" alignItems="center">
+                  <TextField
+                    variant="outlined"
+                    color="primary"
+                    placeholder="Enter USD face value of bond"
+                    type="number"
+                    onChange={onBondValueChange}
+                    value={bondValue}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">ETH</InputAdornment>
+                      ),
+                    }}
+                  />
+                  {latestSelectedCurrencyPrice && (
+                    <Typography fontStyle="italic">
+                      ({(bondValue * latestSelectedCurrencyPrice).toFixed(2)}{" "}
+                      USD)
+                    </Typography>
+                  )}
+                </Box>
               </Box>
               <Box mb={2} style={{ width: "80%" }}>
                 <Typography>Individual Bond Value</Typography>

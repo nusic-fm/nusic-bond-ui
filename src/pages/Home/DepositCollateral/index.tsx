@@ -70,9 +70,7 @@ const DepositCollateral = () => {
   const onCreateButtonClick = async () => {
     if (_pendingAssetPoolInfo?.faceValue) {
       try {
-        const tx = await createAssetPool(
-          (_pendingAssetPoolInfo?.faceValue * 10) ^ 18
-        );
+        const tx = await createAssetPool(_pendingAssetPoolInfo.faceValue);
         setIsLoading(true);
         const receipt = await tx.wait();
         console.log({ receipt });

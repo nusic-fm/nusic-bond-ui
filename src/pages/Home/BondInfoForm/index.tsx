@@ -66,7 +66,7 @@ const BondInfoForm = () => {
   const [bondValue, setBondValue] = useState(1);
   const [splitSliderData, setSplitSliderData] = useState<Mark[]>([]);
   const [selectedSplitValue, setSelectedSplitValue] = useState(15000);
-  const [noOfSplits, setNoOfSplits] = useState<number>(0);
+  const [noOfSplits, setNoOfSplits] = useState<number>(1);
   const [pieData, setPieData] = useState<Mark[]>([]);
   const [enteredCollateralAmount, setEnteredCollateralAmount] =
     useState<number>();

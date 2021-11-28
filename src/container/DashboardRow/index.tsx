@@ -3,10 +3,11 @@ import { Box } from "@mui/system";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import useAssetPool from "../../hooks/useAssetPool";
+import useAssetPool, { ApData } from "../../hooks/useAssetPool";
 import useAuth from "../../hooks/useAuth";
 import { useApManager } from "../../hooks/useManager";
 import useNftBond from "../../hooks/useNftBond";
+import { useRating } from "../../hooks/useRating";
 import { AssetPoolInfo } from "../../state";
 
 export interface NFTData {
@@ -23,12 +24,16 @@ const DashboardRow = (props: {
   const { account, library } = useWeb3React();
   const { login } = useAuth();
   const { getNFTData } = useNftBond();
-  const { getApBalance } = useAssetPool();
+  const { getApBalance, getApData } = useAssetPool();
   const { getAssetpoolsOfUserByIndex } = useApManager();
+  const { getRating } = useRating();
+
   const [nftBond, setNftBond] = useState<NFTData>();
   const [apAddress, setApAddress] = useState<string>();
   const [assetPoolBalance, setAssetPoolBalance] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [rating, setRating] = useState<string>();
+  const [apData, setApData] = useState<ApData>();
 
   useEffect(() => {
     if (bond) {
@@ -50,6 +55,10 @@ const DashboardRow = (props: {
         if (balance) {
           setAssetPoolBalance(balance);
         }
+        const _rating = await getRating(_apAddress);
+        setRating(_rating);
+        const apData = await getApData(_apAddress);
+        setApData(apData);
       }
     }
   };
@@ -126,7 +135,7 @@ const DashboardRow = (props: {
                   <Typography fontWeight="600" pb={1}>
                     Rating
                   </Typography>
-                  <Typography>-</Typography>
+                  <Typography>{rating}</Typography>
                 </Box>
               </TableCell>
             </TableRow>
@@ -194,7 +203,7 @@ const DashboardRow = (props: {
                   <Typography fontWeight="600" pb={1}>
                     Next Deposit
                   </Typography>
-                  <Typography>-</Typography>
+                  <Typography>{bond?.collateralAmount || "-"}</Typography>
                 </Box>
               </TableCell>
             </TableRow>
@@ -224,7 +233,9 @@ const DashboardRow = (props: {
             <TableCell>
               <Box>
                 <Typography>Due in</Typography>
-                <Typography fontWeight="600">-</Typography>
+                <Typography fontWeight="600">
+                  {apData?.expectedNextPaymentBlock} Blocks
+                </Typography>
               </Box>
             </TableCell>
             <TableCell>

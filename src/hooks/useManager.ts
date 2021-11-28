@@ -124,7 +124,7 @@ export const useApManager = () => {
       {
         from: account,
         gasLimit: 12500000,
-        gasPrice: 1000000000,
+        gasPrice: 3000000000,
       }
     );
     return tx;
@@ -135,7 +135,7 @@ export const useApManager = () => {
     const tx = await dep.mintNFTBond(nftAddress, {
       from: account,
       gasLimit: 12500000,
-      gasPrice: 1000000000,
+      gasPrice: 3000000000,
     });
     return tx;
   };

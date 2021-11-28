@@ -9,10 +9,12 @@ import {
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
+import axios from "axios";
 import { useState } from "react";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
+import { METADATA_URL } from "../../../constants";
 import { useApManager } from "../../../hooks/useManager";
 import { AssetPoolInfo, pendingAssetPoolInfo } from "../../../state";
 
@@ -29,19 +31,21 @@ const IssueBond = () => {
   const [_pendingAssetPoolInfo, setPendingAssetPoolInfo] =
     useRecoilState(pendingAssetPoolInfo);
   const { issueBond, mintNftBonds } = useApManager();
+
   const [processMode, setProcessMode] = useState(0);
 
   const onIssueBondClick = async () => {
     if (_pendingAssetPoolInfo) {
       try {
-        setProcessMode(1);
+        // setProcessMode(1);
+        console.log("noOfBonds: ", _pendingAssetPoolInfo.noOfBonds);
         const tx = await issueBond(
           _pendingAssetPoolInfo.artistName,
           _pendingAssetPoolInfo.spotifyId,
           _pendingAssetPoolInfo.youtubeUrl,
           _pendingAssetPoolInfo.collateralAmount,
           _pendingAssetPoolInfo.termInYears,
-          _pendingAssetPoolInfo.noOfBonds,
+          _pendingAssetPoolInfo.noOfBonds || 1,
           _pendingAssetPoolInfo.faceValue,
           _pendingAssetPoolInfo.nftBondName,
           _pendingAssetPoolInfo.nftBondSymbol,
@@ -63,15 +67,27 @@ const IssueBond = () => {
           nftAddress,
         };
         setPendingAssetPoolInfo(poolInfo);
+        try {
+          const metadataRes = await axios.post(METADATA_URL, {
+            data: { nftBondAddress: nftAddress },
+          });
+          console.log(metadataRes);
+        } catch (e) {
+          console.log("metadata: ", e);
+        }
         setProcessMode(2);
-        const nftTx = await mintNftBonds(nftAddress);
-        const nftReceipt = await nftTx.wait();
-        console.log({ nftReceipt });
-        const _poolInfo = {
-          ..._pendingAssetPoolInfo,
-          nftAddress,
-        };
-        setPendingAssetPoolInfo(_poolInfo);
+        try {
+          const nftTx = await mintNftBonds(nftAddress);
+          const nftReceipt = await nftTx.wait();
+          console.log({ nftReceipt });
+          const _poolInfo = {
+            ..._pendingAssetPoolInfo,
+            nftAddress,
+          };
+          setPendingAssetPoolInfo(_poolInfo);
+        } catch (e) {
+          console.log("mint bonds: ", e);
+        }
         history.push("/dashboard");
       } catch (e) {
         console.error(e);

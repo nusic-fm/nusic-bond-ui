@@ -3,6 +3,7 @@ import useWeb3Provider from "../hooks/useWeb3Provider";
 import {
   getBondNFTContract,
   getBondNFTManagerContract,
+  getRatingContract,
   // getAuditoryAssetPoolContract,
   // getAuditoryRouterContract,
   // getAuditoryNftContract,
@@ -32,6 +33,27 @@ export const useBondNFTContract = (address: string) => {
     [address, provider]
   );
 };
+
+/**
+ * Helper hooks to get specific contracts (by ABI)
+ */
+
+export const useRatingContract = (address: string) => {
+  const provider = useWeb3Provider();
+  return useMemo(
+    () => getRatingContract(address, provider.getSigner()),
+    [address, provider]
+  );
+};
+
+// export const useMetadata = (address: string) => {
+//   const provider = useWeb3Provider();
+//   return useMemo(
+//     () => getMetadataContract(address, provider.getSigner()),
+//     [address, provider]
+//   );
+// };
+
 // export const useAuditoryAssetPoolContract = (address: string) => {
 //   const provider = useWeb3Provider();
 //   return useMemo(

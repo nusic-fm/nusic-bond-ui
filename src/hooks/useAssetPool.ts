@@ -1,7 +1,14 @@
 import { useWeb3React } from "@web3-react/core";
+import { getApContract } from "../utils/contractHelpers";
+import useWeb3Provider from "./useWeb3Provider";
 
+export interface ApData {
+  currentQuarter: string;
+  expectedNextPaymentBlock: string;
+}
 const useAssetPool = () => {
   const { library } = useWeb3React();
+  const provider = useWeb3Provider();
 
   const getApBalance = async (apAddress: string): Promise<number> => {
     await library.ready;
@@ -19,7 +26,17 @@ const useAssetPool = () => {
     }
   };
 
-  return { getApBalance };
+  const getApData = async (apAddress: string): Promise<ApData> => {
+    const contract = getApContract(apAddress, provider.getSigner());
+    const currentQuarter = await contract.currentQuarter();
+    const expectedNextPaymentBlock = await contract.expectedNextPaymentBlock();
+    return {
+      currentQuarter: currentQuarter.toString(),
+      expectedNextPaymentBlock: expectedNextPaymentBlock.toString(),
+    };
+  };
+
+  return { getApBalance, getApData };
 };
 
 export default useAssetPool;

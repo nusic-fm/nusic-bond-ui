@@ -89,7 +89,7 @@ const BondInfoForm = () => {
       setPendingAssetPoolState({
         nftBondName,
         nftBondSymbol,
-        nftMarketPlace: "opeansea",
+        nftMarketPlace: "opensea",
         isCollateralDeposited: false,
         spotifyId,
         youtubeUrl,
@@ -465,9 +465,9 @@ const BondInfoForm = () => {
                     pb={0}
                   >
                     <Typography fontWeight="bold" color="black">
-                      Fave Value
+                      Face Value
                     </Typography>
-                    <Typography color="black">${bondValue}</Typography>
+                    <Typography color="black">ETH {bondValue}</Typography>
                   </Box>
                   <Box
                     display="flex"

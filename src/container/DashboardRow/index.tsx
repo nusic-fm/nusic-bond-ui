@@ -1,6 +1,7 @@
 import { Button, Table, TableCell, TableRow, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useWeb3React } from "@web3-react/core";
+import axios from "axios";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import useAssetPool, { ApData } from "../../hooks/useAssetPool";
@@ -30,10 +31,11 @@ const DashboardRow = (props: {
 
   const [nftBond, setNftBond] = useState<NFTData>();
   const [apAddress, setApAddress] = useState<string>();
-  const [assetPoolBalance, setAssetPoolBalance] = useState<number>(0);
+  const [assetPoolBalance, setAssetPoolBalance] = useState<string>("0");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rating, setRating] = useState<string>();
   const [apData, setApData] = useState<ApData>();
+  const [nftArt, setNftArt] = useState<string>();
 
   useEffect(() => {
     if (bond) {
@@ -47,14 +49,18 @@ const DashboardRow = (props: {
       const data = await getNFTData(nftAddress);
       if (data) {
         setNftBond(data);
+        if (data.tokenUri) {
+          const json = await axios.get(data.tokenUri);
+          if (json.data) {
+            setNftArt(json.data.image);
+          }
+        }
       }
       const _apAddress = await getAssetpoolsOfUserByIndex(index);
       if (_apAddress) {
         setApAddress(_apAddress);
         const balance = await getApBalance(_apAddress);
-        if (balance) {
-          setAssetPoolBalance(balance);
-        }
+        setAssetPoolBalance(balance);
         const _rating = await getRating(_apAddress);
         setRating(_rating);
         const apData = await getApData(_apAddress);
@@ -91,7 +97,13 @@ const DashboardRow = (props: {
       <Box m={2} display="flex" alignItems="center">
         <Box>
           <img
-            src="https://ipfs.io/ipfs/QmaJ5oKx9QzeFxaJLiuTKzsfRoaujjRd7n3ux6zKXxTkci/Nusic%20Bond%20Fractals/NusicFractal-01.svg"
+            src={
+              nftArt
+                ? `https://ipfs.io/ipfs/${nftArt.split("/")[2]}/${
+                    nftArt.split("/")[3]
+                  }`
+                : `https://ipfs.io/ipfs/QmaJ5oKx9QzeFxaJLiuTKzsfRoaujjRd7n3ux6zKXxTkci/Nusic%20Bond%20Fractals/NusicFractal-01.svg`
+            }
             alt="nft"
             height="250px"
           />
@@ -119,7 +131,12 @@ const DashboardRow = (props: {
                   <Typography fontWeight="600" pb={1}>
                     Face Value
                   </Typography>
-                  <Typography>${bond?.faceValue || "-"}</Typography>
+                  <Typography>
+                    ETH{" "}
+                    {bond?.faceValue
+                      ? ethers.utils.formatEther(bond.faceValue)
+                      : "-"}
+                  </Typography>
                 </Box>
               </TableCell>
               <TableCell>
@@ -127,7 +144,12 @@ const DashboardRow = (props: {
                   <Typography fontWeight="600" pb={1}>
                     Average Quarter
                   </Typography>
-                  <Typography>{bond?.collateralAmount || "-"}</Typography>
+                  <Typography>
+                    ETH{" "}
+                    {bond?.collateralAmount
+                      ? ethers.utils.formatEther(bond.collateralAmount)
+                      : "-"}
+                  </Typography>
                 </Box>
               </TableCell>
               <TableCell>
@@ -179,13 +201,13 @@ const DashboardRow = (props: {
                   <Typography fontWeight="600" pb={1}>
                     Coupon
                   </Typography>
-                  <Typography>-</Typography>
+                  <Typography>6.25%</Typography>
                 </Box>
               </TableCell>
               <TableCell>
                 <Box p={1}>
                   <Typography fontWeight="600" pb={1}>
-                    Yeild Maximizer
+                    Yield Maximizer
                   </Typography>
                   <Typography>-</Typography>
                 </Box>

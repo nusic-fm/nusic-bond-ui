@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import { ethers } from "ethers";
 import { getApContract } from "../utils/contractHelpers";
 import useWeb3Provider from "./useWeb3Provider";
 
@@ -10,19 +11,19 @@ const useAssetPool = () => {
   const { library } = useWeb3React();
   const provider = useWeb3Provider();
 
-  const getApBalance = async (apAddress: string): Promise<number> => {
+  const getApBalance = async (apAddress: string): Promise<string> => {
     await library.ready;
     if (library) {
       try {
         const balance = await library.getBalance(apAddress);
-        return parseInt(balance.toString()) / (10 ^ 18);
+        return ethers.utils.formatEther(balance);
       } catch (e) {
         console.error(e);
-        return 0;
+        return "0";
       }
     } else {
       alert("Connect your wallet to continue...");
-      return 0;
+      return "0";
     }
   };
 

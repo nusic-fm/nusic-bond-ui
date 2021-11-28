@@ -24,7 +24,7 @@ const MarketPlace = () => {
       <Box pt={2}>
         <img
           src="/images/markets/opensea.jpg"
-          alt="opeansea"
+          alt="opensea"
           style={{ borderRadius: "50%" }}
           height="100px"
         />

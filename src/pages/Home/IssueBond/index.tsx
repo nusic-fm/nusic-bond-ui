@@ -37,7 +37,7 @@ const IssueBond = () => {
   const onIssueBondClick = async () => {
     if (_pendingAssetPoolInfo) {
       try {
-        // setProcessMode(1);
+        setProcessMode(1);
         console.log("noOfBonds: ", _pendingAssetPoolInfo.noOfBonds);
         const tx = await issueBond(
           _pendingAssetPoolInfo.artistName,
@@ -101,7 +101,7 @@ const IssueBond = () => {
           <Step>
             <StepLabel>
               <Box display="flex" alignItems="center" fontSize="24px">
-                Issueing NFT Bond
+                Issuing NFT Bond
                 <Box ml={3}>
                   {processMode === 1 && (
                     <CircularProgress color="info" size={20} />

@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import { BigNumber } from "ethers";
 import { NFTData } from "../container/DashboardRow";
 import { getBondNFTContract } from "../utils/contractHelpers";
 
@@ -9,16 +10,20 @@ const useNftBond = () => {
     await library.ready;
     if (library) {
       try {
-        const NFTBondContract = getBondNFTContract(nftAddress, library);
-        const dep = await NFTBondContract.deployed();
-        const name = await dep.name();
-        const symbol = await dep.symbol();
-        // const tokenUri = await dep.getTokenURI(0);
+        const nftBondContract = getBondNFTContract(nftAddress, library);
+        const name = await nftBondContract.name();
+        const symbol = await nftBondContract.symbol();
+        let tokenUri = "";
+        try {
+          tokenUri = await nftBondContract.tokenURI(BigNumber.from("0"));
+        } catch (e) {
+          console.log("tokenUri: ", e);
+        }
 
         return {
           name,
           symbol,
-          tokenUri: "",
+          tokenUri,
         };
       } catch (e) {
         console.error(e);

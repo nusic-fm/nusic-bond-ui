@@ -122,7 +122,9 @@ const IssueBond = () => {
               <Typography fontWeight="600" color="black">
                 Artist Name
               </Typography>
-              <Typography color="black">Blackpink</Typography>
+              <Typography color="black">
+                {_pendingAssetPoolInfo?.artistName}
+              </Typography>
             </Box>
             <Box display="flex" justifyContent="space-between" mb={1}>
               <Typography color="black" fontWeight="600">
@@ -139,12 +141,6 @@ const IssueBond = () => {
               <Typography color="black">
                 {_pendingAssetPoolInfo?.youtubeUrl}
               </Typography>
-            </Box>
-            <Box display="flex" justifyContent="space-between" mb={1}>
-              <Typography fontWeight="600" color="black">
-                Audius ID
-              </Typography>
-              <Typography color="black">--</Typography>
             </Box>
             <Box display="flex" justifyContent="space-between" mb={1}>
               <Typography fontWeight="600" color="black">

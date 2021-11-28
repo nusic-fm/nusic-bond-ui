@@ -191,13 +191,19 @@ const DepositCollateral = () => {
                 </Box>
               </Box>
               <Box mt={6} display="flex" justifyContent="center">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={onDepositClick}
-                >
-                  {account ? "Deposit collateral" : "Connect Wallet"}
-                </Button>
+                <Box>
+                  {isLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={onDepositClick}
+                    >
+                      {account ? "Deposit collateral" : "Connect Wallet"}
+                    </Button>
+                  )}
+                </Box>
               </Box>
               {account && (
                 <Typography

@@ -33,8 +33,9 @@ export interface IssueBondParams {
 export const useApManager = () => {
   const { account } = useWeb3React();
   const { library } = useWeb3React();
+
   const managerContract = useBondNFTManagerContract(
-    contractAddresses.BondNFTManager[42]
+    contractAddresses.BondNFTManager["4"]
   );
 
   const createAssetPool = async (bondValue: number): Promise<any> => {

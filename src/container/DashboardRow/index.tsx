@@ -252,7 +252,10 @@ const DashboardRow = (props: {
               <Box>
                 <Typography>Next Deposit Amount</Typography>
                 <Typography fontWeight="600">
-                  ETH {bond?.collateralAmount || "-"}
+                  ETH{" "}
+                  {bond?.collateralAmount
+                    ? ethers.utils.formatEther(bond.collateralAmount)
+                    : "-"}
                 </Typography>
               </Box>
             </TableCell>

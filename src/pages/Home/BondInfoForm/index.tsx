@@ -488,7 +488,9 @@ const BondInfoForm = () => {
                     <Typography fontWeight="bold" color="black">
                       Individual Bond Value
                     </Typography>
-                    <Typography color="black">${selectedSplitValue}</Typography>
+                    <Typography color="black">
+                      ETH {selectedSplitValue}
+                    </Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between" p={1}>
                     <Typography fontWeight="bold" color="black">

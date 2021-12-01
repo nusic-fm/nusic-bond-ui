@@ -50,21 +50,37 @@ const DashboardRow = (props: {
       if (data) {
         setNftBond(data);
         if (data.tokenUri) {
-          const json = await axios.get(data.tokenUri);
-          if (json.data) {
-            setNftArt(json.data.image);
+          try {
+            const json = await axios.get(data.tokenUri);
+            if (json.data) {
+              setNftArt(json.data.image);
+            }
+          } catch (e) {
+            console.error(e);
           }
         }
       }
       const _apAddress = await getAssetpoolsOfUserByIndex(index);
       if (_apAddress) {
         setApAddress(_apAddress);
-        const balance = await getApBalance(_apAddress);
-        setAssetPoolBalance(balance);
-        const _rating = await getRating(_apAddress);
-        setRating(_rating);
-        const apData = await getApData(_apAddress);
-        setApData(apData);
+        try {
+          const _rating = await getRating(_apAddress);
+          setRating(_rating);
+        } catch (e) {
+          console.error(e);
+        }
+        try {
+          const balance = await getApBalance(_apAddress);
+          setAssetPoolBalance(balance);
+        } catch (e) {
+          console.error(e);
+        }
+        try {
+          const apData = await getApData(_apAddress);
+          setApData(apData);
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
   };
@@ -102,7 +118,7 @@ const DashboardRow = (props: {
                 ? `https://ipfs.io/ipfs/${nftArt.split("/")[2]}/${
                     nftArt.split("/")[3]
                   }`
-                : `https://ipfs.io/ipfs/QmaJ5oKx9QzeFxaJLiuTKzsfRoaujjRd7n3ux6zKXxTkci/Nusic%20Bond%20Fractals/NusicFractal-01.svg`
+                : ``
             }
             alt="nft"
             height="250px"

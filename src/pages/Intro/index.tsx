@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useHistory } from "react-router";
+import Organization from "../../components/Organization";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -44,6 +45,7 @@ const Intro = () => {
       <Button color="primary" variant="contained" onClick={onGettingStarted}>
         Get Started
       </Button>
+      <Organization />
     </Box>
   );
 };

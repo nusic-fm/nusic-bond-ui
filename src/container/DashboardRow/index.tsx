@@ -15,7 +15,25 @@ export interface NFTData {
   name: string;
   symbol: string;
   tokenUri: string;
+  nftAddress: string;
 }
+
+const imageRatingMapping = {
+  AAA: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-01.png",
+  AA: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-02.png",
+  A: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-03.png",
+  III: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-04.png",
+  II: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-05.png",
+  I: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-06.png",
+  UUU: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-07.png",
+  UU: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-08.png",
+  U: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-09.png",
+  R: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-10.png",
+} as any;
+
+const getImageByRating = (rating: string): string => {
+  return imageRatingMapping[rating];
+};
 
 const DashboardRow = (props: {
   bond: Partial<AssetPoolInfo>;
@@ -35,7 +53,7 @@ const DashboardRow = (props: {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rating, setRating] = useState<string>();
   const [apData, setApData] = useState<ApData>();
-  const [nftArt, setNftArt] = useState<string>();
+  // const [nftArt, setNftArt] = useState<string>();
 
   useEffect(() => {
     if (bond) {
@@ -49,16 +67,16 @@ const DashboardRow = (props: {
       const data = await getNFTData(nftAddress);
       if (data) {
         setNftBond(data);
-        if (data.tokenUri) {
-          try {
-            const json = await axios.get(data.tokenUri);
-            if (json.data) {
-              setNftArt(json.data.image);
-            }
-          } catch (e) {
-            console.error(e);
-          }
-        }
+        // if (data.tokenUri) {
+        //   try {
+        //     const json = await axios.get(data.tokenUri);
+        //     if (json.data) {
+        //       setNftArt(json.data.image);
+        //     }
+        //   } catch (e) {
+        //     console.error(e);
+        //   }
+        // }
       }
       const _apAddress = await getAssetpoolsOfUserByIndex(index);
       if (_apAddress) {
@@ -112,17 +130,13 @@ const DashboardRow = (props: {
     <>
       <Box m={2} display="flex" alignItems="center">
         <Box>
-          <img
-            src={
-              nftArt
-                ? `https://ipfs.io/ipfs/${nftArt.split("/")[2]}/${
-                    nftArt.split("/")[3]
-                  }`
-                : ``
-            }
-            alt="nft"
-            height="250px"
-          />
+          {rating ? (
+            <img src={getImageByRating(rating)} alt="nft" height="250px" />
+          ) : (
+            <Typography color="gray" width="250px" align="center">
+              Rating not available
+            </Typography>
+          )}
         </Box>
         <Box
           ml={8}

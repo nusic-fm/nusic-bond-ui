@@ -24,6 +24,7 @@ const useNftBond = () => {
           name,
           symbol,
           tokenUri,
+          nftAddress,
         };
       } catch (e) {
         console.error(e);

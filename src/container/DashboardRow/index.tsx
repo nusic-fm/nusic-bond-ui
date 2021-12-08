@@ -19,16 +19,16 @@ export interface NFTData {
 }
 
 const imageRatingMapping = {
-  AAA: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-01.png",
-  AA: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-02.png",
-  A: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-03.png",
-  III: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-04.png",
-  II: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-05.png",
-  I: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-06.png",
-  UUU: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-07.png",
-  UU: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-08.png",
-  U: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-09.png",
-  R: "https://ipfs.io/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-10.png",
+  AAA: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-01.png",
+  AA: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-02.png",
+  A: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-03.png",
+  III: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-04.png",
+  II: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-05.png",
+  I: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-06.png",
+  UUU: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-07.png",
+  UU: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-08.png",
+  U: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-09.png",
+  R: "https://gateway.pinata.cloud/ipfs/QmQZU7zwiGEQaimZDgogvZx1FHK1kzGrAEfeB4Ttg4qKQP/NusicFractal-10.png",
 } as any;
 
 const getImageByRating = (rating: string): string => {

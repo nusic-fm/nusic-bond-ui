@@ -19,7 +19,7 @@ const MarketPlace = () => {
         Select a Marketplace
       </Typography>
       <Typography pt={2}>
-        This will be the marketplace wher you mint your NFT bond
+        This will be the marketplace where you mint your NFT bond
       </Typography>
       <Box pt={2}>
         <img

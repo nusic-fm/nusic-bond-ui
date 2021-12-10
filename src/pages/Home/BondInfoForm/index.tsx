@@ -283,48 +283,63 @@ const BondInfoForm = () => {
           </Box>
           <Box mb={2}>
             <Typography>Spotify Artist ID</Typography>
-            <TextField
-              variant="outlined"
-              placeholder="Enter your Spotify Artist ID"
-              className={classes.root}
-              value={spotifyId}
-              onChange={(e) => setSpotifyId(e.target.value)}
-              error={isSpotifyError}
-              helperText={isSpotifyError && "Invalid Spotify Artist Id"}
-            />
-            {spotifyListeners && (
-              <Typography
-                // fontSize="12px"
-                display="inline"
-                fontStyle="italic"
-                color="primary"
-              >
-                ({spotifyListeners} monthly spotify listeners)
-              </Typography>
-            )}
+            <Box display="flex" alignItems={"center"}>
+              <TextField
+                variant="outlined"
+                placeholder="Enter your Spotify Artist ID"
+                className={classes.root}
+                value={spotifyId}
+                onChange={(e) => setSpotifyId(e.target.value)}
+                error={isSpotifyError}
+                helperText={isSpotifyError && "Invalid Spotify Artist Id"}
+                style={{ width: "250px" }}
+              />
+              {spotifyListeners && (
+                <Typography
+                  // fontSize="12px"
+                  display="inline"
+                  fontStyle="italic"
+                  color="gray"
+                  fontWeight={600}
+                >
+                  (
+                  {spotifyListeners
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                  monthly spotify listeners)
+                </Typography>
+              )}
+            </Box>
           </Box>
           <Box mb={2}>
             <Typography>Youtube Channel URL</Typography>
-            <TextField
-              variant="outlined"
-              color="primary"
-              placeholder="Enter your Youtube Channel URL"
-              style={{ width: "40%" }}
-              value={youtubeUrl}
-              onChange={(e) => setYoutubeUrl(e.target.value)}
-              error={isYoutubeError}
-              helperText={isYoutubeError && "Invalid Youtube Channel Url"}
-            />
-            {youtubeSubscribers && (
-              <Typography
+            <Box display="flex" alignItems={"center"}>
+              <TextField
+                variant="outlined"
                 color="primary"
-                // fontSize="12px"
-                display="inline"
-                fontStyle="italic"
-              >
-                ({youtubeSubscribers} subscribers)
-              </Typography>
-            )}
+                placeholder="Enter your Youtube Channel URL"
+                style={{ width: "40%" }}
+                value={youtubeUrl}
+                onChange={(e) => setYoutubeUrl(e.target.value)}
+                error={isYoutubeError}
+                helperText={isYoutubeError && "Invalid Youtube Channel Url"}
+              />
+              {youtubeSubscribers && (
+                <Typography
+                  color="gray"
+                  // fontSize="12px"
+                  display="inline"
+                  fontStyle="italic"
+                  fontWeight={600}
+                >
+                  (
+                  {youtubeSubscribers
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                  subscribers)
+                </Typography>
+              )}
+            </Box>
           </Box>
         </Box>
         <Box mt={2}>

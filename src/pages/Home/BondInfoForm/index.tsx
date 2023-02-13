@@ -8,6 +8,9 @@ import {
   Mark,
   Button,
   InputAdornment,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
@@ -78,6 +81,7 @@ const BondInfoForm = () => {
   const [spotifyListeners, setSpotifyListeners] = useState<number>();
   const [youtubeSubscribers, setYoutubeSubscribers] = useState<number>();
   const [artistName, setArtistName] = useState<string>("");
+  const [isInstantLiquidity, setIsInstantLiquidity] = useState(true);
 
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
@@ -85,7 +89,8 @@ const BondInfoForm = () => {
   };
 
   const onClickToDeposit = () => {
-    if (spotifyListeners && youtubeSubscribers && enteredCollateralAmount) {
+    //spotifyListeners && 
+    if (youtubeSubscribers && enteredCollateralAmount) {
       setPendingAssetPoolState({
         nftBondName,
         nftBondSymbol,
@@ -99,7 +104,7 @@ const BondInfoForm = () => {
         currencyId: selectedCurrency,
         individualBondValue: selectedSplitValue,
         noOfBonds: noOfSplits,
-        spotifyListeners,
+        spotifyListeners: spotifyListeners ?? 0,
         youtubeSubscribers,
         artistName,
         //TODO
@@ -433,13 +438,28 @@ const BondInfoForm = () => {
               </Box>
               <Box mb={2} style={{ width: "80%" }}>
                 <Typography>Individual Bond Value</Typography>
-                <Box mt={6}>
+                <Box mt={2}>
+                <FormGroup>
+                  <FormControlLabel control={<Checkbox defaultChecked checked={isInstantLiquidity} onChange={(e, checked) => {
+                    setIsInstantLiquidity(checked);
+                    if (checked) {
+                      setNoOfSplits(0);
+                      setSelectedSplitValue(
+                        parseFloat(
+                          splitSliderData[0].label as string
+                        )
+                      );
+                    }
+                  }} />} label="Instant Liquidity" />
+              </FormGroup>
+              {!isInstantLiquidity && <Box mt={6} mx={2}>
                   <Slider
                     valueLabelDisplay="on"
                     min={1}
                     max={50}
                     step={1}
                     defaultValue={1}
+                    disabled={isInstantLiquidity}
                     onChangeCommitted={(e, val) => {
                       setNoOfSplits(val as number);
                       setSelectedSplitValue(
@@ -449,6 +469,7 @@ const BondInfoForm = () => {
                       );
                     }}
                   ></Slider>
+              </Box>}
                 </Box>
               </Box>
             </Box>

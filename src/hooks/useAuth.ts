@@ -8,7 +8,8 @@ const useAuth = () => {
   const login = useCallback(() => {
     activate(injectedConnector, async (error: Error) => {
       console.log({ error });
-      alert(error.message);
+      // alert(error.message);
+      alert('Please switch to Mumbai testnet to connect')
     });
   }, [activate]);
 

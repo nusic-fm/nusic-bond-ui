@@ -29,22 +29,23 @@ const useStyles = makeStyles({
 });
 
 const steps = [
-  "Get Started",
-  "Marketplace",
+  // "Get Started",
+  // "Marketplace",
   "Bond Information",
   "Deposit",
   "Issue Bond",
 ];
 
 const getActivePath = (pathname: string) => {
-  if (pathname === "/home/mint") {
-    return 1;
-  } else if (pathname.includes("bond-info")) {
-    return 2;
+  // if (pathname === "/home/mint") {
+  //   return 1;
+  // } else 
+  if (pathname.includes("bond-info")) {
+    return 0;
   } else if (pathname.includes("deposit")) {
-    return 3;
+    return 1;
   } else if (pathname.includes("issue-bond")) {
-    return 4;
+    return 2;
   }
 };
 
@@ -56,7 +57,7 @@ const Home = () => {
   const activeStep = getActivePath(location.pathname);
 
   const onMintNftClick = () => {
-    history.push("/home/mint");
+    history.push("/home/mint/opensea/bond-info");
   };
 
   return (

@@ -23,7 +23,7 @@ const Intro = () => {
   const history = useHistory();
 
   const onGettingStarted = () => {
-    history.push("/home");
+    history.push("/home/mint/opensea/bond-info");
   };
 
   return (

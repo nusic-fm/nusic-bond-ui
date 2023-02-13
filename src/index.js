@@ -31,6 +31,9 @@ let theme = createTheme({
     success: {
       main: "#4AAB1A",
     },
+    info: {
+      main: '#A794FF'
+    }
   },
   typography: {
     allVariants: {

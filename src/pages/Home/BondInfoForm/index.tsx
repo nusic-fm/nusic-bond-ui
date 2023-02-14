@@ -83,6 +83,9 @@ const BondInfoForm = () => {
   const [artistName, setArtistName] = useState<string>("");
   const [isInstantLiquidity, setIsInstantLiquidity] = useState(true);
 
+  const [selectedFile, setSelectedFile] = useState<File>();
+  const [preview, setPreview] = useState<string>();
+
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
     setBondValue(enteredValue);
@@ -240,6 +243,34 @@ const BondInfoForm = () => {
         information is used to determine the face value of your NFT bond
       </Typography>
       <Box display="flex" mt={3} flexDirection="column" pl={30}>
+      <Box mt={2}>
+          <Box mb={2}>
+            <Typography variant="h6" fontWeight="600">
+              Bond Issuer
+            </Typography>
+          </Box>
+          <Box mb={2} display="flex" alignItems={'center'}>
+            <Box flexBasis="50%">
+              <Typography>Name</Typography>
+              <TextField
+                variant="outlined"
+                value={nftBondName}
+                onChange={(e) => setNftBondName(e.target.value)}
+              />
+            </Box>
+              {selectedFile ? <img src={preview} alt='prev' width={100} /> : <Button variant="contained" component="label" onChange={(e: any) => {
+                if (e.target.files.length === 0) return
+                const file = e.target.files[0];
+                setSelectedFile(file)
+                setPreview(URL.createObjectURL(file))
+              }}>
+                  Upload
+                  <input hidden accept="image/*" type="file" />
+              </Button>}
+            <Box>
+            </Box>
+          </Box>
+        </Box>
         <Box mt={2}>
           <Box mb={2}>
             <Typography variant="h6" fontWeight="600">
@@ -256,29 +287,15 @@ const BondInfoForm = () => {
               />
             </Box>
             <Box>
-              <Typography>NFT Marketplace</Typography>
-              <TextField
-                variant="outlined"
-                disabled
-                color="success"
-                value="opensea"
-                InputLabelProps={{
-                  classes: {
-                    root: classes.root,
-                  },
-                }}
-              />
-            </Box>
-          </Box>
-
-          <Box mb={2}>
             <Typography>NFT Symbol</Typography>
             <TextField
               variant="outlined"
               value={nftBondSymbol}
               onChange={(e) => setNftBondSymbol(e.target.value)}
             />
+            </Box>
           </Box>
+
         </Box>
         <Box mt={2}>
           <Box mb={2}>
@@ -412,7 +429,7 @@ const BondInfoForm = () => {
                   />
                 </Box>
               </Box>
-              <Box mb={2}>
+              <Box mb={2} mt={'60px'}>
                 <Typography>Face Value</Typography>
                 <Box display="flex" alignItems="center">
                   <TextField

@@ -14,7 +14,7 @@ import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles({
   appBar: {
-    backgroundColor: "black",
+    backgroundColor: "#17172F",
   },
   title: {
     flexGrow: 1,

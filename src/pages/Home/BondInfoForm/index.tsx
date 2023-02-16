@@ -11,6 +11,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  Grid,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
@@ -35,6 +36,8 @@ import {
   SPOTIFY_LISTENERS_URL,
   YOUTUBE_SUBSCRIBERS_URL,
 } from "../../../constants";
+import { useWeb3React } from "@web3-react/core";
+import GaugeChart from "react-gauge-chart";
 
 const useStyles = makeStyles({
   root: {
@@ -49,7 +52,7 @@ const useStyles = makeStyles({
 
 export const supportedCurrencies = [
   // { id: 0, currency: "DAI" },
-  { id: 0, currency: "ETH" },
+  { id: 0, currency: "USDC" },
   // { id: 2, currency: "LINK" },
   // { id: 3, currency: "BTC" },
 ];
@@ -58,7 +61,7 @@ const BondInfoForm = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const { getPrice } = usePrice();
+  // const { getPrice } = usePrice();
   const setPendingAssetPoolState = useSetRecoilState(pendingAssetPoolInfo);
 
   const [nftBondName, setNftBondName] = useState<string>("");
@@ -85,6 +88,7 @@ const BondInfoForm = () => {
 
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string>();
+  const { account } = useWeb3React();
 
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
@@ -92,7 +96,11 @@ const BondInfoForm = () => {
   };
 
   const onClickToDeposit = () => {
-    //spotifyListeners && 
+    //spotifyListeners &&
+    if (!account) {
+      alert("Kindly connect your wallet and try again.");
+      return;
+    }
     if (youtubeSubscribers && enteredCollateralAmount) {
       setPendingAssetPoolState({
         nftBondName,
@@ -123,8 +131,8 @@ const BondInfoForm = () => {
   const onCurrencyChange = async (e: any) => {
     const currenyId = parseInt(e.target.value);
     setSelectedCurrency(currenyId);
-    const price = await getPrice(supportedCurrencies[currenyId].currency);
-    setLatestSelectedCurrencyPrice(price);
+    // const price = await getPrice(supportedCurrencies[currenyId].currency);
+    // setLatestSelectedCurrencyPrice(price);
   };
   const onCollateralAmountChange = (e: any) => {
     const collateral = parseFloat(e.target.value);
@@ -227,8 +235,8 @@ const BondInfoForm = () => {
   useEffect(() => {
     if (!latestSelectedCurrencyPrice) {
       (async () => {
-        const price = await getPrice("ETH");
-        setLatestSelectedCurrencyPrice(price);
+        // const price = await getPrice("ETH");
+        // setLatestSelectedCurrencyPrice(price);
       })();
     }
   }, []);
@@ -242,154 +250,181 @@ const BondInfoForm = () => {
         Fill in the following information for your NFT bond. The following
         information is used to determine the face value of your NFT bond
       </Typography>
-      <Box display="flex" mt={3} flexDirection="column" pl={30}>
-      <Box mt={2}>
-          <Box mb={2}>
-            <Typography variant="h6" fontWeight="600">
-              Bond Issuer
-            </Typography>
-          </Box>
-          <Box mb={2} display="flex" alignItems={'center'}>
-            <Box flexBasis="50%">
-              <Typography>Name</Typography>
-              <TextField
-                variant="outlined"
-                value={nftBondName}
-                onChange={(e) => setNftBondName(e.target.value)}
-              />
-            </Box>
-              {selectedFile ? <img src={preview} alt='prev' width={100} /> : <Button variant="contained" component="label" onChange={(e: any) => {
-                if (e.target.files.length === 0) return
-                const file = e.target.files[0];
-                setSelectedFile(file)
-                setPreview(URL.createObjectURL(file))
-              }}>
-                  Upload
-                  <input hidden accept="image/*" type="file" />
-              </Button>}
-            <Box>
-            </Box>
-          </Box>
-        </Box>
-        <Box mt={2}>
-          <Box mb={2}>
-            <Typography variant="h6" fontWeight="600">
-              NFT Information
-            </Typography>
-          </Box>
-          <Box mb={2} display="flex">
-            <Box flexBasis="50%">
-              <Typography>NFT Name</Typography>
-              <TextField
-                variant="outlined"
-                value={nftBondName}
-                onChange={(e) => setNftBondName(e.target.value)}
-              />
-            </Box>
-            <Box>
-            <Typography>NFT Symbol</Typography>
-            <TextField
-              variant="outlined"
-              value={nftBondSymbol}
-              onChange={(e) => setNftBondSymbol(e.target.value)}
-            />
-            </Box>
-          </Box>
-
-        </Box>
-        <Box mt={2}>
-          <Box mb={2}>
-            <Typography variant="h6" fontWeight="600">
-              Artist Information
-            </Typography>
-          </Box>
-          <Box mb={2}>
-            <Typography>Spotify Artist ID</Typography>
-            <Box display="flex" alignItems={"center"}>
-              <TextField
-                variant="outlined"
-                placeholder="Enter your Spotify Artist ID"
-                className={classes.root}
-                value={spotifyId}
-                onChange={(e) => setSpotifyId(e.target.value)}
-                error={isSpotifyError}
-                helperText={isSpotifyError && "Invalid Spotify Artist Id"}
-                style={{ width: "250px" }}
-              />
-              {spotifyListeners && (
-                <Typography
-                  // fontSize="12px"
-                  display="inline"
-                  fontStyle="italic"
-                  color="gray"
-                  fontWeight={600}
-                >
-                  (
-                  {spotifyListeners
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                  monthly spotify listeners)
-                </Typography>
-              )}
-            </Box>
-          </Box>
-          <Box mb={2}>
-            <Typography>Youtube Channel URL</Typography>
-            <Box display="flex" alignItems={"center"}>
-              <TextField
-                variant="outlined"
-                color="primary"
-                placeholder="Enter your Youtube Channel URL"
-                style={{ width: "40%" }}
-                value={youtubeUrl}
-                onChange={(e) => setYoutubeUrl(e.target.value)}
-                error={isYoutubeError}
-                helperText={isYoutubeError && "Invalid Youtube Channel Url"}
-              />
-              {youtubeSubscribers && (
-                <Typography
-                  color="gray"
-                  // fontSize="12px"
-                  display="inline"
-                  fontStyle="italic"
-                  fontWeight={600}
-                >
-                  (
-                  {youtubeSubscribers
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                  subscribers)
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        </Box>
-        <Box mt={2}>
-          <Box mb={2}>
-            <Typography variant="h6" fontWeight="600">
-              Bond Information
-            </Typography>
-          </Box>
-          <Box display="flex">
-            <Box flexBasis="50%">
+      <Grid container>
+        <Grid md={3} item></Grid>
+        <Grid xs={12} md={7} item>
+          <Box display="flex" mt={3} flexDirection="column">
+            <Box mt={2}>
               <Box mb={2}>
-                <Typography>Collateral Deposit for Q1 Year 0</Typography>
-                <Box>
+                <Typography variant="h6" fontWeight="600">
+                  Bond Issuer
+                </Typography>
+              </Box>
+              <Box mb={2} display="flex" alignItems={"center"}>
+                <Box flexBasis="50%">
+                  <Typography>Name</Typography>
                   <TextField
                     variant="outlined"
-                    color="primary"
-                    placeholder="Enter collateral deposit amount"
-                    type="number"
-                    style={{ width: "45%" }}
-                    value={enteredCollateralAmount}
-                    onChange={onCollateralAmountChange}
+                    value={nftBondName}
+                    onChange={(e) => setNftBondName(e.target.value)}
+                  />
+                </Box>
+                {selectedFile ? (
+                  <img
+                    src={preview}
+                    alt="prev"
+                    width={100}
+                    height={100}
+                    style={{ borderRadius: "50%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <Button
+                    variant="contained"
+                    component="label"
+                    onChange={(e: any) => {
+                      if (e.target.files.length === 0) return;
+                      const file = e.target.files[0];
+                      setSelectedFile(file);
+                      setPreview(URL.createObjectURL(file));
+                    }}
+                  >
+                    Upload
+                    <input hidden accept="image/*" type="file" />
+                  </Button>
+                )}
+                <Box></Box>
+              </Box>
+            </Box>
+            <Box mt={2}>
+              <Box mb={2}>
+                <Typography variant="h6" fontWeight="600">
+                  NFT Information
+                </Typography>
+              </Box>
+              <Box mb={2} display="flex">
+                <Box flexBasis="50%">
+                  <Typography>NFT Name</Typography>
+                  <TextField
+                    variant="outlined"
+                    value={nftBondName}
+                    onChange={(e) => setNftBondName(e.target.value)}
+                  />
+                </Box>
+                <Box>
+                  <Typography>NFT Symbol</Typography>
+                  <TextField
+                    variant="outlined"
+                    value={nftBondSymbol}
+                    onChange={(e) => setNftBondSymbol(e.target.value)}
+                  />
+                </Box>
+              </Box>
+            </Box>
+            <Box mt={2}>
+              <Box mb={2}>
+                <Typography variant="h6" fontWeight="600">
+                  Artist Information
+                </Typography>
+              </Box>
+              <Box mb={2}>
+                <Typography>Spotify Artist ID</Typography>
+                <Box display="flex" alignItems={"center"}>
+                  <TextField
+                    variant="outlined"
+                    placeholder="Enter your Spotify Artist ID"
+                    className={classes.root}
+                    value={spotifyId}
+                    onChange={(e) => setSpotifyId(e.target.value)}
+                    error={isSpotifyError}
+                    helperText={isSpotifyError && "Invalid Spotify Artist Id"}
+                    style={{ width: "300px" }}
                     InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">ETH</InputAdornment>
+                      endAdornment: (
+                        <img src="/spotify.png" alt="" width={"40px"} />
                       ),
                     }}
                   />
-                  <Box display="inline" ml={2}>
+                  {spotifyListeners && (
+                    <Typography
+                      // fontSize="12px"
+                      display="inline"
+                      fontStyle="italic"
+                      color="gray"
+                      fontWeight={600}
+                    >
+                      (
+                      {spotifyListeners
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                      monthly spotify listeners)
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+              <Box mb={2}>
+                <Typography>Youtube Channel URL</Typography>
+                <Box display="flex" alignItems={"center"}>
+                  <TextField
+                    variant="outlined"
+                    color="primary"
+                    placeholder="Enter your Youtube Channel URL"
+                    style={{ width: "40%" }}
+                    value={youtubeUrl}
+                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    error={isYoutubeError}
+                    helperText={isYoutubeError && "Invalid Youtube Channel Url"}
+                    InputProps={{
+                      endAdornment: (
+                        <img src="/youtube.png" alt="" width={"40px"} />
+                      ),
+                    }}
+                  />
+                  {youtubeSubscribers && (
+                    <Typography
+                      color="gray"
+                      // fontSize="12px"
+                      display="inline"
+                      fontStyle="italic"
+                      fontWeight={600}
+                    >
+                      (
+                      {youtubeSubscribers
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                      subscribers)
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            </Box>
+            <Box mt={2}>
+              <Box mb={2}>
+                <Typography variant="h6" fontWeight="600">
+                  Bond Information
+                </Typography>
+              </Box>
+              <Box display="flex">
+                <Box flexBasis="50%">
+                  <Box mb={2}>
+                    <Typography>Collateral Deposit for Q1 Year 0</Typography>
+                    <Box>
+                      <TextField
+                        variant="outlined"
+                        color="primary"
+                        placeholder="Enter collateral deposit amount"
+                        type="number"
+                        style={{ width: "45%" }}
+                        value={enteredCollateralAmount}
+                        onChange={onCollateralAmountChange}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              USDC
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      {/* <Box display="inline" ml={2}>
                     <Select
                       value={selectedCurrency}
                       onChange={onCurrencyChange}
@@ -410,204 +445,313 @@ const BondInfoForm = () => {
                         USD )
                       </Typography>
                     )}
+                  </Box> */}
+                    </Box>
                   </Box>
-                </Box>
-              </Box>
-              <Box mb={2} style={{ width: "80%" }}>
-                <Typography>Select Term</Typography>
-                <Box mt={6}>
-                  <Slider
-                    min={1}
-                    max={5}
-                    step={1}
-                    defaultValue={3}
-                    onChangeCommitted={(e, value) => {
-                      setSelectedTerm(value as number);
-                    }}
-                    valueLabelDisplay="on"
-                    valueLabelFormat={(val: number) => `${val} year(s)`}
-                  />
-                </Box>
-              </Box>
-              <Box mb={2} mt={'60px'}>
-                <Typography>Face Value</Typography>
-                <Box display="flex" alignItems="center">
-                  <TextField
-                    variant="outlined"
-                    color="primary"
-                    placeholder="Enter USD face value of bond"
-                    type="number"
-                    onChange={onBondValueChange}
-                    value={bondValue}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">ETH</InputAdornment>
-                      ),
-                    }}
-                  />
-                  {latestSelectedCurrencyPrice && (
+                  <Box mb={2} style={{ width: "80%" }}>
+                    <Typography>Select Term</Typography>
+                    <Box mt={6}>
+                      <Slider
+                        min={1}
+                        max={5}
+                        step={1}
+                        defaultValue={3}
+                        onChangeCommitted={(e, value) => {
+                          setSelectedTerm(value as number);
+                        }}
+                        valueLabelDisplay="on"
+                        valueLabelFormat={(val: number) => `${val} year(s)`}
+                      />
+                    </Box>
+                  </Box>
+                  <Box mb={2} mt={"30px"}>
+                    <Typography>Face Value</Typography>
+                    <Box display="flex" alignItems="center">
+                      <TextField
+                        variant="outlined"
+                        color="primary"
+                        placeholder="Enter USD face value of bond"
+                        type="number"
+                        onChange={onBondValueChange}
+                        value={bondValue}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              USDC
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      {/* {latestSelectedCurrencyPrice && (
                     <Typography fontStyle="italic">
                       ({(bondValue * latestSelectedCurrencyPrice).toFixed(2)}{" "}
                       USD)
                     </Typography>
+                  )} */}
+                    </Box>
+                  </Box>
+                </Box>
+                <Box flexBasis="50%" width={"100%"}>
+                  <Box width={"100%"} display={"flex"} flexDirection={"column"}>
+                    <Typography>Value Summary</Typography>
+                    <Box width={"100%"} display={"flex"}>
+                      <Box className={classes.summary} mt={1}>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          p={1}
+                          pb={0}
+                        >
+                          <Typography fontWeight="bold" color="black">
+                            Collateral Deposit
+                          </Typography>
+                          <Typography color="black">
+                            {enteredCollateralAmount || "--"}
+                            {" " +
+                              supportedCurrencies[selectedCurrency].currency}
+                          </Typography>
+                        </Box>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          p={1}
+                          pb={0}
+                        >
+                          <Typography fontWeight="bold" color="black">
+                            Term
+                          </Typography>
+                          <Typography color="black">
+                            {selectedTerm} year(s)
+                          </Typography>
+                        </Box>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          p={1}
+                          pb={0}
+                        >
+                          <Typography fontWeight="bold" color="black">
+                            Face Value
+                          </Typography>
+                          <Typography color="black">
+                            USDC {bondValue}
+                          </Typography>
+                        </Box>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          p={1}
+                          pb={0}
+                        >
+                          <Typography fontWeight="bold" color="black">
+                            Individual Bond Value
+                          </Typography>
+                          <Typography color="black">
+                            USDC {selectedSplitValue.toFixed(2)}
+                          </Typography>
+                        </Box>
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          p={1}
+                        >
+                          <Typography fontWeight="bold" color="black">
+                            No of Bond Segmants
+                          </Typography>
+                          <Typography color="black">
+                            {pieData.length}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+            <Box mt={2} mb={2}>
+              <Typography variant="h6" fontWeight={600}>
+                Individual Bond Value
+              </Typography>
+              <Box mt={2} display="flex">
+                <Box
+                  flexBasis={"50%"}
+                  display="flex"
+                  flexDirection={"column"}
+                  // justifyContent="center"
+                >
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          defaultChecked
+                          checked={isInstantLiquidity}
+                          onChange={(e, checked) => {
+                            setIsInstantLiquidity(checked);
+                            if (checked) {
+                              setNoOfSplits(0);
+                              setSelectedSplitValue(
+                                parseFloat(splitSliderData[0].label as string)
+                              );
+                            }
+                          }}
+                        />
+                      }
+                      label="Instant Liquidity"
+                    />
+                  </FormGroup>
+                  <Box
+                    mt={6}
+                    mx={2}
+                    style={{
+                      visibility: isInstantLiquidity ? "hidden" : "visible",
+                    }}
+                  >
+                    <Slider
+                      valueLabelDisplay="on"
+                      min={1}
+                      max={50}
+                      step={1}
+                      defaultValue={1}
+                      disabled={isInstantLiquidity}
+                      onChangeCommitted={(e, val) => {
+                        setNoOfSplits(val as number);
+                        setSelectedSplitValue(
+                          parseFloat(
+                            splitSliderData[(val as number) - 1].label as string
+                          )
+                        );
+                      }}
+                    ></Slider>
+                  </Box>
+                </Box>
+                <Box
+                  display="flex"
+                  // justifyContent="center"
+                  style={{ width: "100%" }}
+                  flexBasis={"50%"}
+                >
+                  {pieData.length > 0 && (
+                    <AccumulationChartComponent
+                      id="pie-chart"
+                      legendSettings={{ visible: false }}
+                      enableSmartLabels={true}
+                      enableAnimation={true}
+                      center={{ x: "50%", y: "45%" }}
+                      tooltip={{ enable: false }}
+                      // highlightPattern="Bubble"
+                      // highLightMode="Point"
+                      background="#17172F"
+                      width="300px"
+                      height="300px"
+                    >
+                      <Inject
+                        services={[
+                          AccumulationLegend,
+                          PieSeries,
+                          AccumulationTooltip,
+                          AccumulationDataLabel,
+                        ]}
+                      />
+                      <AccumulationSeriesCollectionDirective>
+                        <AccumulationSeriesDirective
+                          innerRadius="20%"
+                          dataSource={pieData}
+                          name="Browser"
+                          xName="label"
+                          yName="value"
+                          explode={true}
+                          explodeOffset="10%"
+                          explodeIndex={0}
+                          dataLabel={{
+                            visible: true,
+                            position: "Outside",
+                            name: "text",
+                            font: {
+                              fontWeight: "600",
+                            },
+                          }}
+                          // radius="r"
+                        ></AccumulationSeriesDirective>
+                      </AccumulationSeriesCollectionDirective>
+                    </AccumulationChartComponent>
                   )}
                 </Box>
               </Box>
-              <Box mb={2} style={{ width: "80%" }}>
-                <Typography>Individual Bond Value</Typography>
-                <Box mt={2}>
-                <FormGroup>
-                  <FormControlLabel control={<Checkbox defaultChecked checked={isInstantLiquidity} onChange={(e, checked) => {
-                    setIsInstantLiquidity(checked);
-                    if (checked) {
-                      setNoOfSplits(0);
-                      setSelectedSplitValue(
-                        parseFloat(
-                          splitSliderData[0].label as string
-                        )
-                      );
-                    }
-                  }} />} label="Instant Liquidity" />
-              </FormGroup>
-              {!isInstantLiquidity && <Box mt={6} mx={2}>
-                  <Slider
-                    valueLabelDisplay="on"
-                    min={1}
-                    max={50}
-                    step={1}
-                    defaultValue={1}
-                    disabled={isInstantLiquidity}
-                    onChangeCommitted={(e, val) => {
-                      setNoOfSplits(val as number);
-                      setSelectedSplitValue(
-                        parseFloat(
-                          splitSliderData[(val as number) - 1].label as string
-                        )
-                      );
-                    }}
-                  ></Slider>
-              </Box>}
-                </Box>
-              </Box>
             </Box>
-            <Box flexBasis="50%">
-              <Box>
-                <Typography>Value Summary</Typography>
-                <Box className={classes.summary} mt={1}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    p={1}
-                    pb={0}
-                  >
-                    <Typography fontWeight="bold" color="black">
-                      Collateral Deposit
-                    </Typography>
-                    <Typography color="black">
-                      {enteredCollateralAmount || "--"}
-                      {" " + supportedCurrencies[selectedCurrency].currency}
-                    </Typography>
-                  </Box>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    p={1}
-                    pb={0}
-                  >
-                    <Typography fontWeight="bold" color="black">
-                      Term
-                    </Typography>
-                    <Typography color="black">
-                      {selectedTerm} year(s)
-                    </Typography>
-                  </Box>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    p={1}
-                    pb={0}
-                  >
-                    <Typography fontWeight="bold" color="black">
-                      Face Value
-                    </Typography>
-                    <Typography color="black">ETH {bondValue}</Typography>
-                  </Box>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    p={1}
-                    pb={0}
-                  >
-                    <Typography fontWeight="bold" color="black">
-                      Individual Bond Value
-                    </Typography>
-                    <Typography color="black">
-                      ETH {selectedSplitValue}
-                    </Typography>
-                  </Box>
-                  <Box display="flex" justifyContent="space-between" p={1}>
-                    <Typography fontWeight="bold" color="black">
-                      No of Bond Segmants
-                    </Typography>
-                    <Typography color="black">{pieData.length}</Typography>
+            <Box mt={2} mb={2}>
+              <Typography variant="h6" fontWeight="600" sx={{ mb: 2 }}>
+                Bond Rating
+              </Typography>
+              <Box display="flex" alignItems={"center"}>
+                <Box flexBasis={"50%"}>
+                  <Box>
+                    <Grid
+                      container
+                      rowGap={1}
+                      p={2}
+                      className={classes.summary}
+                    >
+                      <Grid xs={6}>
+                        <Typography color={"black"} fontWeight={600}>
+                          Rating
+                        </Typography>
+                      </Grid>
+                      <Grid xs={6}>
+                        <Typography color={"black"}>AAA</Typography>
+                      </Grid>
+                      <Grid xs={6}>
+                        <Typography color={"black"} fontWeight={600}>
+                          Grade
+                        </Typography>
+                      </Grid>
+                      <Grid xs={6}>
+                        <Typography color={"black"}>Investment</Typography>
+                      </Grid>
+                      <Grid xs={6}>
+                        <Typography color={"black"} fontWeight={600}>
+                          Spotify Median
+                        </Typography>
+                      </Grid>
+                      <Grid xs={6}>
+                        <Typography color={"black"}>5,000,000+</Typography>
+                      </Grid>
+                    </Grid>
                   </Box>
                 </Box>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="center"
-                style={{ width: "70%" }}
-              >
-                {pieData.length > 0 && (
-                  <AccumulationChartComponent
-                    id="pie-chart"
-                    legendSettings={{ visible: false }}
-                    enableSmartLabels={true}
-                    enableAnimation={true}
-                    center={{ x: "50%", y: "50%" }}
-                    tooltip={{ enable: false }}
-                    // highlightPattern="Bubble"
-                    // highLightMode="Point"
-                    background="#17172F"
-                    width="300px"
-                    height="300px"
+                <Box
+                  flexBasis={"50%"}
+                  // display={"flex"}
+                  // justifyContent="center"
+                  width={"100%"}
+                >
+                  <GaugeChart
+                    nrOfLevels={4}
+                    arcPadding={0.1}
+                    cornerRadius={6}
+                    percent={0.06}
+                    hideText
+                    style={{ width: "65%" }}
+                  />
+                  <Box
+                    width={"65%"}
+                    display="flex"
+                    justifyContent={"space-between"}
+                    px={4}
                   >
-                    <Inject
-                      services={[
-                        AccumulationLegend,
-                        PieSeries,
-                        AccumulationTooltip,
-                        AccumulationDataLabel,
-                      ]}
-                    />
-                    <AccumulationSeriesCollectionDirective>
-                      <AccumulationSeriesDirective
-                        innerRadius="20%"
-                        dataSource={pieData}
-                        name="Browser"
-                        xName="label"
-                        yName="value"
-                        explode={true}
-                        explodeOffset="10%"
-                        explodeIndex={0}
-                        dataLabel={{
-                          visible: true,
-                          position: "Outside",
-                          name: "text",
-                          font: {
-                            fontWeight: "600",
-                          },
-                        }}
-                        // radius="r"
-                      ></AccumulationSeriesDirective>
-                    </AccumulationSeriesCollectionDirective>
-                  </AccumulationChartComponent>
-                )}
+                    <Typography variant="caption" fontWeight={600}>
+                      Low Risk
+                    </Typography>
+                    <Typography variant="caption" fontWeight={600}>
+                      High Risk
+                    </Typography>
+                  </Box>
+                </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
-      </Box>
+        </Grid>
+        <Grid md={2} item></Grid>
+      </Grid>
       <Footer position="relative">
         <Button>
           <Button

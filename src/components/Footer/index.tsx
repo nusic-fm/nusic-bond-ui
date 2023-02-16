@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 
 const useStyles = makeStyles({
   root: {
-    backgroundColor: "black",
+    backgroundColor: "#17172F",
     bottom: 0,
     height: "70px",
     width: "100%",

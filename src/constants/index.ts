@@ -1,5 +1,6 @@
 export const SPOTIFY_LISTENERS_URL =
-  "https://chainlink-spotify-adaptor-ynfarb57wa-uc.a.run.app/listeners";
+  "https://listeners-data-server-ynfarb57wa-uc.a.run.app/listeners";
+// "https://chainlink-spotify-adaptor-ynfarb57wa-uc.a.run.app/listeners";
 export const SPOTIFY_IDS_URL =
   "https://chainlink-spotify-adaptor-ynfarb57wa-uc.a.run.app/ids";
 export const YOUTUBE_SUBSCRIBERS_URL =

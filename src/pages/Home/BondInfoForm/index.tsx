@@ -141,12 +141,10 @@ const BondInfoForm = () => {
 
   const setSpotifyListenersData = async (_spotifyId: string): Promise<void> => {
     try {
-      const data = await axios.post(SPOTIFY_LISTENERS_URL, {
-        data: { id: _spotifyId },
-      });
-      console.log({ data });
-      if (data.data.result) {
-        setSpotifyListeners(data.data.result);
+      const res = await axios.get(`${SPOTIFY_LISTENERS_URL}/${_spotifyId}`);
+
+      if (res.data.listeners) {
+        setSpotifyListeners(res.data.listeners);
         setIsSpotifyError(false);
         try {
           const ids = await axios.post(SPOTIFY_IDS_URL, {
@@ -288,7 +286,7 @@ const BondInfoForm = () => {
                       setPreview(URL.createObjectURL(file));
                     }}
                   >
-                    Upload
+                    Upload Picture
                     <input hidden accept="image/*" type="file" />
                   </Button>
                 )}

@@ -32,9 +32,11 @@ import { pendingAssetPoolInfo } from "../../../state";
 import usePrice from "../../../hooks/usePrice";
 import axios from "axios";
 import {
-  SPOTIFY_IDS_URL,
-  SPOTIFY_LISTENERS_URL,
+  // SPOTIFY_IDS_URL,
+  SPOTIFY_LISTENERS_ISRC,
+  // SPOTIFY_LISTENERS_URL,
   YOUTUBE_SUBSCRIBERS_URL,
+  YOUTUBE_VIEWS_URL,
 } from "../../../constants";
 import { useWeb3React } from "@web3-react/core";
 import GaugeChart from "react-gauge-chart";
@@ -82,6 +84,7 @@ const BondInfoForm = () => {
   const [isSpotifyError, setIsSpotifyError] = useState<boolean>(false);
   const [isYoutubeError, setIsYoutubeError] = useState<boolean>(false);
   const [spotifyListeners, setSpotifyListeners] = useState<number>();
+  const [songTitle, setSongTitle] = useState<string>();
   const [youtubeSubscribers, setYoutubeSubscribers] = useState<number>();
   const [artistName, setArtistName] = useState<string>("");
   const [isInstantLiquidity, setIsInstantLiquidity] = useState(true);
@@ -127,6 +130,7 @@ const BondInfoForm = () => {
       alert("Kindly fill all the fields.");
     }
   };
+  console.log({ spotifyListeners, youtubeSubscribers });
 
   const onCurrencyChange = async (e: any) => {
     const currenyId = parseInt(e.target.value);
@@ -141,21 +145,23 @@ const BondInfoForm = () => {
 
   const setSpotifyListenersData = async (_spotifyId: string): Promise<void> => {
     try {
-      const res = await axios.get(`${SPOTIFY_LISTENERS_URL}/${_spotifyId}`);
+      const res = await axios.get(`${SPOTIFY_LISTENERS_ISRC}/${_spotifyId}`);
 
       if (res.data.listeners) {
         setSpotifyListeners(res.data.listeners);
+        setSongTitle(res.data.songTitle);
         setIsSpotifyError(false);
-        try {
-          const ids = await axios.post(SPOTIFY_IDS_URL, {
-            id: _spotifyId,
-          });
-          if (ids.data.length) {
-            setArtistName(ids.data[0].artist_name);
-          }
-        } catch (e) {
-          console.log(e);
-        }
+        setArtistName(res.data.artistName);
+        // try {
+        //   const ids = await axios.post(SPOTIFY_IDS_URL, {
+        //     id: _spotifyId,
+        //   });
+        //   if (ids.data.length) {
+        //     setArtistName(ids.data[0].artist_name);
+        //   }
+        // } catch (e) {
+        //   console.log(e);
+        // }
       } else {
         setIsSpotifyError(true);
       }
@@ -182,6 +188,30 @@ const BondInfoForm = () => {
       setIsYoutubeError(true);
     }
   };
+
+  const setYoutubeViewsCount = async (_videoUrl: string): Promise<void> => {
+    var regExp =
+      /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    var match = _videoUrl.match(regExp);
+
+    if (match && match[2]) {
+      try {
+        const res = await axios.get(`${YOUTUBE_VIEWS_URL}/${match[2]}`);
+
+        if (res.data.listeners) {
+          setYoutubeSubscribers(Number(res.data.listeners));
+          setIsYoutubeError(false);
+        } else {
+          setIsYoutubeError(true);
+        }
+      } catch (e) {
+        setIsYoutubeError(true);
+      }
+    } else {
+      setIsYoutubeError(true);
+    }
+  };
+
   const calculateBondValueWithPrice = async () => {
     if (enteredCollateralAmount && selectedTerm) {
       const price = latestSelectedCurrencyPrice;
@@ -227,7 +257,8 @@ const BondInfoForm = () => {
   }, [spotifyId]);
   useEffect(() => {
     if (youtubeUrl) {
-      setYoutubeSubscribersData(youtubeUrl);
+      // setYoutubeSubscribersData(youtubeUrl);
+      setYoutubeViewsCount(youtubeUrl);
     }
   }, [youtubeUrl]);
   useEffect(() => {
@@ -263,8 +294,9 @@ const BondInfoForm = () => {
                   <Typography>Name</Typography>
                   <TextField
                     variant="outlined"
-                    value={nftBondName}
-                    onChange={(e) => setNftBondName(e.target.value)}
+                    value={artistName}
+                    disabled
+                    placeholder="autofill"
                   />
                 </Box>
                 {selectedFile ? (
@@ -325,32 +357,33 @@ const BondInfoForm = () => {
                 </Typography>
               </Box>
               <Box mb={2}>
-                <Typography>Spotify Artist ID</Typography>
+                <Typography>ISRC</Typography>
                 <Box display="flex" alignItems={"center"}>
                   <TextField
                     variant="outlined"
-                    placeholder="Enter your Spotify Artist ID"
+                    // placeholder="Enter your Spotify Artist ID"
+                    placeholder="ISRC"
                     className={classes.root}
                     value={spotifyId}
                     onChange={(e) => setSpotifyId(e.target.value)}
                     error={isSpotifyError}
                     helperText={isSpotifyError && "Invalid Spotify Artist Id"}
                     style={{ width: "300px" }}
-                    InputProps={{
-                      endAdornment: (
-                        <img src="/spotify.png" alt="" width={"40px"} />
-                      ),
-                    }}
+                    // InputProps={{
+                    //   endAdornment: (
+                    //     <img src="/spotify.png" alt="" width={"40px"} />
+                    //   ),
+                    // }}
                   />
                   {spotifyListeners && (
                     <Typography
                       // fontSize="12px"
                       display="inline"
                       fontStyle="italic"
-                      color="gray"
+                      // color="#c4c4c4"
                       fontWeight={600}
                     >
-                      (
+                      ( {songTitle} :{" "}
                       {spotifyListeners
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
@@ -360,17 +393,17 @@ const BondInfoForm = () => {
                 </Box>
               </Box>
               <Box mb={2}>
-                <Typography>Youtube Channel URL</Typography>
+                <Typography>Youtube Video URL</Typography>
                 <Box display="flex" alignItems={"center"}>
                   <TextField
                     variant="outlined"
                     color="primary"
-                    placeholder="Enter your Youtube Channel URL"
+                    placeholder="Enter your Youtube Video URL"
                     style={{ width: "40%" }}
                     value={youtubeUrl}
                     onChange={(e) => setYoutubeUrl(e.target.value)}
                     error={isYoutubeError}
-                    helperText={isYoutubeError && "Invalid Youtube Channel Url"}
+                    helperText={isYoutubeError && "Invalid Youtube video Url"}
                     InputProps={{
                       endAdornment: (
                         <img src="/youtube.png" alt="" width={"40px"} />
@@ -379,7 +412,7 @@ const BondInfoForm = () => {
                   />
                   {youtubeSubscribers && (
                     <Typography
-                      color="gray"
+                      // color="gray"
                       // fontSize="12px"
                       display="inline"
                       fontStyle="italic"
@@ -389,7 +422,7 @@ const BondInfoForm = () => {
                       {youtubeSubscribers
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                      subscribers)
+                      views)
                     </Typography>
                   )}
                 </Box>
@@ -710,9 +743,18 @@ const BondInfoForm = () => {
                           Spotify Median
                         </Typography>
                       </Grid>
-                      <Grid xs={6}>
-                        <Typography color={"black"}>5,000,000+</Typography>
-                      </Grid>
+                      {spotifyListeners && youtubeSubscribers ? (
+                        <Grid xs={6}>
+                          <Typography color={"black"}>
+                            {(
+                              (spotifyListeners + youtubeSubscribers) /
+                              2
+                            ).toFixed(0)}
+                          </Typography>
+                        </Grid>
+                      ) : (
+                        <Typography>-</Typography>
+                      )}
                     </Grid>
                   </Box>
                 </Box>

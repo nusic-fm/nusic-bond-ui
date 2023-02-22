@@ -20,6 +20,7 @@ import useAuth from "../../../hooks/useAuth";
 import { useApManager } from "../../../hooks/useManager";
 import { AssetPoolInfo, pendingAssetPoolInfo } from "../../../state";
 import { supportedCurrencies } from "../BondInfoForm";
+import { abi as AssetPoolAbi } from "../../../abis/AssetPool.json";
 
 const DepositCollateral = () => {
   const { account, library } = useWeb3React();
@@ -35,23 +36,52 @@ const DepositCollateral = () => {
   const [apAddress, setApAddress] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const depositCollateral = async (amount: string) => {
+    if (!account) {
+      alert("Kindly connect your wallet!");
+      return;
+    }
+    if (!apAddress) {
+      alert("Something's wrong, please try again later");
+      return;
+    }
+    const contract = new ethers.Contract(
+      apAddress,
+      AssetPoolAbi,
+      library.getSigner()
+    );
+    const tx = await contract.depositFunds(amount);
+    alert("Successfully Deposited");
+    return tx;
+  };
+
   const onDepositClick = async () => {
     if (account && apAddress && _pendingAssetPoolInfo) {
       // await ethers.ma
       const signer = library.getSigner();
-      const tx = {
-        from: account,
-        to: apAddress,
-        value: ethers.utils.parseEther(
-          _pendingAssetPoolInfo.collateralAmount.toString()
-        ),
-      };
-      console.dir(tx);
+      // const tx = {
+      //   from: account,
+      //   to: apAddress,
+      //   value: ethers.utils.parseEther(
+      //     _pendingAssetPoolInfo.collateralAmount.toString()
+      //   ),
+      // };
+      // console.dir(tx);
       try {
-        const ftx = await signer.sendTransaction(tx);
+        // const ftx = await signer.sendTransaction(tx);
+
         setIsLoading(true);
-        const receipt = await ftx.wait();
-        console.log({ transfer: receipt });
+        const apprvalContract = await new ethers.Contract(
+          "0xeeB5276300CcC8B5cAF6a0108566815fbaAd35f8",
+          [
+            "function approve(address _spender, uint256 _value) public returns (bool success)",
+          ],
+          library.getSigner()
+        );
+        const tx = await apprvalContract.approve(apAddress, "1000000");
+        await tx.wait();
+        const receipt = await depositCollateral("1000000");
+        console.log({ transfer: receipt.hash });
         const poolInfo: AssetPoolInfo = {
           ..._pendingAssetPoolInfo,
           isCollateralDeposited: true,
@@ -61,6 +91,7 @@ const DepositCollateral = () => {
         setIsLoading(false);
         history.push("/home/mint/opensea/issue-bond");
       } catch (error) {
+        setIsLoading(false);
         alert("failed to send!!");
       }
     } else {

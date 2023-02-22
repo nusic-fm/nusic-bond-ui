@@ -1,39 +1,47 @@
-import { useWeb3React } from "@web3-react/core";
-import { BigNumber } from "ethers";
+import { ethers } from "ethers";
 import { NFTData } from "../container/DashboardRow";
-import { getBondNFTContract } from "../utils/contractHelpers";
+import { abi as BondNftAbi } from "../abis/BondNFT.json";
 
 const useNftBond = () => {
-  const { library } = useWeb3React();
+  // const { library } = useWeb3React();
 
   const getNFTData = async (nftAddress: string): Promise<null | NFTData> => {
-    await library.ready;
-    if (library) {
+    // await library.ready;
+    // if (library) {
+    try {
+      const provider = new ethers.providers.AlchemyProvider(
+        "maticmum",
+        process.env.REACT_APP_ALCHEMY
+      );
+      const nftBondContract = new ethers.Contract(
+        nftAddress,
+        BondNftAbi,
+        provider
+      );
+      const name = await nftBondContract.name();
+      const symbol = await nftBondContract.symbol();
+      let tokenUri = "";
       try {
-        const nftBondContract = getBondNFTContract(nftAddress, library);
-        const name = await nftBondContract.name();
-        const symbol = await nftBondContract.symbol();
-        let tokenUri = "";
-        try {
-          tokenUri = await nftBondContract.tokenURI(BigNumber.from("0"));
-        } catch (e) {
-          console.log("tokenUri: ", e);
-        }
-
-        return {
-          name,
-          symbol,
-          tokenUri,
-          nftAddress,
-        };
+        // tokenUri = await nftBondContract.tokenURI(BigNumber.from("0"));
       } catch (e) {
-        console.error(e);
-        return null;
+        console.log("tokenUri: ", e);
       }
-    } else {
-      alert("Connect your wallet to continue...");
+
+      return {
+        name,
+        symbol,
+        tokenUri,
+        nftAddress,
+      };
+    } catch (e) {
+      console.error(e);
       return null;
     }
+    // }
+    // else {
+    //   alert("Connect your wallet to continue...");
+    //   return null;
+    // }
   };
 
   return { getNFTData };

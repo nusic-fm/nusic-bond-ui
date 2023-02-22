@@ -10,7 +10,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import { Box } from "@mui/system";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
@@ -39,10 +39,17 @@ const IssueBond = () => {
       try {
         setProcessMode(1);
         console.log("noOfBonds: ", _pendingAssetPoolInfo.noOfBonds);
+        // (string memory _artistName, string memory _youtubeSongId, string memory _soundchartsSongId, string memory _songstatsSongId,
+        //   uint256 _fundingAmount, uint256 _numberOfYears, uint256 _numberOfBonds,
+        //   uint256 _facevalue, string memory _bondName, string memory _bondSymbol,
+        //   ListenersDetails memory listenersDetails) public returns(address nftAddress)
         const tx = await issueBond(
           _pendingAssetPoolInfo.artistName,
-          _pendingAssetPoolInfo.spotifyId,
-          _pendingAssetPoolInfo.youtubeUrl,
+          _pendingAssetPoolInfo.youtubeId,
+          _pendingAssetPoolInfo.soundChartId,
+          _pendingAssetPoolInfo.songStatId,
+          // _pendingAssetPoolInfo.spotifyId,
+          // _pendingAssetPoolInfo.youtubeUrl,
           _pendingAssetPoolInfo.collateralAmount,
           _pendingAssetPoolInfo.termInYears,
           _pendingAssetPoolInfo.noOfBonds || 1,
@@ -50,10 +57,10 @@ const IssueBond = () => {
           _pendingAssetPoolInfo.nftBondName,
           _pendingAssetPoolInfo.nftBondSymbol,
           {
-            spotifyListeners: BigNumber.from(
+            spotifyStreamCount: BigNumber.from(
               _pendingAssetPoolInfo.spotifyListeners
             ),
-            youtubeSubscribers: BigNumber.from(
+            youtubeViewsCount: BigNumber.from(
               _pendingAssetPoolInfo.youtubeSubscribers
             ),
             assetPoolAddress: _pendingAssetPoolInfo.apAddress,
@@ -67,14 +74,14 @@ const IssueBond = () => {
           nftAddress,
         };
         setPendingAssetPoolInfo(poolInfo);
-        try {
-          const metadataRes = await axios.post(METADATA_URL, {
-            data: { nftBondAddress: nftAddress },
-          });
-          console.log(metadataRes);
-        } catch (e) {
-          console.log("metadata: ", e);
-        }
+        // try {
+        //   const metadataRes = await axios.post(METADATA_URL, {
+        //     data: { nftBondAddress: nftAddress },
+        //   });
+        //   console.log(metadataRes);
+        // } catch (e) {
+        //   console.log("metadata: ", e);
+        // }
         setProcessMode(2);
         try {
           const nftTx = await mintNftBonds(nftAddress);

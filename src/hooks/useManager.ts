@@ -3,6 +3,7 @@ import contractAddresses from "../constants/contracts";
 import { useBondNFTManagerContract } from "./useContract";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
+import { abi as BondNFTManagerAbi } from "../abis/BondNFTManager.json";
 
 interface NftInfo {
   nftAddress: string;
@@ -12,8 +13,8 @@ interface NftInfo {
   spotifyUrl: string;
 }
 export interface ListenersDetails {
-  spotifyListeners: BigNumber;
-  youtubeSubscribers: BigNumber;
+  spotifyStreamCount: BigNumber;
+  youtubeViewsCount: BigNumber;
   assetPoolAddress: string;
 }
 export interface IssueBondParams {
@@ -31,8 +32,7 @@ export interface IssueBondParams {
 }
 
 export const useApManager = () => {
-  const { account } = useWeb3React();
-  const { library } = useWeb3React();
+  const { account, library } = useWeb3React();
 
   const managerContract = useBondNFTManagerContract(
     contractAddresses.BondNFTManager[80001]
@@ -43,13 +43,22 @@ export const useApManager = () => {
       alert("Kindly connect your wallet!");
       return;
     }
-    const dep = await managerContract.deployed();
-    return await dep.createAssetPool(
-      ethers.utils.parseEther(bondValue.toString()),
-      {
-        from: account,
-      }
+    const contract = new ethers.Contract(
+      contractAddresses.BondNFTManager[80001],
+      BondNFTManagerAbi,
+      library.getSigner()
     );
+    const tx = await contract.createAssetPool(
+      ethers.utils.parseEther(bondValue.toString())
+    );
+    return tx;
+    // const dep = await managerContract.deployed();
+    // return await dep.createAssetPool(
+    //   ethers.utils.parseEther(bondValue.toString()),
+    //   {
+    //     from: account,
+    //   }
+    // );
   };
 
   const getAssetpoolsOfUserByIndex = async (
@@ -80,8 +89,11 @@ export const useApManager = () => {
 
   const issueBond = async (
     _artistName: string,
-    _artistId: string,
-    _channelId: string,
+    _youtubeId: string,
+    _soundChartId: string,
+    _songStatId: string,
+    // _artistId: string,
+    // _channelId: string,
     _fundingAmount: number,
     _numberOfYears: number,
     _numberOfBonds: number,
@@ -112,8 +124,9 @@ export const useApManager = () => {
     // );
     const tx = await dep.issueBond(
       _artistName,
-      _artistId,
-      _channelId,
+      _youtubeId,
+      _soundChartId,
+      _songStatId,
       ethers.utils.parseEther(_fundingAmount.toString()),
       BigNumber.from(_numberOfYears.toString()),
       BigNumber.from(_numberOfBonds.toString()),
@@ -141,15 +154,28 @@ export const useApManager = () => {
   };
 
   const getBondConfigs = async () => {
-    await library.ready;
-    const dep = await managerContract.deployed();
-    const bondsLength = await managerContract.nftBondLengthForUser(account);
+    // await library.ready;
+    // const dep = await managerContract.deployed();
+    const provider = new ethers.providers.AlchemyProvider(
+      "maticmum",
+      process.env.REACT_APP_ALCHEMY
+    );
+    const contract = new ethers.Contract(
+      contractAddresses.BondNFTManager[80001],
+      BondNFTManagerAbi,
+      provider
+    );
+    const bondsLength = await contract.nftBondLengthForUser(account);
     const bondConfigPromises = [];
-    for (let i = 0; i < bondsLength; i++) {
-      bondConfigPromises.push(dep.userBondConfigs(account, i));
+    for (let i = 0; i < bondsLength.toNumber(); i++) {
+      bondConfigPromises.push(contract.userBondConfigs(account, i));
     }
     if (bondConfigPromises) {
-      return await Promise.all(bondConfigPromises);
+      try {
+        return await Promise.all(bondConfigPromises);
+      } catch (e) {
+        return [];
+      }
     }
     return [];
   };

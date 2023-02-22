@@ -47,7 +47,7 @@ import {
   YOUTUBE_VIEWS_URL,
 } from "../../../constants";
 import { useWeb3React } from "@web3-react/core";
-import GaugeChart from "react-gauge-chart";
+// import GaugeChart from "react-gauge-chart";
 import CloseIcon from "@mui/icons-material/Close";
 
 const useStyles = makeStyles({
@@ -94,6 +94,11 @@ const BondInfoForm = () => {
   const [isYoutubeError, setIsYoutubeError] = useState<boolean>(false);
   const [spotifyListeners, setSpotifyListeners] = useState<number>();
   const [songTitle, setSongTitle] = useState<string>();
+  const [idsObj, setIdsObj] = useState<{
+    soundChartId: string;
+    songStatId: string;
+  }>();
+  const [youtubeId, setYoutubeId] = useState<string>();
   const [youtubeSubscribers, setYoutubeSubscribers] = useState<number>();
   const [artistName, setArtistName] = useState<string>("");
   const [isInstantLiquidity, setIsInstantLiquidity] = useState(true);
@@ -117,7 +122,13 @@ const BondInfoForm = () => {
       alert("Kindly connect your wallet and try again.");
       return;
     }
-    if (youtubeSubscribers && enteredCollateralAmount) {
+    if (
+      youtubeSubscribers &&
+      enteredCollateralAmount &&
+      youtubeId &&
+      idsObj?.songStatId &&
+      idsObj.soundChartId
+    ) {
       setPendingAssetPoolState({
         nftBondName,
         nftBondSymbol,
@@ -134,6 +145,9 @@ const BondInfoForm = () => {
         spotifyListeners: spotifyListeners ?? 0,
         youtubeSubscribers,
         artistName,
+        youtubeId: youtubeId,
+        soundChartId: idsObj.soundChartId,
+        songStatId: idsObj?.songStatId,
         //TODO
         apAddress: "",
         nftAddress: "",
@@ -161,10 +175,20 @@ const BondInfoForm = () => {
       const res = await axios.get(`${SPOTIFY_LISTENERS_ISRC}/${_spotifyId}`);
 
       if (res.data.listeners) {
-        setSpotifyListeners(res.data.listeners);
-        setSongTitle(res.data.songTitle);
+        const {
+          listeners,
+          soundChartId,
+          songStatId,
+          songTitle: _songTitle,
+          artistName: _artistName,
+          songImageUrl,
+        } = res.data;
+        setPreview(songImageUrl);
+        setIdsObj({ soundChartId, songStatId });
+        setSpotifyListeners(listeners);
+        setSongTitle(_songTitle);
         setIsSpotifyError(false);
-        setArtistName(res.data.artistName);
+        setArtistName(_artistName);
         // try {
         //   const ids = await axios.post(SPOTIFY_IDS_URL, {
         //     id: _spotifyId,
@@ -208,6 +232,7 @@ const BondInfoForm = () => {
     var match = _videoUrl.match(regExp);
 
     if (match && match[2]) {
+      setYoutubeId(match[2]);
       try {
         const res = await axios.get(`${YOUTUBE_VIEWS_URL}/${match[2]}`);
 
@@ -379,111 +404,9 @@ const BondInfoForm = () => {
         <Grid xs={12} md={7} item>
           <Box display="flex" mt={3} flexDirection="column">
             <Box mt={2}>
-              <Box>
-                <Button
-                  variant="contained"
-                  component="label"
-                  onChange={(e: any) => {
-                    if (e.target.files.length === 0) return;
-                    const file = e.target.files[0];
-                    var reader = new FileReader();
-                    reader.onload = (e) => {
-                      // Use reader.result
-                      // this.setState({
-                      //   csvData: reader.result,
-                      // });
-                      if (reader.result) {
-                        setCsvData(reader.result);
-                        const res = (reader.result as string).split("\r\n");
-                        const _columns = res[0].split(",");
-                        setColumns(_columns);
-                        const _rows: string[][] = [];
-                        for (let i = 1; i < res.length - 1; i++) {
-                          const splits = res[i].split(",");
-                          _rows.push(splits);
-                        }
-                        setRows(_rows);
-                      }
-                    };
-                    reader.readAsText(file);
-                  }}
-                >
-                  Upload CSV
-                  <input hidden accept="csv" type="file" />
-                </Button>
-              </Box>
-            </Box>
-            <Box mt={2}>
               <Box mb={2}>
                 <Typography variant="h6" fontWeight="600">
-                  Bond Issuer
-                </Typography>
-              </Box>
-              <Box mb={2} display="flex" alignItems={"center"}>
-                <Box flexBasis="50%">
-                  <Typography>Name</Typography>
-                  <TextField
-                    variant="outlined"
-                    value={artistName}
-                    disabled
-                    placeholder="autofill"
-                  />
-                </Box>
-                {selectedFile ? (
-                  <img
-                    src={preview}
-                    alt="prev"
-                    width={100}
-                    height={100}
-                    style={{ borderRadius: "50%", objectFit: "cover" }}
-                  />
-                ) : (
-                  <Button
-                    variant="contained"
-                    component="label"
-                    onChange={(e: any) => {
-                      if (e.target.files.length === 0) return;
-                      const file = e.target.files[0];
-                      setSelectedFile(file);
-                      setPreview(URL.createObjectURL(file));
-                    }}
-                  >
-                    Upload Picture
-                    <input hidden accept="image/*" type="file" />
-                  </Button>
-                )}
-                <Box></Box>
-              </Box>
-            </Box>
-            <Box mt={2}>
-              <Box mb={2}>
-                <Typography variant="h6" fontWeight="600">
-                  NFT Information
-                </Typography>
-              </Box>
-              <Box mb={2} display="flex">
-                <Box flexBasis="50%">
-                  <Typography>NFT Name</Typography>
-                  <TextField
-                    variant="outlined"
-                    value={nftBondName}
-                    onChange={(e) => setNftBondName(e.target.value)}
-                  />
-                </Box>
-                <Box>
-                  <Typography>NFT Symbol</Typography>
-                  <TextField
-                    variant="outlined"
-                    value={nftBondSymbol}
-                    onChange={(e) => setNftBondSymbol(e.target.value)}
-                  />
-                </Box>
-              </Box>
-            </Box>
-            <Box mt={2}>
-              <Box mb={2}>
-                <Typography variant="h6" fontWeight="600">
-                  Artist Information
+                  Song Information
                 </Typography>
               </Box>
               <Box mb={2}>
@@ -558,6 +481,123 @@ const BondInfoForm = () => {
                 </Box>
               </Box>
             </Box>
+            {/* <Box mt={2}>
+              <Box>
+                <Button
+                  variant="contained"
+                  component="label"
+                  onChange={(e: any) => {
+                    if (e.target.files.length === 0) return;
+                    const file = e.target.files[0];
+                    var reader = new FileReader();
+                    reader.onload = (e) => {
+                      // Use reader.result
+                      // this.setState({
+                      //   csvData: reader.result,
+                      // });
+                      if (reader.result) {
+                        setCsvData(reader.result);
+                        const res = (reader.result as string).split("\r\n");
+                        const _columns = res[0].split(",");
+                        setColumns(_columns);
+                        const _rows: string[][] = [];
+                        for (let i = 1; i < res.length - 1; i++) {
+                          const splits = res[i].split(",");
+                          _rows.push(splits);
+                        }
+                        setRows(_rows);
+                      }
+                    };
+                    reader.readAsText(file);
+                  }}
+                >
+                  Upload CSV
+                  <input hidden accept=".csv" type="file" />
+                </Button>
+              </Box>
+            </Box> */}
+            <Box mt={2}>
+              <Box mb={2}>
+                <Typography variant="h6" fontWeight="600">
+                  Bond Issuer
+                </Typography>
+              </Box>
+              <Box mb={2} display="flex" alignItems={"center"}>
+                <Box flexBasis="50%">
+                  <Typography>Name</Typography>
+                  <TextField
+                    variant="outlined"
+                    value={artistName}
+                    disabled
+                    placeholder="autofill"
+                  />
+                </Box>
+              </Box>
+            </Box>
+            <Box mt={2}>
+              <Box mb={2}>
+                <Typography variant="h6" fontWeight="600">
+                  NFT Information
+                </Typography>
+              </Box>
+              <Box mb={2} display="flex">
+                <Box flexBasis="50%" display="flex">
+                  <Box mr={2}>
+                    {preview && (
+                      <img
+                        src={preview}
+                        alt="prev"
+                        width={100}
+                        height={100}
+                        style={{ borderRadius: "50%", objectFit: "cover" }}
+                      />
+                    )}
+                  </Box>
+                  <Box>
+                    <Typography>NFT Name</Typography>
+                    <TextField
+                      variant="outlined"
+                      value={nftBondName}
+                      onChange={(e) => setNftBondName(e.target.value)}
+                    />
+                  </Box>
+                </Box>
+                <Box>
+                  <Typography>NFT Symbol</Typography>
+                  <TextField
+                    variant="outlined"
+                    value={nftBondSymbol}
+                    onChange={(e) => setNftBondSymbol(e.target.value)}
+                  />
+                </Box>
+                {/* <Box>
+                  {selectedFile ? (
+                    <img
+                      src={preview}
+                      alt="prev"
+                      width={100}
+                      height={100}
+                      style={{ borderRadius: "50%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <Button
+                      variant="contained"
+                      component="label"
+                      onChange={(e: any) => {
+                        if (e.target.files.length === 0) return;
+                        const file = e.target.files[0];
+                        setSelectedFile(file);
+                        setPreview(URL.createObjectURL(file));
+                      }}
+                    >
+                      Upload Picture
+                      <input hidden accept="image/*" type="file" />
+                    </Button>
+                  )}
+                </Box> */}
+              </Box>
+            </Box>
+
             <Box mt={2}>
               <Box mb={2}>
                 <Typography variant="h6" fontWeight="600">
@@ -888,7 +928,7 @@ const BondInfoForm = () => {
                     </Grid>
                   </Box>
                 </Box>
-                <Box
+                {/* <Box
                   flexBasis={"50%"}
                   // display={"flex"}
                   // justifyContent="center"
@@ -915,7 +955,7 @@ const BondInfoForm = () => {
                       High Risk
                     </Typography>
                   </Box>
-                </Box>
+                </Box> */}
               </Box>
             </Box>
           </Box>

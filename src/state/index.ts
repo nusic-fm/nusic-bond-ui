@@ -5,6 +5,9 @@ export interface AssetPoolInfo {
   nftBondSymbol: string;
   spotifyId: string;
   youtubeUrl: string;
+  youtubeId: string;
+  soundChartId: string;
+  songStatId: string;
   artistName: string;
   nftMarketPlace: string;
   collateralAmount: number;

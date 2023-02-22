@@ -481,7 +481,7 @@ const BondInfoForm = () => {
                 </Box>
               </Box>
             </Box>
-            {/* <Box mt={2}>
+            <Box mt={2}>
               <Box>
                 <Button
                   variant="contained"
@@ -515,7 +515,7 @@ const BondInfoForm = () => {
                   <input hidden accept=".csv" type="file" />
                 </Button>
               </Box>
-            </Box> */}
+            </Box>
             <Box mt={2}>
               <Box mb={2}>
                 <Typography variant="h6" fontWeight="600">
@@ -1014,8 +1014,8 @@ const BondInfoForm = () => {
                         <TableCell key={data}>{data}</TableCell>
                       ))}
                       <TableCell>
-                        <Button disabled={Number(row[2]) < 1000}>
-                          {Number(row[2]) > 1000 ? "Eligible" : "Not Eligible"}
+                        <Button disabled={Number(row[11]) < 20}>
+                          {Number(row[11]) > 20 ? "Eligible" : "Not Eligible"}
                         </Button>
                       </TableCell>
                     </TableRow>

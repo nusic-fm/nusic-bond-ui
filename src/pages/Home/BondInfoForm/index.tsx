@@ -101,7 +101,7 @@ const BondInfoForm = () => {
   const [youtubeId, setYoutubeId] = useState<string>();
   const [youtubeSubscribers, setYoutubeSubscribers] = useState<number>();
   const [artistName, setArtistName] = useState<string>("");
-  const [isInstantLiquidity, setIsInstantLiquidity] = useState(true);
+  const [isInstantLiquidity, setIsInstantLiquidity] = useState(false);
 
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string>();
@@ -1021,11 +1021,14 @@ const BondInfoForm = () => {
                 <TableBody>
                   {rows.map((row, i) => (
                     <TableRow
+                      hover
                       key={i}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       {row.map((data) => (
-                        <TableCell key={data}>{data}</TableCell>
+                        <TableCell key={data} size="small">
+                          {data}
+                        </TableCell>
                       ))}
                       <TableCell>
                         <Button

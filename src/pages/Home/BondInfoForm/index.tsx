@@ -1012,7 +1012,7 @@ const BondInfoForm = () => {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    {columns.map((col) => (
+                    {columns.slice(0, 12).map((col) => (
                       <TableCell>{col}</TableCell>
                     ))}
                     <TableCell></TableCell>
@@ -1025,7 +1025,7 @@ const BondInfoForm = () => {
                       key={i}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      {row.map((data) => (
+                      {row.slice(0, 12).map((data) => (
                         <TableCell key={data} size="small">
                           {data}
                         </TableCell>

@@ -2,8 +2,6 @@ import {
   Box,
   Typography,
   TextField,
-  Select,
-  MenuItem,
   Slider,
   Mark,
   Button,
@@ -12,6 +10,17 @@ import {
   FormControlLabel,
   Checkbox,
   Grid,
+  Dialog,
+  DialogContent,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  DialogTitle,
+  IconButton,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import {
@@ -29,7 +38,6 @@ import { useHistory } from "react-router";
 import { useSetRecoilState } from "recoil";
 import Footer from "../../../components/Footer";
 import { pendingAssetPoolInfo } from "../../../state";
-import usePrice from "../../../hooks/usePrice";
 import axios from "axios";
 import {
   // SPOTIFY_IDS_URL,
@@ -40,6 +48,7 @@ import {
 } from "../../../constants";
 import { useWeb3React } from "@web3-react/core";
 import GaugeChart from "react-gauge-chart";
+import CloseIcon from "@mui/icons-material/Close";
 
 const useStyles = makeStyles({
   root: {
@@ -92,6 +101,10 @@ const BondInfoForm = () => {
   const [selectedFile, setSelectedFile] = useState<File>();
   const [preview, setPreview] = useState<string>();
   const { account } = useWeb3React();
+
+  const [csvData, setCsvData] = useState<string | ArrayBuffer | null>();
+  const [columns, setColumns] = useState<string[]>();
+  const [rows, setRows] = useState<string[][]>();
 
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
@@ -269,7 +282,89 @@ const BondInfoForm = () => {
       })();
     }
   }, []);
+  // const ColorlibStepIconRoot = styled("div")<{
+  //   ownerState: { completed?: boolean; active?: boolean };
+  // }>(({ theme, ownerState }) => ({
+  //   backgroundColor:
+  //     theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
+  //   zIndex: 1,
+  //   color: "#fff",
+  //   width: 50,
+  //   height: 50,
+  //   display: "flex",
+  //   borderRadius: "50%",
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   ...(ownerState.active && {
+  //     backgroundImage:
+  //       "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+  //     boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+  //   }),
+  //   ...(ownerState.completed && {
+  //     backgroundImage:
+  //       "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+  //   }),
+  // }));
+  // function ColorlibStepIcon(props: StepIconProps) {
+  //   const { active, completed, className } = props;
 
+  //   const icons: { [index: string]: React.ReactElement } = {
+  //     1: <SettingsIcon />,
+  //     2: <GroupAddIcon />,
+  //     3: <VideoLabelIcon />,
+  //   };
+  //   return (
+  //     <ColorlibStepIconRoot
+  //       ownerState={{ completed, active }}
+  //       className={className}
+  //     >
+  //       {icons[String(props.icon)]}
+  //     </ColorlibStepIconRoot>
+  //   );
+  // }
+  // const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
+  //   [`&.${stepConnectorClasses.alternativeLabel}`]: {
+  //     top: 22,
+  //   },
+  //   [`&.${stepConnectorClasses.active}`]: {
+  //     [`& .${stepConnectorClasses.line}`]: {
+  //       backgroundImage:
+  //         "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)",
+  //     },
+  //   },
+  //   [`&.${stepConnectorClasses.completed}`]: {
+  //     [`& .${stepConnectorClasses.line}`]: {
+  //       backgroundImage:
+  //         "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)",
+  //     },
+  //   },
+  //   [`& .${stepConnectorClasses.line}`]: {
+  //     height: 3,
+  //     border: 0,
+  //     backgroundColor:
+  //       theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
+  //     borderRadius: 1,
+  //   },
+  // }));
+
+  // const steps = ["Song", "Artist", "Bond", "Collateral", "Marketing", "Sell"];
+
+  //   return (
+  //     <Box pt={4}>
+  //       <Stepper
+  //         alternativeLabel
+  //         activeStep={1}
+  //         connector={<ColorlibConnector />}
+  //       >
+  //         {steps.map((label) => (
+  //           <Step key={label}>
+  //             <StepLabel StepIconComponent={ColorlibStepIcon}>{label}</StepLabel>
+  //           </Step>
+  //         ))}
+  //       </Stepper>
+  //     </Box>
+  //   );
+  // };
   return (
     <Box pt={4}>
       <Typography variant="h4" fontWeight="600" align="center">
@@ -283,6 +378,41 @@ const BondInfoForm = () => {
         <Grid md={3} item></Grid>
         <Grid xs={12} md={7} item>
           <Box display="flex" mt={3} flexDirection="column">
+            <Box mt={2}>
+              <Box>
+                <Button
+                  variant="contained"
+                  component="label"
+                  onChange={(e: any) => {
+                    if (e.target.files.length === 0) return;
+                    const file = e.target.files[0];
+                    var reader = new FileReader();
+                    reader.onload = (e) => {
+                      // Use reader.result
+                      // this.setState({
+                      //   csvData: reader.result,
+                      // });
+                      if (reader.result) {
+                        setCsvData(reader.result);
+                        const res = (reader.result as string).split("\r\n");
+                        const _columns = res[0].split(",");
+                        setColumns(_columns);
+                        const _rows: string[][] = [];
+                        for (let i = 1; i < res.length - 1; i++) {
+                          const splits = res[i].split(",");
+                          _rows.push(splits);
+                        }
+                        setRows(_rows);
+                      }
+                    };
+                    reader.readAsText(file);
+                  }}
+                >
+                  Upload CSV
+                  <input hidden accept="csv" type="file" />
+                </Button>
+              </Box>
+            </Box>
             <Box mt={2}>
               <Box mb={2}>
                 <Typography variant="h6" fontWeight="600">
@@ -456,27 +586,27 @@ const BondInfoForm = () => {
                         }}
                       />
                       {/* <Box display="inline" ml={2}>
-                    <Select
-                      value={selectedCurrency}
-                      onChange={onCurrencyChange}
-                    >
-                      {supportedCurrencies.map(({ id, currency }) => (
-                        <MenuItem key={id} value={id}>
-                          {currency}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {latestSelectedCurrencyPrice && (
-                      <Typography display="inline" fontStyle="italic">
-                        (
-                        {(
-                          latestSelectedCurrencyPrice *
-                          (enteredCollateralAmount || 0)
-                        ).toFixed(2)}{" "}
-                        USD )
-                      </Typography>
-                    )}
-                  </Box> */}
+                  <Select
+                    value={selectedCurrency}
+                    onChange={onCurrencyChange}
+                  >
+                    {supportedCurrencies.map(({ id, currency }) => (
+                      <MenuItem key={id} value={id}>
+                        {currency}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {latestSelectedCurrencyPrice && (
+                    <Typography display="inline" fontStyle="italic">
+                      (
+                      {(
+                        latestSelectedCurrencyPrice *
+                        (enteredCollateralAmount || 0)
+                      ).toFixed(2)}{" "}
+                      USD )
+                    </Typography>
+                  )}
+                </Box> */}
                     </Box>
                   </Box>
                   <Box mb={2} style={{ width: "80%" }}>
@@ -514,11 +644,11 @@ const BondInfoForm = () => {
                         }}
                       />
                       {/* {latestSelectedCurrencyPrice && (
-                    <Typography fontStyle="italic">
-                      ({(bondValue * latestSelectedCurrencyPrice).toFixed(2)}{" "}
-                      USD)
-                    </Typography>
-                  )} */}
+                  <Typography fontStyle="italic">
+                    ({(bondValue * latestSelectedCurrencyPrice).toFixed(2)}{" "}
+                    USD)
+                  </Typography>
+                )} */}
                     </Box>
                   </Box>
                 </Box>
@@ -804,8 +934,61 @@ const BondInfoForm = () => {
           </Button>
         </Button>
       </Footer>
+      <Dialog open={!!csvData} maxWidth={"xl"}>
+        <DialogTitle>
+          Artist Streaming/Income Details
+          <IconButton
+            aria-label="close"
+            onClick={() => {
+              setCsvData(undefined);
+            }}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {rows && columns && (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    {columns.map((col) => (
+                      <TableCell>{col}</TableCell>
+                    ))}
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row, i) => (
+                    <TableRow
+                      key={i}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      {row.map((data) => (
+                        <TableCell key={data}>{data}</TableCell>
+                      ))}
+                      <TableCell>
+                        <Button disabled={Number(row[2]) < 1000}>
+                          {Number(row[2]) > 1000 ? "Eligible" : "Not Eligible"}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };
 
 export default BondInfoForm;
+// linear-gradient(136deg, rgb(242, 113, 33) 0%, rgb(233, 64, 87) 50%, rgb(138, 35, 135) 100%)

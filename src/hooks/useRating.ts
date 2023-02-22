@@ -3,7 +3,9 @@ import { useRatingContract } from "./useContract";
 import { BigNumber } from "@ethersproject/bignumber";
 
 export const useRating = () => {
-  const ratingContract = useRatingContract(contractAddresses.RatingEngine["4"]);
+  const ratingContract = useRatingContract(
+    contractAddresses.RatingEngine[80001]
+  );
 
   const getRating = async (apAddress: string): Promise<string> => {
     const rating = await ratingContract.allocateRatingByAssetPoolAddress(

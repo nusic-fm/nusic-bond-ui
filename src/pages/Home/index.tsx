@@ -39,7 +39,7 @@ const steps = [
 const getActivePath = (pathname: string) => {
   // if (pathname === "/home/mint") {
   //   return 1;
-  // } else 
+  // } else
   if (pathname.includes("bond-info")) {
     return 0;
   } else if (pathname.includes("deposit")) {

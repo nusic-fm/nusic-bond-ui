@@ -110,6 +110,7 @@ const BondInfoForm = () => {
   const [csvData, setCsvData] = useState<string | ArrayBuffer | null>();
   const [columns, setColumns] = useState<string[]>();
   const [rows, setRows] = useState<string[][]>();
+  const [showTable, setShowTable] = useState(false);
 
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
@@ -506,6 +507,7 @@ const BondInfoForm = () => {
                           _rows.push(splits);
                         }
                         setRows(_rows);
+                        setShowTable(true);
                       }
                     };
                     reader.readAsText(file);
@@ -514,6 +516,17 @@ const BondInfoForm = () => {
                   Upload CSV
                   <input hidden accept=".csv" type="file" />
                 </Button>
+                {csvData && (
+                  <Button
+                    size="small"
+                    color="info"
+                    onClick={() => {
+                      setShowTable(true);
+                    }}
+                  >
+                    open table
+                  </Button>
+                )}
               </Box>
             </Box>
             <Box mt={2}>
@@ -974,13 +987,13 @@ const BondInfoForm = () => {
           </Button>
         </Button>
       </Footer>
-      <Dialog open={!!csvData} maxWidth={"xl"}>
+      <Dialog open={showTable} maxWidth={"xl"}>
         <DialogTitle>
-          Artist Streaming/Income Details
+          Artist Income Details
           <IconButton
             aria-label="close"
             onClick={() => {
-              setCsvData(undefined);
+              setShowTable(false);
             }}
             sx={{
               position: "absolute",

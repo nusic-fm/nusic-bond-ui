@@ -410,7 +410,55 @@ const BondInfoForm = () => {
                   Song Information
                 </Typography>
               </Box>
-              <Box mb={2}>
+
+              <Box mt={2}>
+                <Box>
+                  <Button
+                    variant="contained"
+                    component="label"
+                    onChange={(e: any) => {
+                      if (e.target.files.length === 0) return;
+                      const file = e.target.files[0];
+                      var reader = new FileReader();
+                      reader.onload = (e) => {
+                        // Use reader.result
+                        // this.setState({
+                        //   csvData: reader.result,
+                        // });
+                        if (reader.result) {
+                          setCsvData(reader.result);
+                          const res = (reader.result as string).split("\r\n");
+                          const _columns = res[0].split(",");
+                          setColumns(_columns);
+                          const _rows: string[][] = [];
+                          for (let i = 1; i < res.length - 1; i++) {
+                            const splits = res[i].split(",");
+                            _rows.push(splits);
+                          }
+                          setRows(_rows);
+                          setShowTable(true);
+                        }
+                      };
+                      reader.readAsText(file);
+                    }}
+                  >
+                    Upload CSV
+                    <input hidden accept=".csv" type="file" />
+                  </Button>
+                  {csvData && (
+                    <Button
+                      size="small"
+                      color="info"
+                      onClick={() => {
+                        setShowTable(true);
+                      }}
+                    >
+                      open table
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+              <Box my={2}>
                 <Typography>ISRC</Typography>
                 <Box display="flex" alignItems={"center"}>
                   <TextField
@@ -480,53 +528,6 @@ const BondInfoForm = () => {
                     </Typography>
                   )}
                 </Box>
-              </Box>
-            </Box>
-            <Box mt={2}>
-              <Box>
-                <Button
-                  variant="contained"
-                  component="label"
-                  onChange={(e: any) => {
-                    if (e.target.files.length === 0) return;
-                    const file = e.target.files[0];
-                    var reader = new FileReader();
-                    reader.onload = (e) => {
-                      // Use reader.result
-                      // this.setState({
-                      //   csvData: reader.result,
-                      // });
-                      if (reader.result) {
-                        setCsvData(reader.result);
-                        const res = (reader.result as string).split("\r\n");
-                        const _columns = res[0].split(",");
-                        setColumns(_columns);
-                        const _rows: string[][] = [];
-                        for (let i = 1; i < res.length - 1; i++) {
-                          const splits = res[i].split(",");
-                          _rows.push(splits);
-                        }
-                        setRows(_rows);
-                        setShowTable(true);
-                      }
-                    };
-                    reader.readAsText(file);
-                  }}
-                >
-                  Upload CSV
-                  <input hidden accept=".csv" type="file" />
-                </Button>
-                {csvData && (
-                  <Button
-                    size="small"
-                    color="info"
-                    onClick={() => {
-                      setShowTable(true);
-                    }}
-                  >
-                    open table
-                  </Button>
-                )}
               </Box>
             </Box>
             <Box mt={2}>
@@ -1027,7 +1028,15 @@ const BondInfoForm = () => {
                         <TableCell key={data}>{data}</TableCell>
                       ))}
                       <TableCell>
-                        <Button disabled={Number(row[11]) < 20}>
+                        <Button
+                          color="info"
+                          disabled={Number(row[11]) < 20}
+                          onClick={() => {
+                            setSpotifyId(row[12]);
+                            setYoutubeUrl(row[13]);
+                            setShowTable(false);
+                          }}
+                        >
                           {Number(row[11]) > 20 ? "Eligible" : "Not Eligible"}
                         </Button>
                       </TableCell>

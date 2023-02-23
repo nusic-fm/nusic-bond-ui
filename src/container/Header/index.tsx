@@ -50,8 +50,7 @@ const Header = () => {
               history.push("/");
             }}
           >
-            <img src="/nu-logo-white.png" alt="nusic" height="25px" />
-            NUSIC
+            <img src="/nusic-white.png" alt="nusic" height="25px" />
           </Box>
         </Typography>
         <Button
@@ -63,7 +62,7 @@ const Header = () => {
           }}
           style={{ marginRight: "12px" }}
         >
-          My Dashboard
+          Dashboard
         </Button>
         {account ? (
           <Tooltip title={account}>
@@ -73,10 +72,16 @@ const Header = () => {
                 account.length - 4
               )}`}
               style={{ marginLeft: "auto" }}
+              size="small"
             />
           </Tooltip>
         ) : (
-          <Button variant="contained" color="primary" onClick={connect}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={connect}
+            size="small"
+          >
             Connect Wallet
           </Button>
         )}

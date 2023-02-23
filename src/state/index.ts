@@ -27,3 +27,28 @@ export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
   key: "pendingAssetPoolInfo",
   default: null,
 });
+
+export interface SongStreamingInfo {
+  spotifyId: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  soundChartId: string;
+  songStatId: string;
+  artistName: string;
+  youtubeViews: number;
+  spotifyListeners: number;
+  songImageUrl: string;
+}
+
+export const songStreamingInfo = atom<null | SongStreamingInfo>({
+  key: "songStreamingInfo",
+  default: null,
+});
+
+// export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
+//   key: "pendingAssetPoolInfo",
+//   default: null,
+// });export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
+//   key: "pendingAssetPoolInfo",
+//   default: null,
+// });

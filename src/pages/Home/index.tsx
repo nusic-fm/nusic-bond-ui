@@ -2,6 +2,7 @@ import { Box, Button, Typography } from "@mui/material";
 // import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useState } from "react";
+import { useRecoilState } from "recoil";
 import ArtistInfo from "../../components/ArtistInfo";
 import BondInfo from "../../components/BondInfo";
 import IssueBond from "../../components/IssueBond";
@@ -9,6 +10,7 @@ import SongInfo from "../../components/SongInfo";
 // import { useHistory } from "react-router";
 // import { Route, Switch, useLocation } from "react-router-dom";
 import StepperFlow from "../../components/StepperFlow";
+import { nftInfo, songStreamingInfo } from "../../state";
 // import BondInfoForm from "./BondInfoForm";
 // import DepositCollateral from "./DepositCollateral";
 // import IssueBond from "./IssueBond";
@@ -31,6 +33,11 @@ const useStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "space-around",
     alignItems: "center",
+  },
+  summary: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 4,
+    width: "100%",
   },
 });
 
@@ -60,6 +67,8 @@ const Home = () => {
   const classes = useStyles();
   // const location = useLocation();
   const [currentStep, setCurrentStep] = useState(0);
+  const [_songStreamingInfo] = useRecoilState(songStreamingInfo);
+  const [_nftInfo] = useRecoilState(nftInfo);
 
   const goToNextPage = () => {
     setCurrentStep(currentStep + 1);
@@ -71,13 +80,60 @@ const Home = () => {
         <Box flexBasis={"10%"}>
           <StepperFlow currentStep={currentStep} />
         </Box>
-        <Box display={"flex"} flexDirection="column" pt={4} width="100%">
+        <Box display={"flex"} flexDirection="column" pt={4} flexBasis="60%">
           {currentStep === 0 && <SongInfo goToNextPage={goToNextPage} />}
           {currentStep === 1 && <ArtistInfo goToNextPage={goToNextPage} />}
           {currentStep === 2 && <BondInfo goToNextPage={goToNextPage} />}
           {currentStep === 3 && <Button onClick={goToNextPage}>Next</Button>}
           {currentStep === 4 && <IssueBond goToNextPage={goToNextPage} />}
         </Box>
+        {_songStreamingInfo && (
+          <Box flexBasis="30%">
+            <Typography>Value Summary</Typography>
+            <Box className={classes.summary} height={"600px"} mt={2}>
+              <Box display="flex" p={1} pb={0}>
+                <Typography fontWeight="bold" flexBasis={"50%"}>
+                  SpotifyId
+                </Typography>
+                <Typography>{_songStreamingInfo.spotifyId}</Typography>
+              </Box>
+              <Box display="flex" p={1} pb={0}>
+                <Typography fontWeight="bold" flexBasis={"50%"}>
+                  YoutubeId
+                </Typography>
+                <Typography>{_songStreamingInfo.youtubeId}</Typography>
+              </Box>
+              {_nftInfo && (
+                <>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography fontWeight="bold" flexBasis={"50%"}>
+                      NFT Name
+                    </Typography>
+                    <Typography>{_nftInfo.nftName}</Typography>
+                  </Box>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography fontWeight="bold" flexBasis={"50%"}>
+                      YoutubeId
+                    </Typography>
+                    <Typography>{_nftInfo.nftSymbol}</Typography>
+                  </Box>
+                </>
+              )}
+              {/* <Box display="flex" p={1} pb={0}>
+              <Typography fontWeight="bold" flexBasis={"50%"}>
+                SpotifyId
+              </Typography>
+              <Typography>{_songStreamingInfo?.spotifyId}</Typography>
+            </Box>
+            <Box display="flex" p={1} pb={0}>
+              <Typography fontWeight="bold" flexBasis={"50%"}>
+                SpotifyId
+              </Typography>
+              <Typography>{_songStreamingInfo?.spotifyId}</Typography>
+            </Box> */}
+            </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -1,18 +1,19 @@
 import { Stack, Box, Grid, TextField, Typography, Button } from "@mui/material";
-import React, { useState } from "react";
-import { useRecoilState } from "recoil";
-import { songStreamingInfo } from "../../state";
+import { useState } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { nftInfo, songStreamingInfo } from "../../state";
 
 type Props = {
   goToNextPage: () => void;
 };
 
 const ArtistInfo = ({ goToNextPage }: Props) => {
-  const [preview, setPreview] = useState<string>();
+  // const [preview, setPreview] = useState<string>();
   // const [artistName, setArtistName] = useState<string>("");
   const [nftBondName, setNftBondName] = useState<string>("");
   const [nftBondSymbol, setNftBondSymbol] = useState<string>("");
   const [_songStreamingInfo] = useRecoilState(songStreamingInfo);
+  const setNftInfo = useSetRecoilState(nftInfo);
 
   return (
     <Stack>
@@ -46,10 +47,10 @@ const ArtistInfo = ({ goToNextPage }: Props) => {
               </Box>
               <Box mb={2} display="flex">
                 <Box flexBasis="50%" display="flex">
-                  {preview && (
+                  {_songStreamingInfo?.songImageUrl && (
                     <Box mr={2}>
                       <img
-                        src={preview}
+                        src={_songStreamingInfo?.songImageUrl}
                         alt="prev"
                         width={100}
                         height={100}
@@ -102,7 +103,17 @@ const ArtistInfo = ({ goToNextPage }: Props) => {
               </Box>
             </Box>
             <Box mt={2}>
-              <Button variant="outlined" color="info" onClick={goToNextPage}>
+              <Button
+                variant="outlined"
+                color="info"
+                onClick={() => {
+                  setNftInfo({
+                    nftName: nftBondName,
+                    nftSymbol: nftBondSymbol,
+                  });
+                  goToNextPage();
+                }}
+              >
                 Next
               </Button>
             </Box>

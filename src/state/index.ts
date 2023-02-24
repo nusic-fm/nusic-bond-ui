@@ -45,10 +45,26 @@ export const songStreamingInfo = atom<null | SongStreamingInfo>({
   default: null,
 });
 
+export interface NftInfo {
+  nftName: string;
+  nftSymbol: string;
+}
+export const nftInfo = atom<null | NftInfo>({
+  key: "nftInfo",
+  default: null,
+});
+
+export interface BondInfo {}
+export const bondInfo = atom<null | BondInfo>({
+  key: "bondInfo",
+  default: null,
+});
+export interface Marketing {}
+export const marketing = atom<null | Marketing>({
+  key: "marketing",
+  default: null,
+});
 // export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
-//   key: "pendingAssetPoolInfo",
-//   default: null,
-// });export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
 //   key: "pendingAssetPoolInfo",
 //   default: null,
 // });

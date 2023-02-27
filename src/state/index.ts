@@ -27,3 +27,48 @@ export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
   key: "pendingAssetPoolInfo",
   default: null,
 });
+
+export interface SongStreamingInfo {
+  spotifyId: string;
+  youtubeUrl: string;
+  youtubeId: string;
+  soundChartId: string;
+  songStatId: string;
+  artistName: string;
+  youtubeViews: number;
+  spotifyListeners: number;
+  songImageUrl: string;
+}
+
+export const songStreamingInfoState = atom<null | SongStreamingInfo>({
+  key: "songStreamingInfo",
+  default: null,
+});
+
+export interface NftInfo {
+  nftName: string;
+  nftSymbol: string;
+}
+export const nftInfoState = atom<null | NftInfo>({
+  key: "nftInfo",
+  default: null,
+});
+
+export interface BondInfo {
+  termYears: number;
+  faceValue: number;
+  noOfBonds: number;
+}
+export const bondInfoState = atom<null | BondInfo>({
+  key: "bondInfo",
+  default: null,
+});
+export interface Marketing {}
+export const marketingState = atom<null | Marketing>({
+  key: "marketing",
+  default: null,
+});
+// export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
+//   key: "pendingAssetPoolInfo",
+//   default: null,
+// });

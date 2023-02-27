@@ -1,12 +1,25 @@
-import { Box } from "@mui/material";
-import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+// import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import { useHistory } from "react-router";
-import { Route, Switch, useLocation } from "react-router-dom";
-import BondInfoForm from "./BondInfoForm";
-import DepositCollateral from "./DepositCollateral";
-import IssueBond from "./IssueBond";
-import MarketPlace from "./MarketPlace";
+import { useState } from "react";
+import { useRecoilState } from "recoil";
+import ArtistInfo from "../../components/ArtistInfo";
+import BondInfo from "../../components/BondInfo";
+import IssueBond from "../../components/IssueBond";
+import Promotion from "../../components/Promotion";
+import SongInfo from "../../components/SongInfo";
+// import { useHistory } from "react-router";
+// import { Route, Switch, useLocation } from "react-router-dom";
+import StepperFlow from "../../components/StepperFlow";
+import {
+  bondInfoState,
+  nftInfoState,
+  songStreamingInfoState,
+} from "../../state";
+// import BondInfoForm from "./BondInfoForm";
+// import DepositCollateral from "./DepositCollateral";
+// import IssueBond from "./IssueBond";
+// import MarketPlace from "./MarketPlace";
 
 const useStyles = makeStyles({
   root: {
@@ -26,135 +39,148 @@ const useStyles = makeStyles({
     justifyContent: "space-around",
     alignItems: "center",
   },
+  summary: {
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 4,
+    width: "100%",
+  },
 });
 
-const steps = [
-  // "Get Started",
-  // "Marketplace",
-  "Bond Information",
-  "Deposit",
-  "Issue Bond",
-];
+// const steps = [
+//   // "Get Started",
+//   // "Marketplace",
+//   "Bond Information",
+//   "Deposit",
+//   "Issue Bond",
+// ];
 
-const getActivePath = (pathname: string) => {
-  // if (pathname === "/home/mint") {
-  //   return 1;
-  // } else
-  if (pathname.includes("bond-info")) {
-    return 0;
-  } else if (pathname.includes("deposit")) {
-    return 1;
-  } else if (pathname.includes("issue-bond")) {
-    return 2;
-  }
-};
+// const getActivePath = (pathname: string) => {
+//   // if (pathname === "/home/mint") {
+//   //   return 1;
+//   // } else
+//   if (pathname.includes("bond-info")) {
+//     return 0;
+//   } else if (pathname.includes("deposit")) {
+//     return 1;
+//   } else if (pathname.includes("issue-bond")) {
+//     return 2;
+//   }
+// };
 
 const Home = () => {
-  const history = useHistory();
+  // const history = useHistory();
   const classes = useStyles();
-  const location = useLocation();
+  // const location = useLocation();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [_songStreamingInfo] = useRecoilState(songStreamingInfoState);
+  const [_nftInfo] = useRecoilState(nftInfoState);
+  const [_bondInfo] = useRecoilState(bondInfoState);
 
-  const activeStep = getActivePath(location.pathname);
-
-  const onMintNftClick = () => {
-    history.push("/home/mint/opensea/bond-info");
+  const goToNextPage = () => {
+    setCurrentStep(currentStep + 1);
   };
 
   return (
     <Box className={classes.root}>
-      <Box display="flex" justifyContent="center" pt={4}>
-        <Stepper activeStep={activeStep} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </Box>
-
-      <Switch>
-        <Route exact path="/home/">
-          <>
-            <Box pt={4}>
-              <Typography variant="h4" fontWeight="600" align="center">
-                I'm looking to...
-              </Typography>
-            </Box>
-            <Box
-              pt={4}
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              flexWrap="wrap"
-            >
-              <Box className={classes.section}>
-                <Typography color="#A3188F" fontWeight="bold" fontSize="13px">
-                  FOR ARTISTS
-                </Typography>
-                <Typography color="black" fontWeight="bold">
-                  Mint NFT Bond
-                </Typography>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  onClick={onMintNftClick}
+      <Box display={"flex"} p={2}>
+        <Box flexBasis={"10%"}>
+          <StepperFlow currentStep={currentStep} />
+        </Box>
+        <Box display={"flex"} flexDirection="column" pt={4} flexBasis="60%">
+          {currentStep === 0 && <SongInfo goToNextPage={goToNextPage} />}
+          {currentStep === 1 && <ArtistInfo goToNextPage={goToNextPage} />}
+          {currentStep === 2 && <BondInfo goToNextPage={goToNextPage} />}
+          {currentStep === 3 && <Promotion goToNextPage={goToNextPage} />}
+          {currentStep === 4 && <IssueBond goToNextPage={goToNextPage} />}
+        </Box>
+        {_songStreamingInfo && (
+          <Box flexBasis="30%">
+            <Typography variant="h6">Value Summary</Typography>
+            <Box className={classes.summary} height={"400px"} p={2} mt={2}>
+              <Box display="flex" p={1} pb={0}>
+                <Typography
+                  fontWeight="600"
+                  flexBasis={"50%"}
+                  color="rgb(207, 207, 207)"
                 >
-                  Get Started
-                </Button>
-              </Box>
-              <Box className={classes.section}>
-                <Box>
-                  <Typography
-                    color="#A3188F"
-                    fontWeight="bold"
-                    align="center"
-                    fontSize="13px"
-                  >
-                    FOR MUSIC LOVERS
-                  </Typography>
-                  <Typography
-                    color="#A3188F"
-                    fontWeight="bold"
-                    align="center"
-                    fontSize="13px"
-                  >
-                    FOR INVESTORS
-                  </Typography>
-                </Box>
-                <Typography color="black" fontWeight="bold">
-                  Buy NFT Music
+                  Spotify ID
                 </Typography>
-                <Button color="primary" variant="contained">
-                  Get Started
-                </Button>
+                <Typography>{_songStreamingInfo?.spotifyId}</Typography>
               </Box>
-              <Box className={classes.section}>
-                <Typography color="#A3188F" fontWeight="bold" fontSize="13px">
-                  FOR MARKETPLACES
+              <Box display="flex" p={1} pb={0}>
+                <Typography
+                  fontWeight="600"
+                  flexBasis={"50%"}
+                  color="rgb(207, 207, 207)"
+                >
+                  Youtube ID
                 </Typography>
-                <Typography color="black" fontWeight="bold">
-                  Offer NFT Music Bonds
-                </Typography>
-                <Button color="primary" variant="contained">
-                  Get Started
-                </Button>
+                <Typography>{_songStreamingInfo?.youtubeId}</Typography>
               </Box>
+              {_nftInfo && (
+                <>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
+                      NFT Name
+                    </Typography>
+                    <Typography>{_nftInfo.nftName}</Typography>
+                  </Box>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
+                      NFT Symbol
+                    </Typography>
+                    <Typography>{_nftInfo.nftSymbol}</Typography>
+                  </Box>
+                </>
+              )}
+              {_bondInfo && (
+                <>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
+                      Face Value
+                    </Typography>
+                    <Typography>{_bondInfo.faceValue}</Typography>
+                  </Box>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
+                      Term (years)
+                    </Typography>
+                    <Typography>{_bondInfo.termYears}</Typography>
+                  </Box>
+                </>
+              )}
+              {/* <Box display="flex" p={1} pb={0}>
+              <Typography fontWeight="bold" flexBasis={"50%"}>
+                SpotifyId
+              </Typography>
+              <Typography>{_songStreamingInfo?.spotifyId}</Typography>
             </Box>
-          </>
-        </Route>
-        <Route exact path="/home/mint/">
-          <MarketPlace />
-        </Route>
-        <Route exact path="/home/mint/opensea/bond-info">
-          <BondInfoForm />
-        </Route>
-        <Route exact path="/home/mint/opensea/deposit">
-          <DepositCollateral />
-        </Route>
-        <Route exact path="/home/mint/opensea/issue-bond">
-          <IssueBond />
-        </Route>
-      </Switch>
+            <Box display="flex" p={1} pb={0}>
+              <Typography fontWeight="bold" flexBasis={"50%"}>
+                SpotifyId
+              </Typography>
+              <Typography>{_songStreamingInfo?.spotifyId}</Typography>
+            </Box> */}
+            </Box>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };

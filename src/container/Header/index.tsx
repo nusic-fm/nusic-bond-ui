@@ -22,10 +22,6 @@ const useStyles = makeStyles({
   titleText: {
     cursor: "pointer",
   },
-  icon: {
-    margin: "0 10px",
-    cursor: "pointer",
-  },
 });
 
 const Header = () => {
@@ -42,16 +38,32 @@ const Header = () => {
     <AppBar className={classes.appBar}>
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          <Box
-            display="flex"
-            alignItems="center"
-            className={classes.titleText}
-            onClick={() => {
-              history.push("/");
-            }}
-          >
-            <img src="/nu-logo-white.png" alt="nusic" height="25px" />
-            NUSIC
+          <Box gap={0.5} display="flex" alignItems="center">
+            <img
+              src="/nusic-white.png"
+              alt="nusic"
+              height="40px"
+              className={classes.titleText}
+              onClick={() => {
+                history.push("/");
+              }}
+            />
+            <Box display={"flex"} flexDirection="column">
+              <Typography
+                fontWeight={900}
+                color="rgb(207, 207, 207)"
+                fontFamily={"Space Mono"}
+              >
+                NFT
+              </Typography>
+              <Typography
+                fontWeight={900}
+                color="rgb(207, 207, 207)"
+                fontFamily={"Space Mono"}
+              >
+                NOTES
+              </Typography>
+            </Box>
           </Box>
         </Typography>
         <Button
@@ -63,7 +75,7 @@ const Header = () => {
           }}
           style={{ marginRight: "12px" }}
         >
-          My Dashboard
+          Dashboard
         </Button>
         {account ? (
           <Tooltip title={account}>
@@ -73,10 +85,16 @@ const Header = () => {
                 account.length - 4
               )}`}
               style={{ marginLeft: "auto" }}
+              size="small"
             />
           </Tooltip>
         ) : (
-          <Button variant="contained" color="primary" onClick={connect}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={connect}
+            size="small"
+          >
             Connect Wallet
           </Button>
         )}

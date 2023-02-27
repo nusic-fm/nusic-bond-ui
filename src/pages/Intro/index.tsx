@@ -23,7 +23,7 @@ const Intro = () => {
   const history = useHistory();
 
   const onGettingStarted = () => {
-    history.push("/home/mint/opensea/bond-info");
+    history.push("/home");
   };
 
   return (
@@ -35,7 +35,7 @@ const Intro = () => {
       alignItems="center"
     >
       <Box>
-        <Typography variant="h2">NFT Music Bonds</Typography>
+        <Typography variant="h2">NFT NOTES</Typography>
       </Box>
       <Box mb={3}>
         <Typography variant="h6">

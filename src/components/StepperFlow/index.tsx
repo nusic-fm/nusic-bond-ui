@@ -6,18 +6,14 @@ import {
   Stepper,
   Step,
   StepLabel,
-  StepContent,
-  Typography,
-  TextField,
 } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
-// import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
-import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import LibraryMusicRoundedIcon from "@mui/icons-material/LibraryMusicRounded";
 import LocalAtmRoundedIcon from "@mui/icons-material/LocalAtmRounded";
-import PriceCheckRoundedIcon from "@mui/icons-material/PriceCheckRounded";
-import StreetviewRoundedIcon from "@mui/icons-material/StreetviewRounded";
+import CampaignIcon from "@mui/icons-material/Campaign";
+import StreamIcon from "@mui/icons-material/Stream";
 import HubRoundedIcon from "@mui/icons-material/HubRounded";
 
 type Props = { currentStep: number };
@@ -50,10 +46,10 @@ const StepperFlow = ({ currentStep }: Props) => {
 
     const icons: { [index: string]: React.ReactElement } = {
       1: <LibraryMusicRoundedIcon />,
-      2: <InfoRoundedIcon />,
+      2: <InfoOutlined />,
       3: <LocalAtmRoundedIcon />,
-      4: <PriceCheckRoundedIcon />,
-      5: <StreetviewRoundedIcon />,
+      4: <CampaignIcon />,
+      5: <StreamIcon />,
       6: <HubRoundedIcon />,
     };
     return (

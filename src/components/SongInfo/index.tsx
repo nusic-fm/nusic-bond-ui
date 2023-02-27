@@ -24,7 +24,7 @@ import { SPOTIFY_LISTENERS_ISRC, YOUTUBE_VIEWS_URL } from "../../constants";
 import axios from "axios";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSetRecoilState } from "recoil";
-import { songStreamingInfo } from "../../state";
+import { songStreamingInfoState } from "../../state";
 
 type Props = {
   goToNextPage: () => void;
@@ -60,8 +60,8 @@ const SongInfo = ({ goToNextPage }: Props) => {
     songStatId: string;
   }>();
   const [artistName, setArtistName] = useState<string>("");
-  const [youtubeId, setYoutubeId] = useState<string>();
-  const setPendingAssetPoolState = useSetRecoilState(songStreamingInfo);
+  const [youtubeId, setYoutubeId] = useState<string>("");
+  const setPendingAssetPoolState = useSetRecoilState(songStreamingInfoState);
 
   const getSpotifyListenersData = async (_spotifyId: string): Promise<void> => {
     try {
@@ -274,7 +274,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     !artistName.length ||
                     !idsObj?.soundChartId ||
                     !idsObj?.soundChartId ||
-                    !youtubeId ||
+                    !youtubeId.length ||
                     !youtubeViews ||
                     !spotifyListeners ||
                     !preview
@@ -285,7 +285,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                       );
                       return;
                     }
-                    if (!youtubeId) {
+                    if (!youtubeId.length) {
                       alert(`Unable to fetch youtube views for the URL`);
                       return;
                     }

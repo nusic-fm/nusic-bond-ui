@@ -11,7 +11,11 @@ import SongInfo from "../../components/SongInfo";
 // import { useHistory } from "react-router";
 // import { Route, Switch, useLocation } from "react-router-dom";
 import StepperFlow from "../../components/StepperFlow";
-import { nftInfo, songStreamingInfo } from "../../state";
+import {
+  bondInfoState,
+  nftInfoState,
+  songStreamingInfoState,
+} from "../../state";
 // import BondInfoForm from "./BondInfoForm";
 // import DepositCollateral from "./DepositCollateral";
 // import IssueBond from "./IssueBond";
@@ -68,8 +72,9 @@ const Home = () => {
   const classes = useStyles();
   // const location = useLocation();
   const [currentStep, setCurrentStep] = useState(0);
-  const [_songStreamingInfo] = useRecoilState(songStreamingInfo);
-  const [_nftInfo] = useRecoilState(nftInfo);
+  const [_songStreamingInfo] = useRecoilState(songStreamingInfoState);
+  const [_nftInfo] = useRecoilState(nftInfoState);
+  const [_bondInfo] = useRecoilState(bondInfoState);
 
   const goToNextPage = () => {
     setCurrentStep(currentStep + 1);
@@ -90,33 +95,73 @@ const Home = () => {
         </Box>
         {_songStreamingInfo && (
           <Box flexBasis="30%">
-            <Typography>Value Summary</Typography>
-            <Box className={classes.summary} height={"600px"} mt={2}>
+            <Typography variant="h6">Value Summary</Typography>
+            <Box className={classes.summary} height={"400px"} p={2} mt={2}>
               <Box display="flex" p={1} pb={0}>
-                <Typography fontWeight="bold" flexBasis={"50%"}>
-                  SpotifyId
+                <Typography
+                  fontWeight="600"
+                  flexBasis={"50%"}
+                  color="rgb(207, 207, 207)"
+                >
+                  Spotify ID
                 </Typography>
-                <Typography>{_songStreamingInfo.spotifyId}</Typography>
+                <Typography>{_songStreamingInfo?.spotifyId}</Typography>
               </Box>
               <Box display="flex" p={1} pb={0}>
-                <Typography fontWeight="bold" flexBasis={"50%"}>
-                  YoutubeId
+                <Typography
+                  fontWeight="600"
+                  flexBasis={"50%"}
+                  color="rgb(207, 207, 207)"
+                >
+                  Youtube ID
                 </Typography>
-                <Typography>{_songStreamingInfo.youtubeId}</Typography>
+                <Typography>{_songStreamingInfo?.youtubeId}</Typography>
               </Box>
               {_nftInfo && (
                 <>
                   <Box display="flex" p={1} pb={0}>
-                    <Typography fontWeight="bold" flexBasis={"50%"}>
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
                       NFT Name
                     </Typography>
                     <Typography>{_nftInfo.nftName}</Typography>
                   </Box>
                   <Box display="flex" p={1} pb={0}>
-                    <Typography fontWeight="bold" flexBasis={"50%"}>
-                      YoutubeId
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
+                      NFT Symbol
                     </Typography>
                     <Typography>{_nftInfo.nftSymbol}</Typography>
+                  </Box>
+                </>
+              )}
+              {_bondInfo && (
+                <>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
+                      Face Value
+                    </Typography>
+                    <Typography>{_bondInfo.faceValue}</Typography>
+                  </Box>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
+                      Term (years)
+                    </Typography>
+                    <Typography>{_bondInfo.termYears}</Typography>
                   </Box>
                 </>
               )}

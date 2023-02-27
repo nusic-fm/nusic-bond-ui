@@ -1,7 +1,7 @@
 import { Stack, Box, Grid, TextField, Typography, Button } from "@mui/material";
 import { useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { nftInfo, songStreamingInfo } from "../../state";
+import { nftInfoState, songStreamingInfoState } from "../../state";
 
 type Props = {
   goToNextPage: () => void;
@@ -12,8 +12,8 @@ const ArtistInfo = ({ goToNextPage }: Props) => {
   // const [artistName, setArtistName] = useState<string>("");
   const [nftBondName, setNftBondName] = useState<string>("");
   const [nftBondSymbol, setNftBondSymbol] = useState<string>("");
-  const [_songStreamingInfo] = useRecoilState(songStreamingInfo);
-  const setNftInfo = useSetRecoilState(nftInfo);
+  const [_songStreamingInfo] = useRecoilState(songStreamingInfoState);
+  const setNftInfo = useSetRecoilState(nftInfoState);
 
   return (
     <Stack>

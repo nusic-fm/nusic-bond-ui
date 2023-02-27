@@ -3,6 +3,7 @@ import {
   Button,
   Dialog,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Grid,
   IconButton,
@@ -141,52 +142,59 @@ const SongInfo = ({ goToNextPage }: Props) => {
         <Grid container>
           <Grid item md={2}></Grid>
           <Grid item md={8}>
-            <Box mt={2}>
-              <Button
-                variant="contained"
-                component="label"
-                onChange={(e: any) => {
-                  if (e.target.files.length === 0) return;
-                  const file = e.target.files[0];
-                  var reader = new FileReader();
-                  reader.onload = (e) => {
-                    // Use reader.result
-                    // this.setState({
-                    //   csvData: reader.result,
-                    // });
-                    if (reader.result) {
-                      setCsvData(reader.result);
-                      const res = (reader.result as string).split("\r\n");
-                      const _columns = res[0].split(",");
-                      setColumns(_columns);
-                      const _rows: string[][] = [];
-                      for (let i = 1; i < res.length - 1; i++) {
-                        const splits = res[i].split(",");
-                        _rows.push(splits);
-                      }
-                      setRows(_rows);
-                      setShowTable(true);
-                    }
-                  };
-                  reader.readAsText(file);
-                }}
-              >
-                Upload CSV
-                <input hidden accept=".csv" type="file" />
-              </Button>
-              {csvData && (
+            <Stack mt={2}>
+              <Stack flexDirection={"row"}>
                 <Button
-                  size="small"
-                  color="info"
-                  onClick={() => {
-                    setShowTable(true);
+                  variant="contained"
+                  component="label"
+                  onChange={(e: any) => {
+                    if (e.target.files.length === 0) return;
+                    const file = e.target.files[0];
+                    var reader = new FileReader();
+                    reader.onload = (e) => {
+                      // Use reader.result
+                      // this.setState({
+                      //   csvData: reader.result,
+                      // });
+                      if (reader.result) {
+                        setCsvData(reader.result);
+                        const res = (reader.result as string).split("\r\n");
+                        const _columns = res[0].split(",");
+                        setColumns(_columns);
+                        const _rows: string[][] = [];
+                        for (let i = 1; i < res.length - 1; i++) {
+                          const splits = res[i].split(",");
+                          _rows.push(splits);
+                        }
+                        setRows(_rows);
+                        setShowTable(true);
+                      }
+                    };
+                    reader.readAsText(file);
                   }}
+                  sx={{ width: 250 }}
                 >
-                  open table
+                  Upload Financial Statement
+                  <input hidden accept=".csv" type="file" />
                 </Button>
-              )}
-            </Box>
-            <Box my={2}>
+                {csvData && (
+                  <Button
+                    size="small"
+                    color="info"
+                    onClick={() => {
+                      setShowTable(true);
+                    }}
+                    sx={{ ml: 1 }}
+                  >
+                    open table
+                  </Button>
+                )}
+              </Stack>
+              <Typography sx={{ mt: 1 }} variant="caption">
+                Our AI engine will calculate the eligibility of your songs
+              </Typography>
+            </Stack>
+            <Box my={4}>
               <Typography>ISRC</Typography>
               <Box display="flex" alignItems={"center"}>
                 <TextField
@@ -229,7 +237,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                   variant="outlined"
                   color="primary"
                   placeholder="Enter your Youtube Video URL"
-                  style={{ width: "40%" }}
+                  style={{ width: "60%" }}
                   value={youtubeUrl}
                   onChange={(e) => setYoutubeUrl(e.target.value)}
                   error={isYoutubeError}
@@ -257,7 +265,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                 )}
               </Box>
             </Box>
-            <Box mt={2}>
+            <Box mt={4}>
               <Button
                 variant="outlined"
                 color="info"
@@ -271,7 +279,19 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     !spotifyListeners ||
                     !preview
                   ) {
-                    alert("please fill all the details");
+                    if (!spotifyListeners) {
+                      alert(
+                        `Spotify Listeners data isn't available for the ISRC`
+                      );
+                      return;
+                    }
+                    if (!youtubeId) {
+                      alert(`Unable to fetch youtube views for the URL`);
+                      return;
+                    }
+                    alert(
+                      "Missing Song information, please check the provided ISRC and Youtube video URL"
+                    );
                     return;
                   }
                   setPendingAssetPoolState({
@@ -288,7 +308,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                   goToNextPage();
                 }}
               >
-                Next
+                continue to nft info
               </Button>
             </Box>
           </Grid>
@@ -313,6 +333,23 @@ const SongInfo = ({ goToNextPage }: Props) => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
+        <DialogContentText pl={3}>
+          <Stack>
+            <Typography variant="caption">
+              <Typography component={"span"} color="green" variant="caption">
+                ELEGIBLE
+              </Typography>{" "}
+              tracks have passed our AI financial check.
+            </Typography>
+            <Typography variant="caption">
+              <Typography component={"span"} color="red" variant="caption">
+                NOT ELEGIBLE
+              </Typography>{" "}
+              tracks have not met our financial check and need more streams to
+              be issued as an NFT NOTES
+            </Typography>
+          </Stack>
+        </DialogContentText>
         <DialogContent>
           {rows && columns && (
             <TableContainer component={Paper}>

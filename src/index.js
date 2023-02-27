@@ -18,7 +18,7 @@ import { RecoilRoot } from "recoil";
 
 WebFont.load({
   google: {
-    families: ["Nunito"],
+    families: ["Nunito", "Space Mono"],
   },
 });
 
@@ -32,8 +32,8 @@ let theme = createTheme({
       main: "#4AAB1A",
     },
     info: {
-      main: '#A794FF'
-    }
+      main: "#A794FF",
+    },
   },
   typography: {
     allVariants: {

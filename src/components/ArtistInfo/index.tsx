@@ -114,7 +114,7 @@ const ArtistInfo = ({ goToNextPage }: Props) => {
                   goToNextPage();
                 }}
               >
-                Next
+                Continue to Financials
               </Button>
             </Box>
           </Grid>

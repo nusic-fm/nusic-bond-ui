@@ -39,7 +39,7 @@ const BondInfo = ({ goToNextPage }: Props) => {
               </Box>
               <Box display="flex">
                 <Box flexBasis="50%">
-                  <Box mb={2}>
+                  {/* <Box mb={2}>
                     <Typography>Collateral Deposit for Q1 Year 0</Typography>
                     <Box>
                       <TextField
@@ -57,8 +57,8 @@ const BondInfo = ({ goToNextPage }: Props) => {
                             </InputAdornment>
                           ),
                         }}
-                      />
-                      {/* <Box display="inline" ml={2}>
+                      /> */}
+                  {/* <Box display="inline" ml={2}>
                   <Select
                     value={selectedCurrency}
                     onChange={onCurrencyChange}
@@ -80,8 +80,6 @@ const BondInfo = ({ goToNextPage }: Props) => {
                     </Typography>
                   )}
                 </Box> */}
-                    </Box>
-                  </Box>
                   <Box mb={2} style={{ width: "80%" }}>
                     <Typography>Select Term</Typography>
                     <Box mt={6}>
@@ -129,7 +127,7 @@ const BondInfo = ({ goToNextPage }: Props) => {
             </Box>
             <Box mt={2}>
               <Button variant="outlined" color="info" onClick={goToNextPage}>
-                Next
+                Continue to Promotion
               </Button>
             </Box>
           </Grid>

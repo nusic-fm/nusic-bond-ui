@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import ArtistInfo from "../../components/ArtistInfo";
 import BondInfo from "../../components/BondInfo";
 import IssueBond from "../../components/IssueBond";
+import Promotion from "../../components/Promotion";
 import SongInfo from "../../components/SongInfo";
 // import { useHistory } from "react-router";
 // import { Route, Switch, useLocation } from "react-router-dom";
@@ -84,7 +85,7 @@ const Home = () => {
           {currentStep === 0 && <SongInfo goToNextPage={goToNextPage} />}
           {currentStep === 1 && <ArtistInfo goToNextPage={goToNextPage} />}
           {currentStep === 2 && <BondInfo goToNextPage={goToNextPage} />}
-          {currentStep === 3 && <Button onClick={goToNextPage}>Next</Button>}
+          {currentStep === 3 && <Promotion goToNextPage={goToNextPage} />}
           {currentStep === 4 && <IssueBond goToNextPage={goToNextPage} />}
         </Box>
         {_songStreamingInfo && (

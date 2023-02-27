@@ -290,6 +290,9 @@ const BondInfo = ({ goToNextPage }: Props) => {
                             label: "APY",
                             data: yeilds,
                             backgroundColor: "rgba(53, 162, 235, 0.5)",
+                            borderRadius: 8,
+                            borderWidth: 3,
+                            borderColor: "rgba(53, 162, 235, 0.8)",
                           },
                         ],
                       }}

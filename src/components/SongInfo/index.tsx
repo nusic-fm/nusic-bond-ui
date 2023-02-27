@@ -129,13 +129,13 @@ const SongInfo = ({ goToNextPage }: Props) => {
 
   useEffect(() => {
     if (spotifyId) {
-      // getSpotifyListenersData(spotifyId);
+      getSpotifyListenersData(spotifyId);
     }
   }, [spotifyId]);
   useEffect(() => {
     if (youtubeUrl) {
       // setYoutubeSubscribersData(youtubeUrl);
-      // getYoutubeViewsCount(youtubeUrl);
+      getYoutubeViewsCount(youtubeUrl);
     }
   }, [youtubeUrl]);
 

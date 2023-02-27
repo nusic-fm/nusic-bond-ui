@@ -931,7 +931,7 @@ const BondInfoForm = () => {
                 <TableHead>
                   <TableRow>
                     {columns.slice(0, 12).map((col) => (
-                      <TableCell>{col}</TableCell>
+                      <TableCell key={col}>{col}</TableCell>
                     ))}
                     <TableCell></TableCell>
                   </TableRow>

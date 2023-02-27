@@ -22,8 +22,27 @@ import {
   AccumulationSeriesDirective,
 } from "@syncfusion/ej2-react-charts";
 import { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
-import { bondInfoState } from "../../state";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { bondInfoState, incomeState } from "../../state";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 type Props = { goToNextPage: () => void };
 
@@ -31,28 +50,37 @@ export interface Mark {
   value: number;
   label?: React.ReactNode;
 }
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "APY Chart from Income History and Face Value",
+    },
+  },
+};
 
 const BondInfo = ({ goToNextPage }: Props) => {
-  const [enteredCollateralAmount, setEnteredCollateralAmount] =
-    useState<number>();
   const [bondValue, setBondValue] = useState(1);
-  const [selectedTerm, setSelectedTerm] = useState(3);
+  // const [selectedTerm, setSelectedTerm] = useState(3);
   const [isInstantLiquidity, setIsInstantLiquidity] = useState(false);
   const [selectedSplitValue, setSelectedSplitValue] = useState(15000);
   const [noOfSplits, setNoOfSplits] = useState<number>(1);
   const [splitSliderData, setSplitSliderData] = useState<Mark[]>([]);
   const [pieData, setPieData] = useState<Mark[]>([]);
+  const [yeilds, setYeilds] = useState<number[]>([]);
 
-  const onCollateralAmountChange = (e: any) => {
-    const collateral = parseFloat(e.target.value);
-    setEnteredCollateralAmount(collateral);
-  };
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
     setBondValue(enteredValue);
   };
   const setBondInfoState = useSetRecoilState(bondInfoState);
+  const [_bondInfo] = useRecoilState(incomeState);
 
+  console.log(_bondInfo);
   useEffect(() => {
     const marks = new Array(50).fill("-").map((val, i) => ({
       value: i + 1,
@@ -78,6 +106,28 @@ const BondInfo = ({ goToNextPage }: Props) => {
       );
     }
   }, [selectedSplitValue, splitSliderData]);
+
+  useEffect(() => {
+    if (_bondInfo) {
+      let yearsValues = [..._bondInfo?.rows];
+      yearsValues?.pop();
+      const sums: number[] = [];
+      let counter = 0;
+      let i = 0;
+      yearsValues?.map((val) => {
+        if (counter) {
+          sums[i] += val;
+          i++;
+          counter = 0;
+        } else {
+          sums.push(val);
+          counter += 1;
+        }
+      });
+      const apys = sums.map((s) => s / bondValue);
+      setYeilds(apys);
+    }
+  }, [_bondInfo, bondValue]);
 
   return (
     <Stack>
@@ -228,17 +278,37 @@ const BondInfo = ({ goToNextPage }: Props) => {
                       )}
                     </Box>
                   </Box>
+                  <Box mt={2} display="flex">
+                    <Bar
+                      width={200}
+                      height={100}
+                      options={options}
+                      data={{
+                        labels: [2020, 2021, 2022],
+                        datasets: [
+                          {
+                            label: "APY",
+                            data: yeilds,
+                            backgroundColor: "rgba(53, 162, 235, 0.5)",
+                            borderRadius: 8,
+                            borderWidth: 3,
+                            borderColor: "rgba(53, 162, 235, 0.8)",
+                          },
+                        ],
+                      }}
+                    />
+                  </Box>
                 </Box>
               </Box>
             </Box>
-            <Box mt={2}>
+            <Box mt={4}>
               <Button
                 variant="outlined"
                 color="info"
                 onClick={() => {
                   setBondInfoState({
                     faceValue: bondValue,
-                    termYears: selectedTerm,
+                    // termYears: selectedTerm,
                     noOfBonds: noOfSplits,
                   });
                   goToNextPage();

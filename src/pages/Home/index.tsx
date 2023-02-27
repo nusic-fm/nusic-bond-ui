@@ -153,7 +153,7 @@ const Home = () => {
                     </Typography>
                     <Typography>{_bondInfo.faceValue}</Typography>
                   </Box>
-                  <Box display="flex" p={1} pb={0}>
+                  {/* <Box display="flex" p={1} pb={0}>
                     <Typography
                       fontWeight="600"
                       flexBasis={"50%"}
@@ -162,7 +162,7 @@ const Home = () => {
                       Term (years)
                     </Typography>
                     <Typography>{_bondInfo.termYears}</Typography>
-                  </Box>
+                  </Box> */}
                 </>
               )}
               {/* <Box display="flex" p={1} pb={0}>

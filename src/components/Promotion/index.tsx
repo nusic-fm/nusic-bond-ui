@@ -56,7 +56,7 @@ const Promotion = ({ goToNextPage }: Props) => {
                 </CardContent>
                 <CardContent>
                   <Typography align="center" variant="h5">
-                    Tiktok
+                    Spotify
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: "center" }}>

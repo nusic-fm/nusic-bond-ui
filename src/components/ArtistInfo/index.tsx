@@ -24,7 +24,7 @@ const ArtistInfo = ({ goToNextPage }: Props) => {
             <Box mt={2}>
               <Box mb={2}>
                 <Typography variant="h6" fontWeight="600">
-                  Bond Issuer
+                  Notes Issuer
                 </Typography>
               </Box>
               <Box mb={2} display="flex" alignItems={"center"}>

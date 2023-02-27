@@ -31,15 +31,34 @@ const Promotion = ({ goToNextPage }: Props) => {
               sx={{ mt: 4 }}
             >
               <Card sx={{ width: "100%" }}>
-                <CardHeader title="Tiktok"></CardHeader>
-                <CardContent></CardContent>
+                <CardContent>
+                  <Stack flexDirection={"row"} justifyContent="center">
+                    <img
+                      src="https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2Fs3.amazonaws.com%2Fappforest_uf%2Ff1676977024390x429224891718625200%2FTikTok.png?w=96&h=96&auto=compress&dpr=2&fit=max"
+                      width={80}
+                    />
+                  </Stack>
+                </CardContent>
+                <CardContent>
+                  <Typography align="center" variant="h5">
+                    Tiktok
+                  </Typography>
+                </CardContent>
                 <CardActions sx={{ justifyContent: "center" }}>
                   <Button variant="contained">Select</Button>
                 </CardActions>
               </Card>
               <Card sx={{ width: "100%" }}>
-                <CardHeader title="Spotify"></CardHeader>
-                <CardContent></CardContent>
+                <CardContent>
+                  <Stack flexDirection={"row"} justifyContent="center">
+                    <img src="/spotify.png" width={80} />
+                  </Stack>
+                </CardContent>
+                <CardContent>
+                  <Typography align="center" variant="h5">
+                    Tiktok
+                  </Typography>
+                </CardContent>
                 <CardActions sx={{ justifyContent: "center" }}>
                   <Button variant="contained">Select</Button>
                 </CardActions>
@@ -61,7 +80,7 @@ const Promotion = ({ goToNextPage }: Props) => {
             </Box>
             <Box mt={4}>
               <Button variant="outlined" color="info" onClick={goToNextPage}>
-                Continue to Issue Bond
+                Continue to Issue Notes
               </Button>
             </Box>
           </Grid>

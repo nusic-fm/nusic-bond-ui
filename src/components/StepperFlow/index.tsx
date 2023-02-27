@@ -92,7 +92,7 @@ const StepperFlow = ({ currentStep }: Props) => {
     "Notes Financials",
     "Promotion",
     // "Deposit",
-    "Issue Bond",
+    "Issue Notes",
   ];
 
   return (

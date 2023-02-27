@@ -47,7 +47,8 @@ const IssueBond = ({ goToNextPage }: Props) => {
           // _pendingAssetPoolInfo.youtubeUrl,
           // _pendingAssetPoolInfo.collateralAmount,
           1,
-          _bondInfo.termYears,
+          // _bondInfo.termYears,
+          1, // TODO
           _bondInfo.noOfBonds || 1,
           _bondInfo.faceValue,
           _nftInfo.nftName,

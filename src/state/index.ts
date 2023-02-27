@@ -55,7 +55,7 @@ export const nftInfoState = atom<null | NftInfo>({
 });
 
 export interface BondInfo {
-  termYears: number;
+  // termYears: number;
   faceValue: number;
   noOfBonds: number;
 }
@@ -68,6 +68,16 @@ export const marketingState = atom<null | Marketing>({
   key: "marketing",
   default: null,
 });
+
+export interface Income {
+  rows: number[];
+  columns: string[];
+}
+export const incomeState = atom<null | Income>({
+  key: "income",
+  default: null,
+});
+
 // export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
 //   key: "pendingAssetPoolInfo",
 //   default: null,

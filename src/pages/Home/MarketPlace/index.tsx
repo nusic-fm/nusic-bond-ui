@@ -43,6 +43,7 @@ const MarketPlace = () => {
         <Box display="flex" mt={2}>
           {[1, 2, 3, 4, 5, 6].map((id) => (
             <img
+              key={id}
               src={`/images/markets/market${id}.jpg`}
               alt={`${id}`}
               style={{ borderRadius: "50%", margin: "8px" }}

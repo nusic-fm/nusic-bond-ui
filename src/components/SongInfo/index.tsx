@@ -24,7 +24,7 @@ import { SPOTIFY_LISTENERS_ISRC, YOUTUBE_VIEWS_URL } from "../../constants";
 import axios from "axios";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSetRecoilState } from "recoil";
-import { songStreamingInfoState } from "../../state";
+import { songStreamingInfoState, incomeState } from "../../state";
 
 type Props = {
   goToNextPage: () => void;
@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 const SongInfo = ({ goToNextPage }: Props) => {
   const classes = useStyles();
   const [csvData, setCsvData] = useState<string | ArrayBuffer | null>();
-  const [columns, setColumns] = useState<string[]>();
+  const [columns, setColumns] = useState<string[]>([]);
   const [rows, setRows] = useState<string[][]>();
   const [showTable, setShowTable] = useState(false);
   const [spotifyId, setSpotifyId] = useState("");
@@ -62,6 +62,9 @@ const SongInfo = ({ goToNextPage }: Props) => {
   const [artistName, setArtistName] = useState<string>("");
   const [youtubeId, setYoutubeId] = useState<string>("");
   const setPendingAssetPoolState = useSetRecoilState(songStreamingInfoState);
+  const setIncomeState = useSetRecoilState(incomeState);
+
+  const [selectedRow, setSelectedRow] = useState<string[]>();
 
   const getSpotifyListenersData = async (_spotifyId: string): Promise<void> => {
     try {
@@ -126,13 +129,13 @@ const SongInfo = ({ goToNextPage }: Props) => {
 
   useEffect(() => {
     if (spotifyId) {
-      getSpotifyListenersData(spotifyId);
+      // getSpotifyListenersData(spotifyId);
     }
   }, [spotifyId]);
   useEffect(() => {
     if (youtubeUrl) {
       // setYoutubeSubscribersData(youtubeUrl);
-      getYoutubeViewsCount(youtubeUrl);
+      // getYoutubeViewsCount(youtubeUrl);
     }
   }, [youtubeUrl]);
 
@@ -305,6 +308,18 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     spotifyListeners,
                     songImageUrl: preview,
                   });
+                  if (!selectedRow) {
+                    alert("Income isn't available");
+                    return;
+                  }
+                  setIncomeState({
+                    rows: selectedRow
+                      .filter(
+                        (val) => !isNaN(Number(val)) && !isNaN(parseFloat(val))
+                      )
+                      .map((val) => Number(val)),
+                    columns,
+                  });
                   goToNextPage();
                 }}
               >
@@ -379,6 +394,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                           color="info"
                           disabled={Number(row[11]) < 20}
                           onClick={() => {
+                            setSelectedRow(row);
                             setSpotifyId(row[12]);
                             setYoutubeUrl(row[13]);
                             setShowTable(false);

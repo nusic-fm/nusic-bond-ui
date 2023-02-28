@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   CircularProgress,
   Grid,
   Stack,
@@ -7,6 +8,7 @@ import {
   StepLabel,
   Stepper,
 } from "@mui/material";
+import { useWeb3React } from "@web3-react/core";
 import { BigNumber } from "ethers";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
@@ -16,6 +18,7 @@ import {
   songStreamingInfoState,
   nftInfoState,
   bondInfoState,
+  marketingState,
   // AssetPoolInfo,
 } from "../../state";
 
@@ -23,14 +26,20 @@ type Props = { goToNextPage: () => void };
 
 const IssueBond = ({ goToNextPage }: Props) => {
   const [processMode, setProcessMode] = useState(0);
-  const { issueBond, mintNftBonds } = useApManager();
+  const { issueNotes, mintNftBonds } = useApManager();
   const [_songStreamingInfo] = useRecoilState(songStreamingInfoState);
   const [_nftInfo] = useRecoilState(nftInfoState);
   const [_bondInfo] = useRecoilState(bondInfoState);
+  const [_marketingInfo] = useRecoilState(marketingState);
   const history = useHistory();
+  const { account } = useWeb3React();
 
   const onIssueBondClick = async () => {
-    if (_songStreamingInfo && _nftInfo && _bondInfo) {
+    if (!account) {
+      alert("please connect your wallet and try again");
+      return;
+    }
+    if (_songStreamingInfo && _nftInfo && _bondInfo && _marketingInfo) {
       try {
         setProcessMode(1);
         console.log("noOfBonds: ", _bondInfo.noOfBonds);
@@ -38,19 +47,15 @@ const IssueBond = ({ goToNextPage }: Props) => {
         //   uint256 _fundingAmount, uint256 _numberOfYears, uint256 _numberOfBonds,
         //   uint256 _facevalue, string memory _bondName, string memory _bondSymbol,
         //   ListenersDetails memory listenersDetails) public returns(address nftAddress)
-        const tx = await issueBond(
+        const tx = await issueNotes(
           _songStreamingInfo.artistName,
+          account,
           _songStreamingInfo.youtubeId,
           _songStreamingInfo.soundChartId,
           _songStreamingInfo.songStatId,
-          // _pendingAssetPoolInfo.spotifyId,
-          // _pendingAssetPoolInfo.youtubeUrl,
-          // _pendingAssetPoolInfo.collateralAmount,
-          1,
-          // _bondInfo.termYears,
-          1, // TODO
-          _bondInfo.noOfBonds || 1,
-          _bondInfo.faceValue,
+          _songStreamingInfo.songStatId,
+          _bondInfo.faceValue / (_bondInfo.noOfBonds ?? 1),
+          _bondInfo.noOfBonds ?? 1,
           _nftInfo.nftName,
           _nftInfo.nftSymbol,
           {
@@ -58,8 +63,12 @@ const IssueBond = ({ goToNextPage }: Props) => {
               _songStreamingInfo.spotifyListeners
             ),
             youtubeViewsCount: BigNumber.from(_songStreamingInfo.youtubeViews),
-            assetPoolAddress: "",
-            //_songStreamingInfo.apAddress,
+          },
+          {
+            influencerOne: _marketingInfo.influencerOne,
+            influencerTwo: _marketingInfo.influencerOne,
+            influencerOneShare: _marketingInfo.influencerOne,
+            influencerTwoShare: _marketingInfo.influencerOne,
           }
         );
         const receipt = await tx.wait();
@@ -97,39 +106,51 @@ const IssueBond = ({ goToNextPage }: Props) => {
       }
     }
   };
+
   return (
     <Stack>
       <Box>
         <Grid container>
           <Grid item md={2}></Grid>
           <Grid item md={8}>
+            <Box>
+              <Button
+                onClick={onIssueBondClick}
+                variant="contained"
+                disabled={!!processMode}
+              >
+                Issue Notes
+              </Button>
+            </Box>
             <Box mt={8} display="flex">
-              <Stepper activeStep={processMode - 1} orientation="vertical">
-                <Step>
-                  <StepLabel>
-                    <Box display="flex" alignItems="center" fontSize="24px">
-                      Issuing NFT Bond
-                      <Box ml={3}>
-                        {processMode === 1 && (
-                          <CircularProgress color="info" size={20} />
-                        )}
+              {processMode > 0 && (
+                <Stepper activeStep={processMode - 1} orientation="vertical">
+                  <Step>
+                    <StepLabel>
+                      <Box display="flex" alignItems="center" fontSize="24px">
+                        Issuing NFT Bond
+                        <Box ml={3}>
+                          {processMode === 1 && (
+                            <CircularProgress color="info" size={20} />
+                          )}
+                        </Box>
                       </Box>
-                    </Box>
-                  </StepLabel>
-                </Step>
-                <Step>
-                  <StepLabel>
-                    <Box display="flex" alignItems="center" fontSize="24px">
-                      Minting your NFT music Bond
-                      <Box ml={3}>
-                        {processMode === 2 && (
-                          <CircularProgress color="info" size={20} />
-                        )}
+                    </StepLabel>
+                  </Step>
+                  <Step>
+                    <StepLabel>
+                      <Box display="flex" alignItems="center" fontSize="24px">
+                        Minting your NFT music Bond
+                        <Box ml={3}>
+                          {processMode === 2 && (
+                            <CircularProgress color="info" size={20} />
+                          )}
+                        </Box>
                       </Box>
-                    </Box>
-                  </StepLabel>
-                </Step>
-              </Stepper>
+                    </StepLabel>
+                  </Step>
+                </Stepper>
+              )}
             </Box>
           </Grid>
           <Grid item md={2}></Grid>

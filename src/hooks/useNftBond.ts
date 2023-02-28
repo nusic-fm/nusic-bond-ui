@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { NFTData } from "../container/DashboardRow";
-import { abi as BondNftAbi } from "../abis/BondNFT.json";
+import { abi as NotesNftAbi } from "../abis/NotesNFT.json";
 
 const useNftBond = () => {
   // const { library } = useWeb3React();
@@ -15,7 +15,7 @@ const useNftBond = () => {
       );
       const nftBondContract = new ethers.Contract(
         nftAddress,
-        BondNftAbi,
+        NotesNftAbi,
         provider
       );
       const name = await nftBondContract.name();

@@ -13,6 +13,7 @@ import SongInfo from "../../components/SongInfo";
 import StepperFlow from "../../components/StepperFlow";
 import {
   bondInfoState,
+  marketingState,
   nftInfoState,
   songStreamingInfoState,
 } from "../../state";
@@ -42,7 +43,7 @@ const useStyles = makeStyles({
   summary: {
     backgroundColor: "rgba(255,255,255,0.2)",
     borderRadius: 4,
-    width: "100%",
+    width: "90%",
   },
 });
 
@@ -75,6 +76,7 @@ const Home = () => {
   const [_songStreamingInfo] = useRecoilState(songStreamingInfoState);
   const [_nftInfo] = useRecoilState(nftInfoState);
   const [_bondInfo] = useRecoilState(bondInfoState);
+  const [_marketingInfo] = useRecoilState(marketingState);
 
   const goToNextPage = () => {
     setCurrentStep(currentStep + 1);
@@ -165,6 +167,25 @@ const Home = () => {
                   </Box> */}
                 </>
               )}
+              {/* {_marketingInfo && (
+                <>
+                  <Box display="flex" p={1} pb={0}>
+                    <Typography
+                      fontWeight="600"
+                      flexBasis={"50%"}
+                      color="rgb(207, 207, 207)"
+                    >
+                      Total Promotional Spending
+                    </Typography>
+                    <Typography>
+                      {(Number(_marketingInfo.influencerOneShare ?? 0) +
+                        Number(_marketingInfo.influencerOneShare ?? 0)) /
+                        100}
+                      %
+                    </Typography>
+                  </Box>
+                </>
+              )} */}
               {/* <Box display="flex" p={1} pb={0}>
               <Typography fontWeight="bold" flexBasis={"50%"}>
                 SpotifyId

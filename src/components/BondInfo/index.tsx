@@ -64,7 +64,7 @@ export const options = {
 };
 
 const BondInfo = ({ goToNextPage }: Props) => {
-  const [bondValue, setBondValue] = useState(1);
+  const [bondValue, setBondValue] = useState(1000);
   // const [selectedTerm, setSelectedTerm] = useState(3);
   const [isInstantLiquidity, setIsInstantLiquidity] = useState(false);
   const [selectedSplitValue, setSelectedSplitValue] = useState(15000);
@@ -278,7 +278,7 @@ const BondInfo = ({ goToNextPage }: Props) => {
                       )}
                     </Box>
                   </Box>
-                  <Box mt={2} display="flex">
+                  {/* <Box mt={2} display="flex">
                     <Bar
                       width={200}
                       height={100}
@@ -297,7 +297,7 @@ const BondInfo = ({ goToNextPage }: Props) => {
                         ],
                       }}
                     />
-                  </Box>
+                  </Box> */}
                 </Box>
               </Box>
             </Box>

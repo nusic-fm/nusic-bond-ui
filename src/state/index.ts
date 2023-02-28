@@ -34,6 +34,7 @@ export interface SongStreamingInfo {
   youtubeId: string;
   soundChartId: string;
   songStatId: string;
+  chartmetricId: string;
   artistName: string;
   youtubeViews: number;
   spotifyListeners: number;
@@ -63,7 +64,12 @@ export const bondInfoState = atom<null | BondInfo>({
   key: "bondInfo",
   default: null,
 });
-export interface Marketing {}
+export interface Marketing {
+  influencerOne: string;
+  influencerTwo: string;
+  influencerOneShare: string;
+  influencerTwoShare: string;
+}
 export const marketingState = atom<null | Marketing>({
   key: "marketing",
   default: null,

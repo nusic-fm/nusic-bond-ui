@@ -58,10 +58,11 @@ const SongInfo = ({ goToNextPage }: Props) => {
   const [idsObj, setIdsObj] = useState<{
     soundChartId: string;
     songStatId: string;
+    chartmetricId: string;
   }>();
   const [artistName, setArtistName] = useState<string>("");
   const [youtubeId, setYoutubeId] = useState<string>("");
-  const setPendingAssetPoolState = useSetRecoilState(songStreamingInfoState);
+  const setSongStreamingState = useSetRecoilState(songStreamingInfoState);
   const setIncomeState = useSetRecoilState(incomeState);
 
   const [selectedRow, setSelectedRow] = useState<string[]>();
@@ -78,9 +79,10 @@ const SongInfo = ({ goToNextPage }: Props) => {
           songTitle: _songTitle,
           artistName: _artistName,
           songImageUrl,
+          chartmetricId,
         } = res.data;
         setPreview(songImageUrl);
-        setIdsObj({ soundChartId, songStatId });
+        setIdsObj({ soundChartId, songStatId, chartmetricId });
         setSpotifyListeners(listeners);
         setSongTitle(_songTitle);
         setIsSpotifyError(false);
@@ -134,7 +136,6 @@ const SongInfo = ({ goToNextPage }: Props) => {
   }, [spotifyId]);
   useEffect(() => {
     if (youtubeUrl) {
-      // setYoutubeSubscribersData(youtubeUrl);
       getYoutubeViewsCount(youtubeUrl);
     }
   }, [youtubeUrl]);
@@ -297,10 +298,11 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     );
                     return;
                   }
-                  setPendingAssetPoolState({
+                  setSongStreamingState({
                     artistName,
                     songStatId: idsObj?.songStatId,
                     soundChartId: idsObj?.soundChartId,
+                    chartmetricId: idsObj?.chartmetricId,
                     spotifyId,
                     youtubeUrl,
                     youtubeId,
@@ -371,8 +373,8 @@ const SongInfo = ({ goToNextPage }: Props) => {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    {columns.slice(0, 12).map((col) => (
-                      <TableCell>{col}</TableCell>
+                    {columns.slice(0, 12).map((col, i) => (
+                      <TableCell key={i}>{col}</TableCell>
                     ))}
                     <TableCell></TableCell>
                   </TableRow>
@@ -384,8 +386,8 @@ const SongInfo = ({ goToNextPage }: Props) => {
                       key={i}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
-                      {row.slice(0, 12).map((data) => (
-                        <TableCell key={data} size="small">
+                      {row.slice(0, 12).map((data, i) => (
+                        <TableCell key={i} size="small">
                           {data}
                         </TableCell>
                       ))}

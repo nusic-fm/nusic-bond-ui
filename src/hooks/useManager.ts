@@ -3,7 +3,7 @@ import contractAddresses from "../constants/contracts";
 import { useBondNFTManagerContract } from "./useContract";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
-import { abi as BondNFTManagerAbi } from "../abis/BondNFTManager.json";
+import { abi as NotesNFTManagerAbi } from "../abis/NotesNFTManager.json";
 
 interface NftInfo {
   nftAddress: string;
@@ -15,7 +15,13 @@ interface NftInfo {
 export interface ListenersDetails {
   spotifyStreamCount: BigNumber;
   youtubeViewsCount: BigNumber;
-  assetPoolAddress: string;
+  // assetPoolAddress: string;
+}
+export interface InfluencerDetails {
+  influencerOne: string;
+  influencerTwo: string;
+  influencerOneShare: string;
+  influencerTwoShare: string;
 }
 export interface IssueBondParams {
   _artistName: string;
@@ -45,7 +51,7 @@ export const useApManager = () => {
     }
     const contract = new ethers.Contract(
       contractAddresses.BondNFTManager[80001],
-      BondNFTManagerAbi,
+      NotesNFTManagerAbi,
       library.getSigner()
     );
     const tx = await contract.createAssetPool(
@@ -87,53 +93,40 @@ export const useApManager = () => {
     // return userAssetPoolInfo.assetPoolAddress === apAddress;
   };
 
-  const issueBond = async (
+  // function issueNotes(string memory _artistName, address _artistAddress, string memory _youtubeSongId, string memory _soundchartsSongId, string memory _songstatsSongId,
+  // string memory _chartmetricSongId,
+  //   uint256 _price, uint256 _numberOfTokens, string memory _notesName, string memory _notesSymbol,
+  //   ListenersDetails memory listenersDetails, InfluencerDetails memory influencerDetails) public
+
+  const issueNotes = async (
     _artistName: string,
-    _youtubeId: string,
-    _soundChartId: string,
-    _songStatId: string,
-    // _artistId: string,
-    // _channelId: string,
-    _fundingAmount: number,
-    _numberOfYears: number,
-    _numberOfBonds: number,
-    _facevalue: number,
-    _bondName: string,
-    _bondSymbol: string,
-    listenersData: ListenersDetails
+    _artistAddress: string,
+    _youtubeSongId: string,
+    _soundchartsSongId: string,
+    _songstatsSongId: string,
+    _chartmetricSongId: string,
+    _price: number,
+    _numberOfTokens: number,
+    _notesName: string,
+    _notesSymbol: string,
+    listenersData: ListenersDetails,
+    influencerDetails: InfluencerDetails
   ) => {
     const dep = await managerContract.deployed();
 
-    // const tx = await dep.estimateGas.issueBond(
-    //   _artistName,
-    //   _artistId,
-    //   _channelId,
-    //   _audiusArtistId,
-    //   _fundingAmount,
-    //   _numberOfYears,
-    //   _numberOfBonds,
-    //   _facevalue,
-    //   _bondName,
-    //   _bondSymbol,
-    //   _assetPoolAddress,
-    //   {
-    //     from: account,
-    //     gasLimit: 12500000,
-    //     gasPrice: 1000000000,
-    //   }
-    // );
-    const tx = await dep.issueBond(
+    const tx = await dep.issueNotes(
       _artistName,
-      _youtubeId,
-      _soundChartId,
-      _songStatId,
-      ethers.utils.parseEther(_fundingAmount.toString()),
-      BigNumber.from(_numberOfYears.toString()),
-      BigNumber.from(_numberOfBonds.toString()),
-      ethers.utils.parseEther(_facevalue.toString()),
-      _bondName,
-      _bondSymbol,
+      _artistAddress,
+      _youtubeSongId,
+      _soundchartsSongId,
+      _songstatsSongId,
+      _chartmetricSongId,
+      ethers.utils.parseEther(_price.toString()),
+      BigNumber.from(_numberOfTokens.toString()),
+      _notesName,
+      _notesSymbol,
       listenersData,
+      influencerDetails,
       {
         from: account,
         gasLimit: 12500000,
@@ -162,7 +155,7 @@ export const useApManager = () => {
     );
     const contract = new ethers.Contract(
       contractAddresses.BondNFTManager[80001],
-      BondNFTManagerAbi,
+      NotesNFTManagerAbi,
       provider
     );
     const bondsLength = await contract.nftBondLengthForUser(account);
@@ -239,8 +232,9 @@ export const useApManager = () => {
   };
 
   return {
+    issueNotes,
     createAssetPool,
-    issueBond,
+    // issueBond,
     mintNftBonds,
     getBondConfigs,
     getAssetpoolsOfUserByIndex,

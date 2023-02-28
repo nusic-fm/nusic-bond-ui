@@ -4,7 +4,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 
 export const useRating = () => {
   const ratingContract = useRatingContract(
-    contractAddresses.RatingEngine[80001]
+    "" // contractAddresses.RatingEngine[80001]
   );
 
   const getRating = async (apAddress: string): Promise<string> => {

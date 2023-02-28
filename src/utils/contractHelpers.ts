@@ -4,8 +4,8 @@ import { simpleRpcProvider } from "./providers";
 // ABI
 // import { abi as AuditoryAssetPoolAbi } from "../abis/AuditoryAssetPool.json";
 import { abi as ChainlinkMetadataRequestAbi } from "../abis/ChainlinkMetadataRequest.json";
-import { abi as BondNFTManagerAbi } from "../abis/BondNFTManager.json";
-import { abi as BondNFTAbi } from "../abis/BondNFT.json";
+import { abi as BondNFTManagerAbi } from "../abis/NotesNFTManager.json";
+import { abi as BondNFTAbi } from "../abis/NotesNFT.json";
 import { abi as ApAbi } from "../abis/AssetPool.json";
 import { abi as RatingEngineApi } from "../abis/RatingEngine.json";
 

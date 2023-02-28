@@ -39,7 +39,7 @@ const Intro = () => {
       </Box>
       <Box mb={3}>
         <Typography variant="h6">
-          Get your future streaming income now!
+          Boost your music streaming income now!
         </Typography>
       </Box>
       <Button color="primary" variant="contained" onClick={onGettingStarted}>

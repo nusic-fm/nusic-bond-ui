@@ -30,7 +30,7 @@ const IssueBond = () => {
   const history = useHistory();
   const [_pendingAssetPoolInfo, setPendingAssetPoolInfo] =
     useRecoilState(pendingAssetPoolInfo);
-  const { issueBond, mintNftBonds } = useApManager();
+  const { mintNftBonds } = useApManager();
 
   const [processMode, setProcessMode] = useState(0);
 
@@ -43,37 +43,38 @@ const IssueBond = () => {
         //   uint256 _fundingAmount, uint256 _numberOfYears, uint256 _numberOfBonds,
         //   uint256 _facevalue, string memory _bondName, string memory _bondSymbol,
         //   ListenersDetails memory listenersDetails) public returns(address nftAddress)
-        const tx = await issueBond(
-          _pendingAssetPoolInfo.artistName,
-          _pendingAssetPoolInfo.youtubeId,
-          _pendingAssetPoolInfo.soundChartId,
-          _pendingAssetPoolInfo.songStatId,
-          // _pendingAssetPoolInfo.spotifyId,
-          // _pendingAssetPoolInfo.youtubeUrl,
-          _pendingAssetPoolInfo.collateralAmount,
-          _pendingAssetPoolInfo.termInYears,
-          _pendingAssetPoolInfo.noOfBonds || 1,
-          _pendingAssetPoolInfo.faceValue,
-          _pendingAssetPoolInfo.nftBondName,
-          _pendingAssetPoolInfo.nftBondSymbol,
-          {
-            spotifyStreamCount: BigNumber.from(
-              _pendingAssetPoolInfo.spotifyListeners
-            ),
-            youtubeViewsCount: BigNumber.from(
-              _pendingAssetPoolInfo.youtubeSubscribers
-            ),
-            assetPoolAddress: _pendingAssetPoolInfo.apAddress,
-          }
-        );
-        const receipt = await tx.wait();
-        console.log({ receipt });
-        let nftAddress = receipt.events[0].address;
-        const poolInfo: AssetPoolInfo = {
-          ..._pendingAssetPoolInfo,
-          nftAddress,
-        };
-        setPendingAssetPoolInfo(poolInfo);
+        // const tx = await issueBond(
+        //   _pendingAssetPoolInfo.artistName,
+        //   _pendingAssetPoolInfo.youtubeId,
+        //   _pendingAssetPoolInfo.soundChartId,
+        //   _pendingAssetPoolInfo.songStatId,
+        //   // _pendingAssetPoolInfo.spotifyId,
+        //   // _pendingAssetPoolInfo.youtubeUrl,
+        //   _pendingAssetPoolInfo.collateralAmount,
+        //   _pendingAssetPoolInfo.termInYears,
+        //   _pendingAssetPoolInfo.noOfBonds || 1,
+        //   _pendingAssetPoolInfo.faceValue,
+        //   _pendingAssetPoolInfo.nftBondName,
+        //   _pendingAssetPoolInfo.nftBondSymbol,
+        //   {
+        //     spotifyStreamCount: BigNumber.from(
+        //       _pendingAssetPoolInfo.spotifyListeners
+        //     ),
+        //     youtubeViewsCount: BigNumber.from(
+        //       _pendingAssetPoolInfo.youtubeSubscribers
+        //     ),
+        //     assetPoolAddress: _pendingAssetPoolInfo.apAddress,
+        //   }
+        // );
+        // const receipt = await tx.wait();
+        // console.log({ receipt });
+        // let nftAddress = receipt.events[0].address;
+        // const poolInfo: AssetPoolInfo = {
+        //   ..._pendingAssetPoolInfo,
+        //   nftAddress,
+        // };
+        // setPendingAssetPoolInfo(poolInfo);
+        // ------
         // try {
         //   const metadataRes = await axios.post(METADATA_URL, {
         //     data: { nftBondAddress: nftAddress },
@@ -82,16 +83,17 @@ const IssueBond = () => {
         // } catch (e) {
         //   console.log("metadata: ", e);
         // }
+        // -----
         setProcessMode(2);
         try {
-          const nftTx = await mintNftBonds(nftAddress);
-          const nftReceipt = await nftTx.wait();
-          console.log({ nftReceipt });
-          const _poolInfo = {
-            ..._pendingAssetPoolInfo,
-            nftAddress,
-          };
-          setPendingAssetPoolInfo(_poolInfo);
+          // const nftTx = await mintNftBonds(nftAddress);
+          // const nftReceipt = await nftTx.wait();
+          // console.log({ nftReceipt });
+          // const _poolInfo = {
+          //   ..._pendingAssetPoolInfo,
+          //   nftAddress,
+          // };
+          // setPendingAssetPoolInfo(_poolInfo);
         } catch (e) {
           console.log("mint bonds: ", e);
         }

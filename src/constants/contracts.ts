@@ -1,16 +1,10 @@
 const contractAddresses = {
   BondNFTManager: {
-    80001: "0xF1Ff48cE1027a132F5Daf942ffC040a366b906C8",
+    80001: "0xeeB5276300CcC8B5cAF6a0108566815fbaAd35f8",
   },
   BondNftGenerator: {
-    80001: "0xa06C220E0C739D8b5A4f990F046eE1E7eF779e9A",
-  },
-  RatingEngine: {
-    80001: "",
-  },
-  ChainlinkMetadataRequest: {
-    80001: "",
+    80001: "0x7ac3F75aC4Fc0974bfDe5f4BF4899F008309FEc8",
   },
 };
-//TODO
+
 export default contractAddresses;

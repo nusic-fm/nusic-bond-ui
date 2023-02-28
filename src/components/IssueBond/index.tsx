@@ -65,10 +65,10 @@ const IssueBond = ({ goToNextPage }: Props) => {
             youtubeViewsCount: BigNumber.from(_songStreamingInfo.youtubeViews),
           },
           {
-            influencerOne: _marketingInfo.influencerOne,
-            influencerTwo: _marketingInfo.influencerOne,
-            influencerOneShare: _marketingInfo.influencerOne,
-            influencerTwoShare: _marketingInfo.influencerOne,
+            promotionOne: _marketingInfo.promotionOne,
+            promotionTwo: _marketingInfo.promotionOne,
+            promotionOneShare: _marketingInfo.promotionOne,
+            promotionTwoShare: _marketingInfo.promotionOne,
           }
         );
         const receipt = await tx.wait();
@@ -89,7 +89,10 @@ const IssueBond = ({ goToNextPage }: Props) => {
         // }
         setProcessMode(2);
         try {
-          const nftTx = await mintNftBonds(nftAddress);
+          const nftTx = await mintNftBonds(
+            nftAddress,
+            _bondInfo.noOfBonds ?? 1
+          );
           const nftReceipt = await nftTx.wait();
           console.log({ nftReceipt });
           // const _poolInfo = {

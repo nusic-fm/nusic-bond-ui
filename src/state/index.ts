@@ -65,10 +65,10 @@ export const bondInfoState = atom<null | BondInfo>({
   default: null,
 });
 export interface Marketing {
-  influencerOne: string;
-  influencerTwo: string;
-  influencerOneShare: string;
-  influencerTwoShare: string;
+  promotionOne: string;
+  promotionTwo: string;
+  promotionOneShare: string;
+  promotionTwoShare: string;
 }
 export const marketingState = atom<null | Marketing>({
   key: "marketing",

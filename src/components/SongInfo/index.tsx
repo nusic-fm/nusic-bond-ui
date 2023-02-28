@@ -229,7 +229,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     {spotifyListeners
                       .toString()
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                    monthly spotify listeners)
+                    spotify streams)
                   </Typography>
                 )}
               </Box>

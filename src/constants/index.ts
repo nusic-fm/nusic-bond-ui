@@ -13,3 +13,6 @@ export const YOUTUBE_VIEWS_URL =
   "https://listeners-data-server-ynfarb57wa-uc.a.run.app/youtube/video";
 export const METADATA_URL =
   "https://nft-ipfs-chainlink-adaptor-ynfarb57wa-uc.a.run.app/metadata";
+export const STREAMING_HISTORY =
+  // "http://localhost:8080/youtube/video";
+  "https://listeners-data-server-ynfarb57wa-uc.a.run.app/history/streaming";

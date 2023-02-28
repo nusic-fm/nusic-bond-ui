@@ -4,6 +4,7 @@ import { useBondNFTManagerContract } from "./useContract";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
 import { abi as NotesNFTManagerAbi } from "../abis/NotesNFTManager.json";
+import { Marketing } from "../state";
 
 interface NftInfo {
   nftAddress: string;
@@ -17,12 +18,7 @@ export interface ListenersDetails {
   youtubeViewsCount: BigNumber;
   // assetPoolAddress: string;
 }
-export interface InfluencerDetails {
-  influencerOne: string;
-  influencerTwo: string;
-  influencerOneShare: string;
-  influencerTwoShare: string;
-}
+
 export interface IssueBondParams {
   _artistName: string;
   _artistId: string;
@@ -110,7 +106,7 @@ export const useApManager = () => {
     _notesName: string,
     _notesSymbol: string,
     listenersData: ListenersDetails,
-    influencerDetails: InfluencerDetails
+    influencerDetails: Marketing
   ) => {
     const dep = await managerContract.deployed();
 
@@ -136,9 +132,9 @@ export const useApManager = () => {
     return tx;
   };
 
-  const mintNftBonds = async (nftAddress: string) => {
+  const mintNftBonds = async (nftAddress: string, noOfTokens: number) => {
     const dep = await managerContract.deployed();
-    const tx = await dep.mintNFTBond(nftAddress, {
+    const tx = await dep.mintNFTNotes(nftAddress, noOfTokens, {
       from: account,
       gasLimit: 12500000,
       gasPrice: 3000000000,

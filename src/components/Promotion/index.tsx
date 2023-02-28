@@ -9,22 +9,77 @@ import {
   Typography,
   Checkbox,
 } from "@mui/material";
-import { useState } from "react";
-import { useSetRecoilState } from "recoil";
-import { InfluencerDetails } from "../../hooks/useManager";
-import { marketingState } from "../../state";
+import { useEffect, useState } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { Marketing, marketingState, songStreamingInfoState } from "../../state";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import axios from "axios";
+import { STREAMING_HISTORY } from "../../constants";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Filler,
+  Legend
+);
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "Streaming History",
+    },
+  },
+};
 
 type Props = { goToNextPage: () => void };
+interface StreamingHistory {
+  value: number;
+  timestp: string;
+  track_domain_id: string;
+}
 
 const Promotion = ({ goToNextPage }: Props) => {
-  const [influencersObj, setInfluencersObj] = useState<InfluencerDetails>({
-    influencerOne: "0x0000000000000000000000000000000000000000",
-    influencerOneShare: "0",
-    influencerTwo: "0x0000000000000000000000000000000000000000",
-    influencerTwoShare: "0",
+  const [promotionsObj, setPromotionsObj] = useState<Marketing>({
+    promotionOne: "0x0000000000000000000000000000000000000000",
+    promotionOneShare: "0",
+    promotionTwo: "0x0000000000000000000000000000000000000000",
+    promotionTwoShare: "0",
   });
-
+  const [streamingHistory, setStreamingHistory] =
+    useState<StreamingHistory[]>();
+  const [_songStreamingState] = useRecoilState(songStreamingInfoState);
   const setMarketingState = useSetRecoilState(marketingState);
+
+  const fetchHistory = async () => {
+    const res = await axios.get(`${STREAMING_HISTORY}/31456083`);
+    if (res.data.streams) {
+      setStreamingHistory(res.data.streams as StreamingHistory[]);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
   return (
     <Stack>
@@ -45,7 +100,7 @@ const Promotion = ({ goToNextPage }: Props) => {
                 sx={{
                   width: "100%",
                   border:
-                    influencersObj.influencerOne !==
+                    promotionsObj.promotionOne !==
                     "0x0000000000000000000000000000000000000000"
                       ? "1px solid white"
                       : "",
@@ -68,33 +123,33 @@ const Promotion = ({ goToNextPage }: Props) => {
                   <Checkbox
                     onChange={(e) => {
                       if (e.target.checked) {
-                        setInfluencersObj({
-                          ...influencersObj,
-                          influencerOne:
+                        setPromotionsObj({
+                          ...promotionsObj,
+                          promotionOne:
                             "0x8d5667c2609372Ab5a5e01edFF20b9f0fc3Fe901",
-                          influencerOneShare: "3300",
+                          promotionOneShare: "3300",
                         });
                       } else {
-                        setInfluencersObj({
-                          ...influencersObj,
-                          influencerOne:
+                        setPromotionsObj({
+                          ...promotionsObj,
+                          promotionOne:
                             "0x0000000000000000000000000000000000000000",
-                          influencerOneShare: "0",
+                          promotionOneShare: "0",
                         });
                       }
                     }}
                   />
                   {/* <Button
-                    disabled={!!influencersObj?.influencerOne}
+                    disabled={!!promotionsObj?.promotionOne}
                     variant="contained"
                     onClick={() => {
-                      setInfluencersObj({
-                        ...influencersObj,
-                        influencerOne: "0x", //TODO
+                      setPromotionsObj({
+                        ...promotionsObj,
+                        promotionOne: "0x", //TODO
                       });
                     }}
                   >
-                    {influencersObj?.influencerOne ? "Selected" : "Select"}
+                    {promotionsObj?.promotionOne ? "Selected" : "Select"}
                   </Button> */}
                 </CardActions>
               </Card>
@@ -102,7 +157,7 @@ const Promotion = ({ goToNextPage }: Props) => {
                 sx={{
                   width: "100%",
                   border:
-                    influencersObj.influencerTwo !==
+                    promotionsObj.promotionTwo !==
                     "0x0000000000000000000000000000000000000000"
                       ? "1px solid white"
                       : "",
@@ -122,33 +177,33 @@ const Promotion = ({ goToNextPage }: Props) => {
                   <Checkbox
                     onChange={(e) => {
                       if (e.target.checked) {
-                        setInfluencersObj({
-                          ...influencersObj,
-                          influencerTwo:
+                        setPromotionsObj({
+                          ...promotionsObj,
+                          promotionTwo:
                             "0x8FaFEcF39FCA1A28AB72593609427a8BC25069aA",
-                          influencerTwoShare: "3300",
+                          promotionTwoShare: "3300",
                         });
                       } else {
-                        setInfluencersObj({
-                          ...influencersObj,
-                          influencerTwo:
+                        setPromotionsObj({
+                          ...promotionsObj,
+                          promotionTwo:
                             "0x0000000000000000000000000000000000000000",
-                          influencerTwoShare: "0",
+                          promotionTwoShare: "0",
                         });
                       }
                     }}
                   />
                   {/* <Button
-                    disabled={!!influencersObj?.influencerOne}
+                    disabled={!!promotionsObj?.promotionOne}
                     variant="contained"
                     onClick={() => {
-                      setInfluencersObj({
-                        ...influencersObj,
-                        influencerTwo: "0x", //TODO
+                      setPromotionsObj({
+                        ...promotionsObj,
+                        promotionTwo: "0x", //TODO
                       });
                     }}
                   >
-                    {influencersObj?.influencerOne ? "Selected" : "Select"}
+                    {promotionsObj?.promotionOne ? "Selected" : "Select"}
                   </Button> */}
                 </CardActions>
               </Card>
@@ -167,12 +222,12 @@ const Promotion = ({ goToNextPage }: Props) => {
                 helperText="can not be more than 33% of the face value"
                 type="number"
                 onChange={(e) => {
-                  setInfluencersObj({
-                    ...influencersObj,
-                    influencerOneShare: parseInt(e.target.value),
+                  setPromotionsObj({
+                    ...promotionsObj,
+                    promotionOneShare: parseInt(e.target.value),
                   });
                 }}
-                disabled={!influencersObj?.influencerOne}
+                disabled={!promotionsObj?.promotionOne}
                 InputProps={{
                   inputProps: { min: 1, max: 33 },
                   endAdornment: (
@@ -185,12 +240,12 @@ const Promotion = ({ goToNextPage }: Props) => {
                 helperText="can not be more than 33% of the face value"
                 type="number"
                 onChange={(e) => {
-                  setInfluencersObj({
-                    ...influencersObj,
-                    influencerTwoShare: parseInt(e.target.value),
+                  setPromotionsObj({
+                    ...promotionsObj,
+                    promotionTwoShare: parseInt(e.target.value),
                   });
                 }}
-                disabled={!influencersObj?.influencerTwo}
+                disabled={!promotionsObj?.promotionTwo}
                 InputProps={{
                   inputProps: { min: 1, max: 33 },
                   endAdornment: (
@@ -199,21 +254,65 @@ const Promotion = ({ goToNextPage }: Props) => {
                 }}
               ></TextField>
             </Box> */}
+            <Box mt={4} display="flex" justifyContent={"space-around"}>
+              {streamingHistory && (
+                <Line
+                  width={150}
+                  height={100}
+                  options={options}
+                  data={{
+                    labels: streamingHistory.map((s) => s.timestp.slice(0, 10)),
+                    datasets: [
+                      {
+                        fill: true,
+                        label: "No of Streams",
+                        data: streamingHistory.map((s) => s.value),
+                        borderColor: "rgb(53, 162, 235)",
+                        backgroundColor: "rgba(53, 162, 235, 0.5)",
+                      },
+                    ],
+                  }}
+                />
+              )}
+            </Box>
+            <Box mt={2}>
+              {streamingHistory && (
+                <Line
+                  width={150}
+                  height={100}
+                  options={options}
+                  data={{
+                    labels: streamingHistory.map((s) => s.timestp.slice(0, 10)),
+                    datasets: [
+                      {
+                        fill: true,
+                        label: "Streams Difference",
+                        data: streamingHistory.map((s, i) =>
+                          i > 0 ? s.value - streamingHistory[i - 1].value : 0
+                        ),
+                        borderColor: "rgb(53, 162, 235)",
+                        backgroundColor: "rgba(53, 162, 235, 0.5)",
+                      },
+                    ],
+                  }}
+                />
+              )}
+            </Box>
             <Box mt={4}>
               <Button
                 variant="outlined"
                 color="info"
                 onClick={() => {
                   if (
-                    influencersObj.influencerOne ===
+                    promotionsObj.promotionOne ===
                       "0x0000000000000000000000000000000000000000" &&
-                    influencersObj.influencerTwo ===
+                    promotionsObj.promotionTwo ===
                       "0x0000000000000000000000000000000000000000"
                   ) {
                     alert("Please select a platform and continue");
                     return;
                   }
-                  setMarketingState(influencersObj);
+                  setMarketingState(promotionsObj);
                   goToNextPage();
                 }}
               >

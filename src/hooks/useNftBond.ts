@@ -1,11 +1,11 @@
 import { ethers } from "ethers";
-import { NFTData } from "../container/DashboardRow";
 import { abi as NotesNftAbi } from "../abis/NotesNFT.json";
+import { NotesInfo } from "../state";
 
 const useNftBond = () => {
   // const { library } = useWeb3React();
 
-  const getNFTData = async (nftAddress: string): Promise<null | NFTData> => {
+  const getNFTData = async (nftAddress: string): Promise<null | NotesInfo> => {
     // await library.ready;
     // if (library) {
     try {
@@ -20,17 +20,18 @@ const useNftBond = () => {
       );
       const name = await nftBondContract.name();
       const symbol = await nftBondContract.symbol();
-      let tokenUri = "";
-      try {
-        // tokenUri = await nftBondContract.tokenURI(BigNumber.from("0"));
-      } catch (e) {
-        console.log("tokenUri: ", e);
-      }
+      const artistName = await nftBondContract.artistName();
 
+      const price = await nftBondContract.price();
+      const promoOne = await nftBondContract.promotionOneBalance();
+      const promoTwo = await nftBondContract.promotionTwoBalance();
       return {
         name,
         symbol,
-        tokenUri,
+        artistName,
+        price: price.div(1e6).toNumber(),
+        promoOnePrice: promoOne.div(1e6).toString(),
+        promoTwoPrice: promoTwo.div(1e6).toString(),
         nftAddress,
       };
     } catch (e) {

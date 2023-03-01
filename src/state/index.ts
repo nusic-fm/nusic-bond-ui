@@ -1,5 +1,15 @@
 import { atom } from "recoil";
 
+export interface NotesInfo {
+  name: string;
+  symbol: string;
+  artistName: string;
+  nftAddress: string;
+  price: number;
+  promoOnePrice: string;
+  promoTwoPrice: string;
+}
+
 export interface AssetPoolInfo {
   nftBondName: string;
   nftBondSymbol: string;

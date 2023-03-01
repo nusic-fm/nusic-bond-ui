@@ -1,10 +1,11 @@
-import { Box, Chip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import DashboardRow from "../../container/DashboardRow";
 import { useApManager } from "../../hooks/useManager";
-import { AssetPoolInfo } from "../../state";
+import useNftBond from "../../hooks/useNftBond";
+import { NotesInfo } from "../../state";
 
 const useStyles = makeStyles({
   root: {
@@ -15,8 +16,9 @@ const useStyles = makeStyles({
 });
 const Dashboard = () => {
   const classes = useStyles();
-  const [bonds, setBonds] = useState<Partial<AssetPoolInfo>[]>();
+  const [bonds, setBonds] = useState<NotesInfo[]>();
   const { getBondConfigs } = useApManager();
+  const { getNFTData } = useNftBond();
   const { account } = useWeb3React();
 
   useEffect(() => {
@@ -28,15 +30,18 @@ const Dashboard = () => {
     try {
       const configs = await getBondConfigs();
       if (configs.length) {
-        const _bonds: Partial<AssetPoolInfo>[] = configs.map((config: any) => ({
-          artistName: config.artistName,
-          spotifyId: config.artistId,
-          faceValue: config.faceValue.toString(),
-          collateralAmount: config.fundingAmount.toString(),
-          termInYears: config.numberOfYears.toString(),
-          nftAddress: config.nftAddress.toString(),
-        }));
-        setBonds(_bonds);
+        // const _bonds: Partial<AssetPoolInfo>[] = configs.map((config: any) => ({
+        //   artistName: config.artistName,
+        //   spotifyId: config.artistId,
+        //   faceValue: config.faceValue.toString(),
+        //   collateralAmount: config.fundingAmount.toString(),
+        //   termInYears: config.numberOfYears.toString(),
+        //   nftAddress: config.nftAddress.toString(),
+        // }));
+        const _bond = await getNFTData(configs[configs.length - 1]);
+        if (_bond) {
+          setBonds([_bond]);
+        }
       }
     } catch (e) {
       console.error(e);
@@ -54,14 +59,14 @@ const Dashboard = () => {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Typography>My NFT Music Bonds</Typography>
-          <Typography>
+          <Typography>My NFT Notes</Typography>
+          {/* <Typography>
             Available Reward{" "}
             <Chip clickable variant="outlined" label="8.6341 Claim" />
-          </Typography>
+          </Typography> */}
         </Box>
         {bonds?.map((bond, i) => {
-          return <DashboardRow key={bond.spotifyId} index={i} bond={bond} />;
+          return <DashboardRow key={i} index={i} bond={bond} />;
         })}
       </Box>
     </Box>

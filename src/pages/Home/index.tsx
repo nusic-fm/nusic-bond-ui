@@ -105,6 +105,16 @@ const Home = () => {
                   flexBasis={"50%"}
                   color="rgb(207, 207, 207)"
                 >
+                  Artist
+                </Typography>
+                <Typography>{_songStreamingInfo?.artistName}</Typography>
+              </Box>
+              <Box display="flex" p={1} pb={0}>
+                <Typography
+                  fontWeight="600"
+                  flexBasis={"50%"}
+                  color="rgb(207, 207, 207)"
+                >
                   Spotify ID
                 </Typography>
                 <Typography>{_songStreamingInfo?.spotifyId}</Typography>

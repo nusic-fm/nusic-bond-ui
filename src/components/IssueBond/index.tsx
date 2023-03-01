@@ -129,7 +129,14 @@ const IssueBond = ({ goToNextPage }: Props) => {
         <Grid container>
           <Grid item md={2}></Grid>
           <Grid item md={8}>
-            <Box>
+            <Stack sx={{ position: "relative" }}>
+              <img
+                src={_songStreamingInfo?.songImageUrl}
+                width={250}
+                style={{ borderRadius: "6px" }}
+              />
+            </Stack>
+            <Box mt={2} width={250} display="flex" justifyContent={"center"}>
               <Button
                 onClick={onIssueBondClick}
                 variant="contained"
@@ -144,7 +151,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
                   <Step>
                     <StepLabel>
                       <Box display="flex" alignItems="center" fontSize="24px">
-                        Issuing NFT Notes
+                        Issuing the NFT Notes
                         <Box ml={3}>
                           {processMode === 1 && (
                             <CircularProgress color="info" size={20} />
@@ -156,7 +163,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
                   <Step>
                     <StepLabel>
                       <Box display="flex" alignItems="center" fontSize="24px">
-                        Minting your NFT music Notes
+                        Minting your NFT Notes
                         <Box ml={3}>
                           {processMode === 2 && (
                             <CircularProgress color="info" size={20} />

@@ -65,21 +65,266 @@ const Promotion = ({ goToNextPage }: Props) => {
     promotionTwo: "0x0000000000000000000000000000000000000000",
     promotionTwoShare: "0",
   });
-  const [streamingHistory, setStreamingHistory] =
-    useState<StreamingHistory[]>();
+
+  const [streams, setStreams] = useState<StreamingHistory[]>();
+  const [streamingHistoryData1, setStreamingHistoryData1] =
+    useState<{ x: string; y: number }[]>();
+  const [streamingHistoryData2, setStreamingHistoryData2] =
+    useState<{ x: string; y: number }[]>();
+
+  const [streamingDayData1, setStreamingDayData1] =
+    useState<{ x: string; y: number }[]>();
+  const [streamingDayData2, setStreamingDayData2] =
+    useState<{ x: string; y: number }[]>();
+
   const [_songStreamingState] = useRecoilState(songStreamingInfoState);
   const setMarketingState = useSetRecoilState(marketingState);
 
   const fetchHistory = async () => {
     const res = await axios.get(`${STREAMING_HISTORY}/31456083`);
     if (res.data.streams) {
-      setStreamingHistory(res.data.streams as StreamingHistory[]);
+      // s.timestp.slice(0, 10)
+      const _streams = res.data.streams as StreamingHistory[];
+      setStreams(_streams);
     }
   };
 
   useEffect(() => {
     fetchHistory();
   }, []);
+
+  useEffect(() => {
+    if (streams) {
+      if (
+        promotionsObj.promotionTwo !=
+          "0x0000000000000000000000000000000000000000" &&
+        promotionsObj.promotionOne !=
+          "0x0000000000000000000000000000000000000000"
+      ) {
+        const dataSet1 = streams.slice(streams.length - 31).map((s, i) => {
+          const today = new Date();
+          const result = today.setDate(today.getDate() - (30 - i));
+          return {
+            x: new Date(result).toLocaleDateString(),
+            y: s.value,
+          };
+        });
+        let prevValue = 300 + dataSet1[dataSet1.length - 1].y;
+        let tiktokBoost = prevValue + 300 * 4.2;
+        const dataSet2 = new Array(30).fill("-").map((_, i) => {
+          if (i === 0) {
+            return { x: new Date().toLocaleDateString(), y: tiktokBoost };
+          } else if (i === 1) {
+            const newValue = tiktokBoost + 300 * 4.2;
+            return { x: new Date().toLocaleDateString(), y: newValue };
+          } else {
+            const today = new Date();
+            const result = today.setDate(today.getDate() + i);
+            prevValue += (prevValue * 3) / 100;
+            return {
+              x: new Date(result).toLocaleDateString(),
+              y: Math.round(prevValue),
+            };
+          }
+        });
+        setStreamingHistoryData1(dataSet1);
+        setStreamingHistoryData2(dataSet2);
+        const dayData1 = dataSet1.map((s, i) => {
+          if (i > 0) {
+            return {
+              x: s.x,
+              y: s.y - dataSet1[i - 1].y,
+            };
+          } else {
+            return { x: s.x, y: 0 };
+          }
+        });
+        const dayData2 = dataSet2.map((s, i) => {
+          return {
+            x: s.x,
+            y: s.y - dataSet1[i].y,
+          };
+        });
+        setStreamingDayData1(dayData1);
+        setStreamingDayData2(dayData2);
+      } else if (
+        promotionsObj.promotionTwo !=
+        "0x0000000000000000000000000000000000000000"
+      ) {
+        const dataSet1 = streams.slice(streams.length - 31).map((s, i) => {
+          const today = new Date();
+          const result = today.setDate(today.getDate() - (30 - i));
+          return {
+            x: new Date(result).toLocaleDateString(),
+            y: s.value,
+          };
+        });
+        let prevValue = 300 + dataSet1[dataSet1.length - 1].y;
+        const dataSet2 = new Array(30).fill("-").map((_, i) => {
+          if (i === 0) {
+            return { x: new Date().toLocaleDateString(), y: prevValue };
+          } else {
+            const today = new Date();
+            const result = today.setDate(today.getDate() + i);
+            prevValue += (prevValue * 3) / 100;
+            return {
+              x: new Date(result).toLocaleDateString(),
+              y: Math.round(prevValue),
+            };
+          }
+        });
+        setStreamingHistoryData1(dataSet1);
+        setStreamingHistoryData2(dataSet2);
+        const dayData1 = dataSet1.map((s, i) => {
+          if (i > 0) {
+            return {
+              x: s.x,
+              y: s.y - dataSet1[i - 1].y,
+            };
+          } else {
+            return { x: s.x, y: 0 };
+          }
+        });
+        const dayData2 = dataSet2.map((s, i) => {
+          return {
+            x: s.x,
+            y: s.y - dataSet1[i].y,
+          };
+        });
+        setStreamingDayData1(dayData1);
+        setStreamingDayData2(dayData2);
+      } else if (
+        promotionsObj.promotionOne !=
+        "0x0000000000000000000000000000000000000000"
+      ) {
+        // TIKTOK
+        const dataSet1 = streams.slice(streams.length - 31).map((s, i) => {
+          const today = new Date();
+          const result = today.setDate(today.getDate() - (30 - i));
+          return {
+            x: new Date(result).toLocaleDateString(),
+            y: s.value,
+          };
+        });
+        let prevValue = 300 * 4.2 + dataSet1[dataSet1.length - 1].y;
+        const dataSet2 = new Array(30).fill("-").map((_, i) => {
+          if (i === 0) {
+            return { x: new Date().toLocaleDateString(), y: prevValue };
+          } else if (i === 1) {
+            prevValue += 300 * 4.2;
+            return { x: new Date().toLocaleDateString(), y: prevValue };
+          } else {
+            const today = new Date();
+            const result = today.setDate(today.getDate() + i);
+            return {
+              x: new Date(result).toLocaleDateString(),
+              y: Math.round(dataSet1[i].y),
+            };
+          }
+        });
+        setStreamingHistoryData1(dataSet1);
+        setStreamingHistoryData2(dataSet2);
+        const dayData1 = dataSet1.map((s, i) => {
+          if (i > 0) {
+            return {
+              x: s.x,
+              y: s.y - dataSet1[i - 1].y,
+            };
+          } else {
+            return { x: s.x, y: 0 };
+          }
+        });
+        const dayData2 = dataSet2.map((s, i) => {
+          return {
+            x: s.x,
+            y: s.y - dataSet1[i].y,
+          };
+        });
+        setStreamingDayData1(dayData1);
+        setStreamingDayData2(dayData2);
+      } else {
+        const dataSet1 = streams.map((s, i) => {
+          // const today = new Date();
+          // const result = today.setDate(today.getDate() - (30 - i));
+          return {
+            x: s.timestp.slice(0, 10),
+            y: s.value,
+          };
+        });
+        setStreamingHistoryData1(dataSet1);
+        const dayData1 = dataSet1.map((s, i) => {
+          if (i > 0) {
+            return {
+              x: s.x,
+              y: s.y - dataSet1[i - 1].y,
+            };
+          } else {
+            return { x: s.x, y: 0 };
+          }
+        });
+        setStreamingDayData1(dayData1);
+      }
+    }
+  }, [streams, promotionsObj]);
+
+  const historyData =
+    promotionsObj.promotionTwo !=
+      "0x0000000000000000000000000000000000000000" ||
+    promotionsObj.promotionOne != "0x0000000000000000000000000000000000000000"
+      ? [
+          {
+            fill: true,
+            label: "No of Streams",
+            data: streamingHistoryData1,
+            borderColor: "rgb(53, 162, 235)",
+            backgroundColor: "rgba(53, 162, 235, 0.5)",
+          },
+          {
+            fill: true,
+            label: "Expected Growth",
+            data: streamingHistoryData2,
+            borderColor: "rgb(91, 33, 212)",
+            backgroundColor: "rgba(91, 33, 212, 0.5)",
+          },
+        ]
+      : [
+          {
+            fill: true,
+            label: "No of Streams",
+            data: streamingHistoryData1,
+            borderColor: "rgb(53, 162, 235)",
+            backgroundColor: "rgba(53, 162, 235, 0.5)",
+          },
+        ];
+  const dayData =
+    promotionsObj.promotionTwo !=
+      "0x0000000000000000000000000000000000000000" ||
+    promotionsObj.promotionOne != "0x0000000000000000000000000000000000000000"
+      ? [
+          {
+            fill: true,
+            label: "Streams per day",
+            data: streamingDayData1,
+            borderColor: "rgb(53, 162, 235)",
+            backgroundColor: "rgba(53, 162, 235, 0.5)",
+          },
+          {
+            fill: true,
+            label: "Expected Growth in Streams per Day",
+            data: streamingDayData2,
+            borderColor: "rgb(91, 33, 212)",
+            backgroundColor: "rgba(91, 33, 212, 0.5)",
+          },
+        ]
+      : [
+          {
+            fill: true,
+            label: "Streams per day",
+            data: streamingDayData1,
+            borderColor: "rgb(53, 162, 235)",
+            backgroundColor: "rgba(53, 162, 235, 0.5)",
+          },
+        ];
 
   return (
     <Stack>
@@ -139,18 +384,6 @@ const Promotion = ({ goToNextPage }: Props) => {
                       }
                     }}
                   />
-                  {/* <Button
-                    disabled={!!promotionsObj?.promotionOne}
-                    variant="contained"
-                    onClick={() => {
-                      setPromotionsObj({
-                        ...promotionsObj,
-                        promotionOne: "0x", //TODO
-                      });
-                    }}
-                  >
-                    {promotionsObj?.promotionOne ? "Selected" : "Select"}
-                  </Button> */}
                 </CardActions>
               </Card>
               <Card
@@ -193,112 +426,30 @@ const Promotion = ({ goToNextPage }: Props) => {
                       }
                     }}
                   />
-                  {/* <Button
-                    disabled={!!promotionsObj?.promotionOne}
-                    variant="contained"
-                    onClick={() => {
-                      setPromotionsObj({
-                        ...promotionsObj,
-                        promotionTwo: "0x", //TODO
-                      });
-                    }}
-                  >
-                    {promotionsObj?.promotionOne ? "Selected" : "Select"}
-                  </Button> */}
                 </CardActions>
               </Card>
             </Stack>
-            {/* <Box my={2}>
-              <TextField
-                multiline
-                label="Add additional infos"
-                rows={4}
-                fullWidth
-              ></TextField>
-            </Box> */}
-            {/* <Box mt={4} display="flex" gap={2} justifyContent="space-around">
-              <TextField
-                label="Set Tiktok Budget"
-                helperText="can not be more than 33% of the face value"
-                type="number"
-                onChange={(e) => {
-                  setPromotionsObj({
-                    ...promotionsObj,
-                    promotionOneShare: parseInt(e.target.value),
-                  });
-                }}
-                disabled={!promotionsObj?.promotionOne}
-                InputProps={{
-                  inputProps: { min: 1, max: 33 },
-                  endAdornment: (
-                    <InputAdornment position="end">%</InputAdornment>
-                  ),
-                }}
-              ></TextField>
-              <TextField
-                label="Set Spotify Budget"
-                helperText="can not be more than 33% of the face value"
-                type="number"
-                onChange={(e) => {
-                  setPromotionsObj({
-                    ...promotionsObj,
-                    promotionTwoShare: parseInt(e.target.value),
-                  });
-                }}
-                disabled={!promotionsObj?.promotionTwo}
-                InputProps={{
-                  inputProps: { min: 1, max: 33 },
-                  endAdornment: (
-                    <InputAdornment position="end">%</InputAdornment>
-                  ),
-                }}
-              ></TextField>
-            </Box> */}
             <Box mt={4} display="flex" justifyContent={"space-around"}>
-              {streamingHistory && (
+              {streams && (
                 <Line
                   width={150}
                   height={100}
                   options={options}
                   data={{
-                    labels: streamingHistory.map((s) => s.timestp.slice(0, 10)),
-                    datasets: [
-                      {
-                        fill: true,
-                        label: "No of Streams",
-                        data: streamingHistory.map((s) => s.value),
-                        borderColor: "rgb(53, 162, 235)",
-                        backgroundColor: "rgba(53, 162, 235, 0.5)",
-                        pointBorderWidth: 1,
-                        pointStyle: "dash",
-                      },
-                    ],
+                    datasets: historyData,
                   }}
                 />
               )}
             </Box>
             <Box mt={2}>
-              {streamingHistory && (
+              {streams && (
                 <Line
                   width={150}
                   height={100}
                   options={options}
                   data={{
-                    labels: streamingHistory.map((s) => s.timestp.slice(0, 10)),
-                    datasets: [
-                      {
-                        fill: true,
-                        label: "Streams Difference",
-                        data: streamingHistory.map((s, i) =>
-                          i > 0 ? s.value - streamingHistory[i - 1].value : 0
-                        ),
-                        borderColor: "rgb(53, 162, 235)",
-                        backgroundColor: "rgba(53, 162, 235, 0.5)",
-
-                        pointBorderWidth: 1,
-                        pointStyle: "circle",
-                      },
-                    ],
+                    // labels: streamingHistory.map((s) => s.timestp.slice(0, 10)),
+                    datasets: dayData,
                   }}
                 />
               )}

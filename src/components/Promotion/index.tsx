@@ -11,7 +11,12 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { Marketing, marketingState, songStreamingInfoState } from "../../state";
+import {
+  bondInfoState,
+  Marketing,
+  marketingState,
+  songStreamingInfoState,
+} from "../../state";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -78,6 +83,7 @@ const Promotion = ({ goToNextPage }: Props) => {
     useState<{ x: string; y: number }[]>();
 
   const [_songStreamingState] = useRecoilState(songStreamingInfoState);
+  const [_bondInfo] = useRecoilState(bondInfoState);
   const setMarketingState = useSetRecoilState(marketingState);
 
   const fetchHistory = async () => {
@@ -101,6 +107,7 @@ const Promotion = ({ goToNextPage }: Props) => {
         promotionsObj.promotionOne !=
           "0x0000000000000000000000000000000000000000"
       ) {
+        const share = Math.round(((_bondInfo?.faceValue ?? 300) * 2) / 3);
         const dataSet1 = streams.slice(streams.length - 31).map((s, i) => {
           const today = new Date();
           const result = today.setDate(today.getDate() - (30 - i));
@@ -109,13 +116,13 @@ const Promotion = ({ goToNextPage }: Props) => {
             y: s.value,
           };
         });
-        let prevValue = 300 + dataSet1[dataSet1.length - 1].y;
-        let tiktokBoost = prevValue + 300 * 4.2;
+        let prevValue = share + dataSet1[dataSet1.length - 1].y;
+        let tiktokBoost = prevValue + share * 4.2;
         const dataSet2 = new Array(30).fill("-").map((_, i) => {
           if (i === 0) {
             return { x: new Date().toLocaleDateString(), y: tiktokBoost };
           } else if (i === 1) {
-            const newValue = tiktokBoost + 300 * 4.2;
+            const newValue = tiktokBoost + share * 4.2;
             return { x: new Date().toLocaleDateString(), y: newValue };
           } else {
             const today = new Date();
@@ -151,6 +158,7 @@ const Promotion = ({ goToNextPage }: Props) => {
         promotionsObj.promotionTwo !=
         "0x0000000000000000000000000000000000000000"
       ) {
+        const share = Math.round(((_bondInfo?.faceValue ?? 300) * 1) / 3);
         const dataSet1 = streams.slice(streams.length - 31).map((s, i) => {
           const today = new Date();
           const result = today.setDate(today.getDate() - (30 - i));
@@ -159,7 +167,7 @@ const Promotion = ({ goToNextPage }: Props) => {
             y: s.value,
           };
         });
-        let prevValue = 300 + dataSet1[dataSet1.length - 1].y;
+        let prevValue = share + dataSet1[dataSet1.length - 1].y;
         const dataSet2 = new Array(30).fill("-").map((_, i) => {
           if (i === 0) {
             return { x: new Date().toLocaleDateString(), y: prevValue };
@@ -198,6 +206,7 @@ const Promotion = ({ goToNextPage }: Props) => {
         "0x0000000000000000000000000000000000000000"
       ) {
         // TIKTOK
+        const share = Math.round(((_bondInfo?.faceValue ?? 300) * 1) / 3);
         const dataSet1 = streams.slice(streams.length - 31).map((s, i) => {
           const today = new Date();
           const result = today.setDate(today.getDate() - (30 - i));
@@ -206,12 +215,12 @@ const Promotion = ({ goToNextPage }: Props) => {
             y: s.value,
           };
         });
-        let prevValue = 300 * 4.2 + dataSet1[dataSet1.length - 1].y;
+        let prevValue = share * 4.2 + dataSet1[dataSet1.length - 1].y;
         const dataSet2 = new Array(30).fill("-").map((_, i) => {
           if (i === 0) {
             return { x: new Date().toLocaleDateString(), y: prevValue };
           } else if (i === 1) {
-            prevValue += 300 * 4.2;
+            prevValue += share * 4.2;
             return { x: new Date().toLocaleDateString(), y: prevValue };
           } else {
             const today = new Date();

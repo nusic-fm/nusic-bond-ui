@@ -161,7 +161,11 @@ export const useApManager = () => {
       NotesNFTManagerAbi,
       _userSigner
     );
-    const tx = await managerContract.mintNFTNotes(nftAddress, _price);
+    const tx = await managerContract.mintNFTNotes(nftAddress, _price, {
+      from: account,
+      gasLimit: 12500000,
+      gasPrice: 3000000000,
+    });
     yield tx;
   }
 

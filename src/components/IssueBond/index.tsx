@@ -133,7 +133,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
               <Button
                 onClick={onIssueBondClick}
                 variant="contained"
-                disabled={!!processMode}
+                // disabled={!!processMode}
               >
                 Issue Notes
               </Button>

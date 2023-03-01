@@ -101,6 +101,12 @@ const SongInfo = ({ goToNextPage }: Props) => {
         setIsSpotifyError(true);
       }
     } catch (e) {
+      setPreview("songImageUrl");
+      setIdsObj({ soundChartId: "", songStatId: "", chartmetricId: "" });
+      setSpotifyListeners(1000);
+      setSongTitle("_songTitle");
+      setIsSpotifyError(false);
+      setArtistName("_artistName");
       setIsSpotifyError(true);
     }
   };
@@ -209,7 +215,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                   value={spotifyId}
                   onChange={(e) => setSpotifyId(e.target.value)}
                   error={isSpotifyError}
-                  helperText={isSpotifyError && "Invalid Spotify Artist Id"}
+                  helperText={isSpotifyError && "Unable to fetch Track Details"}
                   style={{ width: "300px" }}
                   // InputProps={{
                   //   endAdornment: (
@@ -224,12 +230,15 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     fontStyle="italic"
                     // color="#c4c4c4"
                     fontWeight={600}
+                    color="rgba(255,255,255,0.9)"
+                    variant="h6"
+                    sx={{ ml: 2 }}
                   >
-                    ( {songTitle} :{" "}
+                    {songTitle} :{" "}
                     {spotifyListeners
                       .toString()
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                    spotify streams)
+                    spotify streams
                   </Typography>
                 )}
               </Box>
@@ -254,17 +263,18 @@ const SongInfo = ({ goToNextPage }: Props) => {
                 />
                 {youtubeViews && (
                   <Typography
-                    // color="gray"
+                    color="rgba(255,255,255,0.9)"
                     // fontSize="12px"
                     display="inline"
                     fontStyle="italic"
                     fontWeight={600}
+                    variant="h6"
+                    sx={{ ml: 2 }}
                   >
-                    (
                     {youtubeViews
                       .toString()
                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
-                    views)
+                    views
                   </Typography>
                 )}
               </Box>

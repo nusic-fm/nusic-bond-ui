@@ -3,6 +3,7 @@ import contractAddresses from "../constants/contracts";
 import { useBondNFTManagerContract } from "./useContract";
 import { BigNumber } from "@ethersproject/bignumber";
 import { ethers } from "ethers";
+import { abi as USDCMock } from "../abis/USDCMock.json";
 import { abi as NotesNFTManagerAbi } from "../abis/NotesNFTManager.json";
 import { Marketing } from "../state";
 
@@ -117,7 +118,7 @@ export const useApManager = () => {
       _soundchartsSongId,
       _songstatsSongId,
       _chartmetricSongId,
-      ethers.utils.parseEther(_price.toString()),
+      (_price * 1e6).toString(),
       BigNumber.from(_numberOfTokens.toString()),
       _notesName,
       _notesSymbol,
@@ -132,15 +133,42 @@ export const useApManager = () => {
     return tx;
   };
 
-  const mintNftBonds = async (nftAddress: string, noOfTokens: number) => {
-    const dep = await managerContract.deployed();
-    const tx = await dep.mintNFTNotes(nftAddress, noOfTokens, {
-      from: account,
-      gasLimit: 12500000,
-      gasPrice: 3000000000,
-    });
-    return tx;
-  };
+  async function* mintNftBonds(
+    nftAddress: string,
+    noOfTokens: number,
+    _price: number,
+    _userSigner: any
+  ) {
+    // const dep = await managerContract.deployed();
+    const price = (_price * 1e6).toString();
+    const simpleAlchemyProvider = new ethers.providers.AlchemyProvider(
+      "maticmum",
+      process.env.REACT_APP_ALCHEMY
+    );
+    const signer = new ethers.Wallet(
+      process.env.REACT_APP_PK as string,
+      simpleAlchemyProvider
+    );
+    const usdcContract = new ethers.Contract(
+      contractAddresses.USDCMock[80001],
+      USDCMock,
+      signer
+    );
+    const approveTx = await usdcContract.approve(
+      contractAddresses.BondNFTManager[80001],
+      price
+    );
+    await approveTx.wait();
+    yield 1;
+
+    const managerContract = new ethers.Contract(
+      contractAddresses.BondNFTManager[80001],
+      NotesNFTManagerAbi,
+      _userSigner
+    );
+    const tx = await managerContract.mintNFTNotes(nftAddress, noOfTokens);
+    yield tx;
+  }
 
   const getBondConfigs = async () => {
     // await library.ready;

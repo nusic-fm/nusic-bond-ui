@@ -3,6 +3,7 @@ import {
   Button,
   CircularProgress,
   Grid,
+  Snackbar,
   Stack,
   Step,
   StepLabel,
@@ -32,7 +33,9 @@ const IssueBond = ({ goToNextPage }: Props) => {
   const [_bondInfo] = useRecoilState(bondInfoState);
   const [_marketingInfo] = useRecoilState(marketingState);
   const history = useHistory();
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
+
+  const [message, setMessage] = useState<string | null>(null);
 
   const onIssueBondClick = async () => {
     if (!account) {
@@ -47,6 +50,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
         //   uint256 _fundingAmount, uint256 _numberOfYears, uint256 _numberOfBonds,
         //   uint256 _facevalue, string memory _bondName, string memory _bondSymbol,
         //   ListenersDetails memory listenersDetails) public returns(address nftAddress)
+        const price = _bondInfo.faceValue / (_bondInfo.noOfBonds ?? 1);
         const tx = await issueNotes(
           _songStreamingInfo.artistName,
           account,
@@ -54,7 +58,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
           _songStreamingInfo.soundChartId,
           _songStreamingInfo.songStatId,
           _songStreamingInfo.songStatId,
-          _bondInfo.faceValue / (_bondInfo.noOfBonds ?? 1),
+          price,
           _bondInfo.noOfBonds ?? 1,
           _nftInfo.nftName,
           _nftInfo.nftSymbol,
@@ -72,8 +76,8 @@ const IssueBond = ({ goToNextPage }: Props) => {
           }
         );
         const receipt = await tx.wait();
-        console.log({ receipt });
         let nftAddress = receipt.events[0].address;
+        setMessage("Successfully issued the NOTES");
         // const poolInfo: AssetPoolInfo = {
         //   ..._pendingAssetPoolInfo,
         //   nftAddress,
@@ -89,12 +93,18 @@ const IssueBond = ({ goToNextPage }: Props) => {
         // }
         setProcessMode(2);
         try {
-          const nftTx = await mintNftBonds(
+          const iterator = await mintNftBonds(
             nftAddress,
-            _bondInfo.noOfBonds ?? 1
+            _bondInfo.noOfBonds ?? 1,
+            price,
+            library.getSigner()
           );
-          const nftReceipt = await nftTx.wait();
+          await iterator.next();
+          setMessage("USDC has been allocated for the Transaction");
+          const nftTx = await iterator.next();
+          const nftReceipt = await nftTx.value.wait();
           console.log({ nftReceipt });
+          setMessage("Successfully Minted");
           // const _poolInfo = {
           //   ..._pendingAssetPoolInfo,
           //   nftAddress,
@@ -102,6 +112,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
           // setPendingAssetPoolInfo(_poolInfo);
         } catch (e) {
           console.log("mint bonds: ", e);
+          return;
         }
         history.push("/dashboard");
       } catch (e) {
@@ -159,6 +170,15 @@ const IssueBond = ({ goToNextPage }: Props) => {
           <Grid item md={2}></Grid>
         </Grid>
       </Box>
+      <Snackbar
+        open={!!message}
+        autoHideDuration={4000}
+        onClose={() => {
+          setMessage(null);
+        }}
+        message={message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      ></Snackbar>
     </Stack>
   );
 };

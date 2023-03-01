@@ -70,9 +70,9 @@ const IssueBond = ({ goToNextPage }: Props) => {
           },
           {
             promotionOne: _marketingInfo.promotionOne,
-            promotionTwo: _marketingInfo.promotionOne,
-            promotionOneShare: _marketingInfo.promotionOne,
-            promotionTwoShare: _marketingInfo.promotionOne,
+            promotionTwo: _marketingInfo.promotionTwo,
+            promotionOneShare: _marketingInfo.promotionOneShare,
+            promotionTwoShare: _marketingInfo.promotionTwoShare,
           }
         );
         const receipt = await tx.wait();

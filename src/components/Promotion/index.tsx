@@ -118,10 +118,15 @@ const Promotion = ({ goToNextPage }: Props) => {
         });
         let prevValue = share + dataSet1[dataSet1.length - 1].y;
         let tiktokBoost = prevValue + share * 4.2;
-        const dataSet2 = new Array(30).fill("-").map((_, i) => {
+        const dataSet2 = new Array(31).fill("-").map((_, i) => {
           if (i === 0) {
-            return { x: new Date().toLocaleDateString(), y: tiktokBoost };
+            return {
+              x: new Date().toLocaleDateString(),
+              y: dataSet1[dataSet1.length - 1].y,
+            };
           } else if (i === 1) {
+            return { x: new Date().toLocaleDateString(), y: tiktokBoost };
+          } else if (i === 2) {
             const newValue = tiktokBoost + share * 4.2;
             return { x: new Date().toLocaleDateString(), y: newValue };
           } else {
@@ -158,6 +163,7 @@ const Promotion = ({ goToNextPage }: Props) => {
         promotionsObj.promotionTwo !=
         "0x0000000000000000000000000000000000000000"
       ) {
+        // SPOTIFY
         const share = Math.round(((_bondInfo?.faceValue ?? 300) * 1) / 3);
         const dataSet1 = streams.slice(streams.length - 31).map((s, i) => {
           const today = new Date();
@@ -168,8 +174,13 @@ const Promotion = ({ goToNextPage }: Props) => {
           };
         });
         let prevValue = share + dataSet1[dataSet1.length - 1].y;
-        const dataSet2 = new Array(30).fill("-").map((_, i) => {
+        const dataSet2 = new Array(31).fill("-").map((_, i) => {
           if (i === 0) {
+            return {
+              x: new Date().toLocaleDateString(),
+              y: dataSet1[dataSet1.length - 1].y,
+            };
+          } else if (i === 1) {
             return { x: new Date().toLocaleDateString(), y: prevValue };
           } else {
             const today = new Date();
@@ -216,10 +227,15 @@ const Promotion = ({ goToNextPage }: Props) => {
           };
         });
         let prevValue = share * 4.2 + dataSet1[dataSet1.length - 1].y;
-        const dataSet2 = new Array(30).fill("-").map((_, i) => {
+        const dataSet2 = new Array(31).fill("-").map((_, i) => {
           if (i === 0) {
-            return { x: new Date().toLocaleDateString(), y: prevValue };
+            return {
+              x: new Date().toLocaleDateString(),
+              y: dataSet1[dataSet1.length - 1].y,
+            };
           } else if (i === 1) {
+            return { x: new Date().toLocaleDateString(), y: prevValue };
+          } else if (i === 2) {
             prevValue += share * 4.2;
             return { x: new Date().toLocaleDateString(), y: prevValue };
           } else {
@@ -438,7 +454,19 @@ const Promotion = ({ goToNextPage }: Props) => {
                 </CardActions>
               </Card>
             </Stack>
-            <Box mt={4} display="flex" justifyContent={"space-around"}>
+            <Box mt={4}>
+              {streams && (
+                <Line
+                  width={150}
+                  height={100}
+                  options={options}
+                  data={{
+                    datasets: dayData,
+                  }}
+                />
+              )}
+            </Box>
+            <Box mt={2} display="flex" justifyContent={"space-around"}>
               {streams && (
                 <Line
                   width={150}
@@ -446,19 +474,6 @@ const Promotion = ({ goToNextPage }: Props) => {
                   options={options}
                   data={{
                     datasets: historyData,
-                  }}
-                />
-              )}
-            </Box>
-            <Box mt={2}>
-              {streams && (
-                <Line
-                  width={150}
-                  height={100}
-                  options={options}
-                  data={{
-                    // labels: streamingHistory.map((s) => s.timestp.slice(0, 10)),
-                    datasets: dayData,
                   }}
                 />
               )}

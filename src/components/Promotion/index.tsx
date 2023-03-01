@@ -269,6 +269,8 @@ const Promotion = ({ goToNextPage }: Props) => {
                         data: streamingHistory.map((s) => s.value),
                         borderColor: "rgb(53, 162, 235)",
                         backgroundColor: "rgba(53, 162, 235, 0.5)",
+                        pointBorderWidth: 1,
+                        pointStyle: "dash",
                       },
                     ],
                   }}
@@ -292,6 +294,9 @@ const Promotion = ({ goToNextPage }: Props) => {
                         ),
                         borderColor: "rgb(53, 162, 235)",
                         backgroundColor: "rgba(53, 162, 235, 0.5)",
+
+                        pointBorderWidth: 1,
+                        pointStyle: "circle",
                       },
                     ],
                   }}

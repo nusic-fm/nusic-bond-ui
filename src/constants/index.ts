@@ -14,5 +14,5 @@ export const YOUTUBE_VIEWS_URL =
 export const METADATA_URL =
   "https://nft-ipfs-chainlink-adaptor-ynfarb57wa-uc.a.run.app/metadata";
 export const STREAMING_HISTORY =
-  // "http://localhost:8080/youtube/video";
+  // "http://localhost:8080/history/streaming";
   "https://listeners-data-server-ynfarb57wa-uc.a.run.app/history/streaming";

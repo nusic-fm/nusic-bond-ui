@@ -50,7 +50,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
         //   uint256 _fundingAmount, uint256 _numberOfYears, uint256 _numberOfBonds,
         //   uint256 _facevalue, string memory _bondName, string memory _bondSymbol,
         //   ListenersDetails memory listenersDetails) public returns(address nftAddress)
-        const price = _bondInfo.faceValue / (_bondInfo.noOfBonds ?? 1);
+        const price = (_bondInfo.faceValue / (_bondInfo.noOfBonds ?? 1)) * 1e6;
         const tx = await issueNotes(
           _songStreamingInfo.artistName,
           account,
@@ -118,6 +118,8 @@ const IssueBond = ({ goToNextPage }: Props) => {
       } catch (e) {
         console.error(e);
       }
+    } else {
+      setMessage("Track data is missing, try again");
     }
   };
 
@@ -142,7 +144,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
                   <Step>
                     <StepLabel>
                       <Box display="flex" alignItems="center" fontSize="24px">
-                        Issuing NFT Bond
+                        Issuing NFT Notes
                         <Box ml={3}>
                           {processMode === 1 && (
                             <CircularProgress color="info" size={20} />
@@ -154,7 +156,7 @@ const IssueBond = ({ goToNextPage }: Props) => {
                   <Step>
                     <StepLabel>
                       <Box display="flex" alignItems="center" fontSize="24px">
-                        Minting your NFT music Bond
+                        Minting your NFT music Notes
                         <Box ml={3}>
                           {processMode === 2 && (
                             <CircularProgress color="info" size={20} />

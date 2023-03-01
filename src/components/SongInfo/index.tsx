@@ -231,7 +231,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     // color="#c4c4c4"
                     fontWeight={600}
                     color="rgba(255,255,255,0.9)"
-                    variant="h6"
+                    // variant="h6"
                     sx={{ ml: 2 }}
                   >
                     {songTitle} :{" "}
@@ -268,7 +268,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     display="inline"
                     fontStyle="italic"
                     fontWeight={600}
-                    variant="h6"
+                    // variant="h6"
                     sx={{ ml: 2 }}
                   >
                     {youtubeViews

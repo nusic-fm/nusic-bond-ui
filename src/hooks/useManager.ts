@@ -118,7 +118,7 @@ export const useApManager = () => {
       _soundchartsSongId,
       _songstatsSongId,
       _chartmetricSongId,
-      (_price * 1e6).toString(),
+      _price,
       BigNumber.from(_numberOfTokens.toString()),
       _notesName,
       _notesSymbol,
@@ -139,8 +139,6 @@ export const useApManager = () => {
     _price: number,
     _userSigner: any
   ) {
-    // const dep = await managerContract.deployed();
-    const price = (_price * 1e6).toString();
     const simpleAlchemyProvider = new ethers.providers.AlchemyProvider(
       "maticmum",
       process.env.REACT_APP_ALCHEMY
@@ -154,10 +152,7 @@ export const useApManager = () => {
       USDCMock,
       signer
     );
-    const approveTx = await usdcContract.approve(
-      contractAddresses.BondNFTManager[80001],
-      price
-    );
+    const approveTx = await usdcContract.approve(nftAddress, _price);
     await approveTx.wait();
     yield 1;
 
@@ -166,7 +161,7 @@ export const useApManager = () => {
       NotesNFTManagerAbi,
       _userSigner
     );
-    const tx = await managerContract.mintNFTNotes(nftAddress, noOfTokens);
+    const tx = await managerContract.mintNFTNotes(nftAddress, _price);
     yield tx;
   }
 

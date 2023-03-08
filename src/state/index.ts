@@ -40,6 +40,7 @@ export const pendingAssetPoolInfo = atom<null | AssetPoolInfo>({
 
 export interface SongStreamingInfo {
   spotifyId: string;
+  songTitle: string;
   youtubeUrl: string;
   youtubeId: string;
   soundChartId: string;

@@ -1,5 +1,5 @@
 import { Stack, Box, Grid, TextField, Typography, Button } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { nftInfoState, songStreamingInfoState } from "../../state";
 
@@ -10,10 +10,29 @@ type Props = {
 const ArtistInfo = ({ goToNextPage }: Props) => {
   // const [preview, setPreview] = useState<string>();
   // const [artistName, setArtistName] = useState<string>("");
+  const [_songStreamingInfo] = useRecoilState(songStreamingInfoState);
   const [nftBondName, setNftBondName] = useState<string>("");
   const [nftBondSymbol, setNftBondSymbol] = useState<string>("");
-  const [_songStreamingInfo] = useRecoilState(songStreamingInfoState);
   const setNftInfo = useSetRecoilState(nftInfoState);
+
+  useEffect(() => {
+    if (_songStreamingInfo?.songTitle) {
+      setNftBondName(_songStreamingInfo?.songTitle);
+      const spaceSplits = _songStreamingInfo?.songTitle.split(" ");
+      if (spaceSplits.length > 1) {
+        setNftBondSymbol(
+          spaceSplits
+            .map((a) => a[0])
+            .join("")
+            .toUpperCase()
+        );
+      } else {
+        setNftBondSymbol(
+          _songStreamingInfo?.songTitle.slice(0, 3).toUpperCase()
+        );
+      }
+    }
+  }, [_songStreamingInfo]);
 
   return (
     <Stack>

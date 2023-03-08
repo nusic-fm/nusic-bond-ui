@@ -1,4 +1,7 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Box,
   Button,
   Checkbox,
@@ -23,7 +26,10 @@ import {
 } from "@syncfusion/ej2-react-charts";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { bondInfoState, incomeState } from "../../state";
+import { bondInfoState, incomeState, marketingState } from "../../state";
+import Promotion from "../Promotion";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 // import {
 //   Chart as ChartJS,
 //   CategoryScale,
@@ -72,6 +78,7 @@ const BondInfo = ({ goToNextPage }: Props) => {
   const [splitSliderData, setSplitSliderData] = useState<Mark[]>([]);
   const [pieData, setPieData] = useState<Mark[]>([]);
   const [yeilds, setYeilds] = useState<number[]>([]);
+  const [_marketingState] = useRecoilState(marketingState);
 
   const onBondValueChange = (e: any) => {
     const enteredValue = parseInt(e.target.value);
@@ -106,6 +113,14 @@ const BondInfo = ({ goToNextPage }: Props) => {
       );
     }
   }, [selectedSplitValue, splitSliderData]);
+
+  useEffect(() => {
+    setBondInfoState({
+      faceValue: bondValue,
+      // termYears: selectedTerm,
+      noOfBonds: noOfSplits,
+    });
+  }, [bondValue, noOfSplits]);
 
   useEffect(() => {
     if (_bondInfo) {
@@ -170,114 +185,128 @@ const BondInfo = ({ goToNextPage }: Props) => {
                     </Box>
                   </Box>
 
-                  <Box mt={2} display="flex">
-                    <Box
-                      flexBasis={"50%"}
-                      display="flex"
-                      flexDirection={"column"}
-                      // justifyContent="center"
+                  <Accordion>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
                     >
-                      <FormGroup>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              defaultChecked
-                              checked={isInstantLiquidity}
-                              onChange={(e, checked) => {
-                                setIsInstantLiquidity(checked);
-                                if (checked) {
-                                  setNoOfSplits(1);
-                                  setSelectedSplitValue(
-                                    parseFloat(
-                                      splitSliderData[0].label as string
-                                    )
-                                  );
-                                }
-                              }}
-                            />
-                          }
-                          label="Instant Liquidity"
-                        />
-                      </FormGroup>
-                      <Box
-                        mt={6}
-                        mx={2}
-                        style={{
-                          visibility: isInstantLiquidity ? "hidden" : "visible",
-                        }}
-                      >
-                        <Slider
-                          valueLabelDisplay="on"
-                          min={1}
-                          max={50}
-                          step={1}
-                          defaultValue={1}
-                          disabled={isInstantLiquidity}
-                          onChangeCommitted={(e, val) => {
-                            setNoOfSplits(val as number);
-                            setSelectedSplitValue(
-                              parseFloat(
-                                splitSliderData[(val as number) - 1]
-                                  .label as string
-                              )
-                            );
-                          }}
-                        ></Slider>
-                      </Box>
-                    </Box>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      style={{ width: "100%" }}
-                      flexBasis={"50%"}
-                    >
-                      {pieData.length > 0 && (
-                        <AccumulationChartComponent
-                          id="pie-chart"
-                          legendSettings={{ visible: false }}
-                          enableSmartLabels={true}
-                          enableAnimation={true}
-                          center={{ x: "50%", y: "45%" }}
-                          tooltip={{ enable: false }}
-                          // highlightPattern="Bubble"
-                          // highLightMode="Point"
-                          background="#17172F"
-                          width="300px"
-                          height="300px"
+                      <Typography variant="h6">Liquidity</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Box mt={2} display="flex">
+                        <Box
+                          flexBasis={"50%"}
+                          display="flex"
+                          flexDirection={"column"}
+                          // justifyContent="center"
                         >
-                          <Inject
-                            services={[
-                              AccumulationLegend,
-                              PieSeries,
-                              AccumulationTooltip,
-                              AccumulationDataLabel,
-                            ]}
-                          />
-                          <AccumulationSeriesCollectionDirective>
-                            <AccumulationSeriesDirective
-                              innerRadius="20%"
-                              dataSource={pieData}
-                              name="Browser"
-                              xName="label"
-                              yName="value"
-                              explode={true}
-                              explodeOffset="10%"
-                              explodeIndex={0}
-                              dataLabel={{
-                                visible: true,
-                                position: "Outside",
-                                name: "text",
-                                font: {
-                                  fontWeight: "600",
-                                },
+                          <FormGroup>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  defaultChecked
+                                  checked={isInstantLiquidity}
+                                  onChange={(e, checked) => {
+                                    setIsInstantLiquidity(checked);
+                                    if (checked) {
+                                      setNoOfSplits(1);
+                                      setSelectedSplitValue(
+                                        parseFloat(
+                                          splitSliderData[0].label as string
+                                        )
+                                      );
+                                    }
+                                  }}
+                                />
+                              }
+                              label="Instant Liquidity"
+                            />
+                          </FormGroup>
+                          <Box
+                            mt={6}
+                            mx={2}
+                            style={{
+                              visibility: isInstantLiquidity
+                                ? "hidden"
+                                : "visible",
+                            }}
+                          >
+                            <Slider
+                              valueLabelDisplay="on"
+                              min={1}
+                              max={50}
+                              step={1}
+                              defaultValue={1}
+                              disabled={isInstantLiquidity}
+                              onChangeCommitted={(e, val) => {
+                                setNoOfSplits(val as number);
+                                setSelectedSplitValue(
+                                  parseFloat(
+                                    splitSliderData[(val as number) - 1]
+                                      .label as string
+                                  )
+                                );
                               }}
-                              // radius="r"
-                            ></AccumulationSeriesDirective>
-                          </AccumulationSeriesCollectionDirective>
-                        </AccumulationChartComponent>
-                      )}
-                    </Box>
-                  </Box>
+                            ></Slider>
+                          </Box>
+                        </Box>
+                        <Box
+                          display="flex"
+                          justifyContent="center"
+                          style={{ width: "100%" }}
+                          flexBasis={"50%"}
+                        >
+                          {pieData.length > 0 && (
+                            <AccumulationChartComponent
+                              id="pie-chart"
+                              legendSettings={{ visible: false }}
+                              enableSmartLabels={true}
+                              enableAnimation={true}
+                              center={{ x: "50%", y: "45%" }}
+                              tooltip={{ enable: false }}
+                              // highlightPattern="Bubble"
+                              // highLightMode="Point"
+                              background="#17172F"
+                              width="300px"
+                              height="300px"
+                            >
+                              <Inject
+                                services={[
+                                  AccumulationLegend,
+                                  PieSeries,
+                                  AccumulationTooltip,
+                                  AccumulationDataLabel,
+                                ]}
+                              />
+                              <AccumulationSeriesCollectionDirective>
+                                <AccumulationSeriesDirective
+                                  innerRadius="20%"
+                                  dataSource={pieData}
+                                  name="Browser"
+                                  xName="label"
+                                  yName="value"
+                                  explode={true}
+                                  explodeOffset="10%"
+                                  explodeIndex={0}
+                                  dataLabel={{
+                                    visible: true,
+                                    position: "Outside",
+                                    name: "text",
+                                    font: {
+                                      fontWeight: "600",
+                                    },
+                                  }}
+                                  // radius="r"
+                                ></AccumulationSeriesDirective>
+                              </AccumulationSeriesCollectionDirective>
+                            </AccumulationChartComponent>
+                          )}
+                        </Box>
+                      </Box>
+                    </AccordionDetails>
+                  </Accordion>
+
                   {/* <Box mt={2} display="flex">
                     <Bar
                       width={200}
@@ -301,20 +330,28 @@ const BondInfo = ({ goToNextPage }: Props) => {
                 </Box>
               </Box>
             </Box>
+            <Box mt={2}>
+              <Promotion goToNextPage={goToNextPage} />
+            </Box>
             <Box mt={4}>
               <Button
                 variant="outlined"
                 color="info"
                 onClick={() => {
-                  setBondInfoState({
-                    faceValue: bondValue,
-                    // termYears: selectedTerm,
-                    noOfBonds: noOfSplits,
-                  });
+                  if (
+                    !_marketingState ||
+                    (_marketingState.promotionOne ===
+                      "0x0000000000000000000000000000000000000000" &&
+                      _marketingState.promotionTwo ===
+                        "0x0000000000000000000000000000000000000000")
+                  ) {
+                    alert("Please select a platform and continue");
+                    return;
+                  }
                   goToNextPage();
                 }}
               >
-                Continue to Promotion
+                Continue to Issue Bond
               </Button>
             </Box>
           </Grid>

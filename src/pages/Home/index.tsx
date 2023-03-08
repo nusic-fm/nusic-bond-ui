@@ -92,7 +92,7 @@ const Home = () => {
           {currentStep === 0 && <SongInfo goToNextPage={goToNextPage} />}
           {currentStep === 1 && <ArtistInfo goToNextPage={goToNextPage} />}
           {currentStep === 2 && <BondInfo goToNextPage={goToNextPage} />}
-          {currentStep === 3 && <Promotion goToNextPage={goToNextPage} />}
+          {/* {currentStep === 3 && <Promotion goToNextPage={goToNextPage} />} */}
           {currentStep === 4 && <IssueBond goToNextPage={goToNextPage} />}
         </Box>
         {_songStreamingInfo && (

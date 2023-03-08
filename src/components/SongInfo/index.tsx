@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  LinearProgress,
   Paper,
   Stack,
   Table,
@@ -64,11 +65,17 @@ const SongInfo = ({ goToNextPage }: Props) => {
   const [youtubeId, setYoutubeId] = useState<string>("");
   const setSongStreamingState = useSetRecoilState(songStreamingInfoState);
   const setIncomeState = useSetRecoilState(incomeState);
+  const [helperText, setHelperText] = useState(
+    "Our AI engine will calculate the eligibility of your songs"
+  );
+  const [loadingFile, setLoadingFile] = useState(false);
 
   const [selectedRow, setSelectedRow] = useState<string[]>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const getSpotifyListenersData = async (_spotifyId: string): Promise<void> => {
     try {
+      setIsLoading(true);
       const res = await axios.get(`${SPOTIFY_LISTENERS_ISRC}/${_spotifyId}`);
 
       if (res.data.listeners) {
@@ -101,17 +108,13 @@ const SongInfo = ({ goToNextPage }: Props) => {
         setIsSpotifyError(true);
       }
     } catch (e) {
-      setPreview("songImageUrl");
-      setIdsObj({ soundChartId: "", songStatId: "", chartmetricId: "" });
-      setSpotifyListeners(1000);
-      setSongTitle("_songTitle");
-      setIsSpotifyError(false);
-      setArtistName("_artistName");
       setIsSpotifyError(true);
     }
+    setIsLoading(false);
   };
 
   const getYoutubeViewsCount = async (_videoUrl: string): Promise<void> => {
+    setIsLoading(true);
     var regExp =
       /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     var match = _videoUrl.match(regExp);
@@ -133,6 +136,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
     } else {
       setIsYoutubeError(true);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -157,8 +161,9 @@ const SongInfo = ({ goToNextPage }: Props) => {
                 <Button
                   variant="contained"
                   component="label"
-                  onChange={(e: any) => {
+                  onChange={async (e: any) => {
                     if (e.target.files.length === 0) return;
+                    setLoadingFile(true);
                     const file = e.target.files[0];
                     var reader = new FileReader();
                     reader.onload = (e) => {
@@ -167,6 +172,9 @@ const SongInfo = ({ goToNextPage }: Props) => {
                       //   csvData: reader.result,
                       // });
                       if (reader.result) {
+                        setHelperText(
+                          "Our AI engine has successfully calculated the Eligibility of the Songs"
+                        );
                         setCsvData(reader.result);
                         const res = (reader.result as string).split("\r\n");
                         const _columns = res[0].split(",");
@@ -178,8 +186,17 @@ const SongInfo = ({ goToNextPage }: Props) => {
                         }
                         setRows(_rows);
                         setShowTable(true);
+                        setLoadingFile(false);
                       }
                     };
+                    await new Promise((res) => {
+                      setHelperText("Reading the Songs info...");
+                      setTimeout(res, 1000);
+                    });
+                    await new Promise((res) => {
+                      setHelperText("Checking the Eligibility of the Songs...");
+                      setTimeout(res, 1000);
+                    });
                     reader.readAsText(file);
                   }}
                   sx={{ width: 250 }}
@@ -201,7 +218,8 @@ const SongInfo = ({ goToNextPage }: Props) => {
                 )}
               </Stack>
               <Typography sx={{ mt: 1 }} variant="caption">
-                Our AI engine will calculate the eligibility of your songs
+                {helperText}
+                {loadingFile && <LinearProgress color="info"></LinearProgress>}
               </Typography>
             </Stack>
             <Box my={4}>
@@ -283,6 +301,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
               <Button
                 variant="outlined"
                 color="info"
+                disabled={isLoading}
                 onClick={() => {
                   if (
                     !artistName.length ||
@@ -291,7 +310,8 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     !youtubeId.length ||
                     !youtubeViews ||
                     !spotifyListeners ||
-                    !preview
+                    !preview ||
+                    !songTitle
                   ) {
                     if (!spotifyListeners) {
                       alert(
@@ -319,6 +339,7 @@ const SongInfo = ({ goToNextPage }: Props) => {
                     youtubeViews,
                     spotifyListeners,
                     songImageUrl: preview,
+                    songTitle,
                   });
                   if (!selectedRow) {
                     alert("Income isn't available");

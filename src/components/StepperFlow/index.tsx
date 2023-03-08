@@ -48,7 +48,7 @@ const StepperFlow = ({ currentStep }: Props) => {
       1: <LibraryMusicRoundedIcon />,
       2: <InfoOutlined />,
       3: <LocalAtmRoundedIcon />,
-      4: <CampaignIcon />,
+      // 4: <CampaignIcon />,
       5: <StreamIcon />,
       6: <HubRoundedIcon />,
     };
@@ -89,8 +89,8 @@ const StepperFlow = ({ currentStep }: Props) => {
   const steps = [
     "Select Song",
     "NFT Info",
-    "Notes Financials",
-    "Promotion",
+    "Notes Financials & Promotion",
+    // "Promotion",
     // "Deposit",
     "Issue Notes",
   ];

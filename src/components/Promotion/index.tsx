@@ -1,6 +1,6 @@
 import {
   Box,
-  Button,
+  // Button,
   Card,
   CardActions,
   CardContent,
@@ -8,6 +8,9 @@ import {
   Stack,
   Typography,
   Checkbox,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -31,6 +34,7 @@ import {
 import { Line } from "react-chartjs-2";
 import axios from "axios";
 import { STREAMING_HISTORY } from "../../constants";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 ChartJS.register(
   CategoryScale,
@@ -290,12 +294,12 @@ const Promotion = ({ goToNextPage }: Props) => {
         setStreamingDayData1(dayData1);
       }
     }
-  }, [streams, promotionsObj]);
+  }, [streams, promotionsObj, _bondInfo]);
 
   const historyData =
-    promotionsObj.promotionTwo !=
+    promotionsObj.promotionTwo !==
       "0x0000000000000000000000000000000000000000" ||
-    promotionsObj.promotionOne != "0x0000000000000000000000000000000000000000"
+    promotionsObj.promotionOne !== "0x0000000000000000000000000000000000000000"
       ? [
           {
             fill: true,
@@ -322,9 +326,9 @@ const Promotion = ({ goToNextPage }: Props) => {
           },
         ];
   const dayData =
-    promotionsObj.promotionTwo !=
+    promotionsObj.promotionTwo !==
       "0x0000000000000000000000000000000000000000" ||
-    promotionsObj.promotionOne != "0x0000000000000000000000000000000000000000"
+    promotionsObj.promotionOne !== "0x0000000000000000000000000000000000000000"
       ? [
           {
             fill: true,
@@ -351,109 +355,125 @@ const Promotion = ({ goToNextPage }: Props) => {
           },
         ];
 
+  useEffect(() => {
+    setMarketingState(promotionsObj);
+  }, [promotionsObj]);
+
   return (
     <Stack>
       <Box>
         <Grid container>
-          <Grid item md={2}></Grid>
-          <Grid item md={8}>
-            <Typography align="center" variant="h6">
-              Select the platforms you want to promote this track on
-            </Typography>
-            <Stack
-              flexDirection={"row"}
-              gap={2}
-              justifyContent="center"
-              sx={{ mt: 4 }}
-            >
-              <Card
-                sx={{
-                  width: "100%",
-                  border:
-                    promotionsObj.promotionOne !==
-                    "0x0000000000000000000000000000000000000000"
-                      ? "1px solid white"
-                      : "",
-                }}
+          {/* <Grid item md={2}></Grid> */}
+          <Grid item md={12}>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
               >
-                <CardContent>
-                  <Stack flexDirection={"row"} justifyContent="center">
-                    <img
-                      src="https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2Fs3.amazonaws.com%2Fappforest_uf%2Ff1676977024390x429224891718625200%2FTikTok.png?w=96&h=96&auto=compress&dpr=2&fit=max"
-                      width={80}
-                    />
-                  </Stack>
-                </CardContent>
-                <CardContent>
-                  <Typography align="center" variant="h5">
-                    Tiktok
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: "center" }}>
-                  <Checkbox
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setPromotionsObj({
-                          ...promotionsObj,
-                          promotionOne:
-                            "0x8d5667c2609372Ab5a5e01edFF20b9f0fc3Fe901",
-                          promotionOneShare: "3300",
-                        });
-                      } else {
-                        setPromotionsObj({
-                          ...promotionsObj,
-                          promotionOne:
-                            "0x0000000000000000000000000000000000000000",
-                          promotionOneShare: "0",
-                        });
-                      }
+                <Typography variant="h6">
+                  Select the platforms you want to promote this track on
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stack
+                  flexDirection={"row"}
+                  gap={2}
+                  justifyContent="center"
+                  sx={{ mt: 4 }}
+                >
+                  <Card
+                    sx={{
+                      width: "100%",
+                      border:
+                        promotionsObj.promotionOne !==
+                        "0x0000000000000000000000000000000000000000"
+                          ? "1px solid white"
+                          : "",
                     }}
-                  />
-                </CardActions>
-              </Card>
-              <Card
-                sx={{
-                  width: "100%",
-                  border:
-                    promotionsObj.promotionTwo !==
-                    "0x0000000000000000000000000000000000000000"
-                      ? "1px solid white"
-                      : "",
-                }}
-              >
-                <CardContent>
-                  <Stack flexDirection={"row"} justifyContent="center">
-                    <img src="/spotify_icon.png" width={80} />
-                  </Stack>
-                </CardContent>
-                <CardContent>
-                  <Typography align="center" variant="h5">
-                    Spotify
-                  </Typography>
-                </CardContent>
-                <CardActions sx={{ justifyContent: "center" }}>
-                  <Checkbox
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setPromotionsObj({
-                          ...promotionsObj,
-                          promotionTwo:
-                            "0x8FaFEcF39FCA1A28AB72593609427a8BC25069aA",
-                          promotionTwoShare: "3300",
-                        });
-                      } else {
-                        setPromotionsObj({
-                          ...promotionsObj,
-                          promotionTwo:
-                            "0x0000000000000000000000000000000000000000",
-                          promotionTwoShare: "0",
-                        });
-                      }
+                  >
+                    <CardContent>
+                      <Stack flexDirection={"row"} justifyContent="center">
+                        <img
+                          src="https://d1muf25xaso8hp.cloudfront.net/https%3A%2F%2Fs3.amazonaws.com%2Fappforest_uf%2Ff1676977024390x429224891718625200%2FTikTok.png?w=96&h=96&auto=compress&dpr=2&fit=max"
+                          width={80}
+                          alt=""
+                        />
+                      </Stack>
+                    </CardContent>
+                    <CardContent>
+                      <Typography align="center" variant="h5">
+                        Tiktok
+                      </Typography>
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: "center" }}>
+                      <Checkbox
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setPromotionsObj({
+                              ...promotionsObj,
+                              promotionOne:
+                                "0x8d5667c2609372Ab5a5e01edFF20b9f0fc3Fe901",
+                              promotionOneShare: "3300",
+                            });
+                          } else {
+                            setPromotionsObj({
+                              ...promotionsObj,
+                              promotionOne:
+                                "0x0000000000000000000000000000000000000000",
+                              promotionOneShare: "0",
+                            });
+                          }
+                        }}
+                      />
+                    </CardActions>
+                  </Card>
+                  <Card
+                    sx={{
+                      width: "100%",
+                      border:
+                        promotionsObj.promotionTwo !==
+                        "0x0000000000000000000000000000000000000000"
+                          ? "1px solid white"
+                          : "",
                     }}
-                  />
-                </CardActions>
-              </Card>
-            </Stack>
+                  >
+                    <CardContent>
+                      <Stack flexDirection={"row"} justifyContent="center">
+                        <img src="/spotify_icon.png" width={80} alt="" />
+                      </Stack>
+                    </CardContent>
+                    <CardContent>
+                      <Typography align="center" variant="h5">
+                        Spotify
+                      </Typography>
+                    </CardContent>
+                    <CardActions sx={{ justifyContent: "center" }}>
+                      <Checkbox
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setPromotionsObj({
+                              ...promotionsObj,
+                              promotionTwo:
+                                "0x8FaFEcF39FCA1A28AB72593609427a8BC25069aA",
+                              promotionTwoShare: "3300",
+                            });
+                          } else {
+                            setPromotionsObj({
+                              ...promotionsObj,
+                              promotionTwo:
+                                "0x0000000000000000000000000000000000000000",
+                              promotionTwoShare: "0",
+                            });
+                          }
+                        }}
+                      />
+                    </CardActions>
+                  </Card>
+                </Stack>
+              </AccordionDetails>
+            </Accordion>
+
             <Box mt={4}>
               {streams && (
                 <Line
@@ -478,7 +498,7 @@ const Promotion = ({ goToNextPage }: Props) => {
                 />
               )}
             </Box>
-            <Box mt={4}>
+            {/* <Box mt={4}>
               <Button
                 variant="outlined"
                 color="info"
@@ -498,9 +518,9 @@ const Promotion = ({ goToNextPage }: Props) => {
               >
                 Continue to Issue Notes
               </Button>
-            </Box>
+            </Box> */}
           </Grid>
-          <Grid item md={2}></Grid>
+          {/* <Grid item md={2}></Grid> */}
         </Grid>
       </Box>
     </Stack>

@@ -191,7 +191,7 @@ const BondInfo = ({ goToNextPage }: Props) => {
                       aria-controls="panel1a-content"
                       id="panel1a-header"
                     >
-                      <Typography variant="h6">Liquidity</Typography>
+                      <Typography>Fractionalization</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                       <Box mt={2} display="flex">
@@ -267,7 +267,7 @@ const BondInfo = ({ goToNextPage }: Props) => {
                               tooltip={{ enable: false }}
                               // highlightPattern="Bubble"
                               // highLightMode="Point"
-                              background="#17172F"
+                              background="transparent"
                               width="300px"
                               height="300px"
                             >

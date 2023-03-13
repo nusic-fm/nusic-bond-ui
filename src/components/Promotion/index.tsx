@@ -371,11 +371,12 @@ const Promotion = ({ goToNextPage }: Props) => {
                 aria-controls="panel1a-content"
                 id="panel1a-header"
               >
-                <Typography variant="h6">
-                  Select the platforms you want to promote this track on
-                </Typography>
+                <Typography>Promotion</Typography>
               </AccordionSummary>
               <AccordionDetails>
+                <Typography variant="body2" align="center">
+                  Select the platforms you want to promote this track on.
+                </Typography>
                 <Stack
                   flexDirection={"row"}
                   gap={2}
